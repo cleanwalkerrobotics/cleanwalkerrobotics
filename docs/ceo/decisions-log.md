@@ -41,3 +41,24 @@
 **Context:** Chinese actuators (CubeMars) face ~49% stacked tariffs (MFN + Section 301 + Reciprocal + IEEPA). That's $2,352/robot in duties alone, $24.7K for 10 units. This was a hidden cost not in the original BOM.
 **Decision:** Engage a licensed customs broker immediately ($500-1,500) to confirm HTS classifications, check Section 301 exclusions, and evaluate domestic PCB fabrication. Long-term: source actuators from non-China suppliers.
 **Consequence:** Could save $12K+ on actuator tariffs. Domestic PCBs eliminate ~45% tariff on JLCPCB boards.
+
+## ADR-007: Global Market Entry — EU + UAE First, Not US-Only
+**Date:** 2026-02-09
+**Status:** Accepted
+**Context:** Global market research revealed the US is NOT the optimal first market. Singapore, UAE, and Northern Europe offer better regulatory frameworks, more innovation funding, and fewer barriers. Veolia (56 countries, EUR 45B revenue) already trialed quadruped litter robots at Bondi Beach, Sydney. BEEAH (UAE) has deployed autonomous cleaners since 2019. No commercial quadrupedal litter-collecting robot exists anywhere in the world.
+**Decision:** Phase 1: EU (Netherlands/Germany) + UAE. Phase 2: UK + Australia + Singapore. Phase 3: US + Japan + Korea. Austin TX remains the US target but moves to Phase 3.
+**Consequence:** Broader opportunity set. EU Machinery Regulation 2023/1230 (Jan 2027) provides clear regulatory pathway. IFAT Munich (May 2026) becomes global launch event. Veolia partnership could open 56 countries with a single deal.
+
+## ADR-008: Veolia as #1 Strategic Partner Target
+**Date:** 2026-02-09
+**Status:** Accepted
+**Context:** Veolia (EUR 45B revenue, 56 countries, 215K employees) trialed "Scoop Doggy Dog" quadrupedal litter-collecting robots at Bondi Beach, Sydney. They are demonstrably interested in this exact technology. A single Veolia partnership could deploy CleanWalker across dozens of cities globally.
+**Decision:** Veolia ANZ (Australia team that ran Bondi trial) is the #1 outreach priority. Approach them before any other partner. BEEAH Group (UAE) is #2.
+**Consequence:** Changes outreach sequence. Veolia approach requires: simulation demo video, live AI demo, and professional pitch deck ready BEFORE contact.
+
+## ADR-009: IFAT Munich 2026 as Global Launch Event
+**Date:** 2026-02-09
+**Status:** Pending Action
+**Context:** IFAT Munich (May 4-7, 2026) is the world's largest environmental technology trade show — 3,000+ exhibitors, 140,000+ attendees from 60+ countries. Every major waste company, municipal buyer, and equipment manufacturer attends. Has a startup exhibit area.
+**Decision:** Register for IFAT 2026 startup exhibit area immediately. This is CleanWalker's global launch event. Budget EUR 5,000-15,000 for small booth.
+**Consequence:** 3 months away — requires immediate action. Need simulation demo, AI demo, and marketing materials ready by April 2026. Contact application@ifat.de for startup area.
