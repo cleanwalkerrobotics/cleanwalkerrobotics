@@ -42,3 +42,4 @@ hardware/**/fp-info-cache
 # Misc
 *.log
 *.pid
+.vercel

@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 CleanWalker Robotics
+// Copyright (c) MB Software Studio LLC. All rights reserved.
+// Licensed under the AGPL-3.0 License. See LICENSE in the project root.
 
 /// Direction of motor rotation.
 pub enum Direction {

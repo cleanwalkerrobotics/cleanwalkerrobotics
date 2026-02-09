@@ -9,13 +9,13 @@ export default function Home() {
 				<div className="mx-auto flex max-w-6xl items-center justify-between">
 					<span className="text-xl font-bold text-gray-900">CleanWalker</span>
 					<div className="flex gap-6 text-sm text-gray-600">
-						<a href="#" className="hover:text-gray-900">
+						<a href="/product" className="hover:text-gray-900">
 							Product
 						</a>
-						<a href="#" className="hover:text-gray-900">
+						<a href="/about" className="hover:text-gray-900">
 							About
 						</a>
-						<a href="#" className="hover:text-gray-900">
+						<a href="/contact" className="hover:text-gray-900">
 							Contact
 						</a>
 					</div>
@@ -28,18 +28,18 @@ export default function Home() {
 					Autonomous Street Cleaning Robots
 				</h1>
 				<p className="mt-6 max-w-xl text-center text-lg text-gray-600">
-					CleanWalker deploys intelligent, autonomous robots that keep city streets clean
-					around the clock — quietly, efficiently, and sustainably.
+					CleanWalker deploys intelligent, autonomous robots that keep city streets clean around the
+					clock — quietly, efficiently, and sustainably.
 				</p>
 				<div className="mt-10 flex gap-4">
 					<a
-						href="#"
+						href="/contact"
 						className="rounded-lg bg-gray-900 px-6 py-3 text-sm font-medium text-white hover:bg-gray-800"
 					>
 						Learn More
 					</a>
 					<a
-						href="#"
+						href="/contact"
 						className="rounded-lg border border-gray-300 px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
 					>
 						Request Demo
