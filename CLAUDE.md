@@ -77,3 +77,4 @@ Think through each role. Don't just code and ship — plan, build, review, then 
 - Keep files focused and well-structured
 - Run the build before pushing when possible (`cd apps/web && npx next build`)
 - Deploy to Vercel after website changes: `vercel --yes --prod --token "$VERCEL_TOKEN"` from repo root
+- VERCEL_TOKEN is set in the shell environment. If not available, skip deploy and note it in your completion message.
