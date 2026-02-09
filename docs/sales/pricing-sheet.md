@@ -14,7 +14,7 @@ No upfront capital. No maintenance headaches. Just cleaner spaces.
 
 ## Pricing Tiers
 
-### Pilot -- $1,800/mo per robot
+### Pilot -- $2,800/mo per robot
 
 *Try before you scale. Prove the value on your turf.*
 
@@ -22,13 +22,13 @@ No upfront capital. No maintenance headaches. Just cleaner spaces.
 - 1-3 robots
 - Full onboarding and site assessment
 - Weekly performance reports
-- 28% discount from Standard rate
+- 20% discount from Standard rate
 
 Best for: Municipalities and property managers evaluating autonomous litter collection for the first time.
 
 ---
 
-### Standard -- $2,500/mo per robot
+### Standard -- $3,500/mo per robot
 
 *The full CleanWalker experience.*
 
@@ -43,7 +43,7 @@ Best for: Established deployments at parks, campuses, commercial districts, and 
 
 ---
 
-### Fleet -- $2,000/mo per robot
+### Fleet -- $3,000/mo per robot
 
 *Scale across your entire operation.*
 
@@ -53,7 +53,7 @@ Best for: Established deployments at parks, campuses, commercial districts, and 
 - API access for integration with existing systems
 - Dedicated field service team
 - Quarterly business reviews
-- 20% discount from Standard rate
+- 14% discount from Standard rate
 
 Best for: City-wide deployments, large university systems, theme parks, and national property management companies.
 
@@ -108,7 +108,7 @@ Most parks require 2-3 litter collection workers to maintain cleanliness across 
 
 | Metric | Manual (2 workers) | CleanWalker (2 robots) |
 |--------|-------------------|----------------------|
-| Monthly cost | $9,320-$13,360 | $5,000 (Standard) |
+| Monthly cost | $9,320-$13,360 | $7,000 (Standard) |
 | Daily coverage hours | 16 hrs (2x 8-hr shifts) | 20+ hrs (autonomous, self-charging) |
 | Weather/night operation | Limited | Full capability |
 | Data & reporting | None | Real-time dashboard |
@@ -119,11 +119,11 @@ Most parks require 2-3 litter collection workers to maintain cleanliness across 
 
 | Scenario | Monthly Savings | Annual Savings |
 |----------|----------------|----------------|
-| Replace 2 manual workers with 2 robots (Standard) | $4,320-$8,360 | $51,840-$100,320 |
-| Replace 2 manual workers with 2 robots (Fleet) | $5,320-$9,360 | $63,840-$112,320 |
-| Supplement 1 worker with 1 robot (Pilot) | $2,860-$4,880 | $34,320-$58,560 |
+| Replace 2 manual workers with 2 robots (Standard) | $2,320-$6,360 | $27,840-$76,320 |
+| Replace 2 manual workers with 2 robots (Fleet) | $3,320-$7,360 | $39,840-$88,320 |
+| Supplement 1 worker with 1 robot (Pilot) | $1,860-$3,880 | $22,320-$46,560 |
 
-**Typical ROI: 46-63% cost reduction vs. equivalent manual coverage.**
+**Typical ROI: 25-48% cost reduction vs. equivalent manual coverage.**
 
 ---
 

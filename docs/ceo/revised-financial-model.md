@@ -58,12 +58,12 @@ NRE budget: $108,000 (mid-range estimate). Amortized over cumulative production.
 
 | Tier | Monthly Rate | Commitment | Target Customer |
 |------|-------------|------------|-----------------|
-| **Pilot** | $1,800/mo | 6-month minimum | New customers, proof-of-value |
-| **Standard** | $2,500/mo | 12-month contract | Single-site deployments |
-| **Fleet** | $2,000/mo | 24-month, 50+ units | Multi-site / city-wide |
+| **Pilot** | $2,800/mo | 6-month minimum | New customers, proof-of-value |
+| **Standard** | $3,500/mo | 12-month contract | Single-site deployments |
+| **Fleet** | $3,000/mo | 24-month, 50+ units | Multi-site / city-wide |
 
-- Pilot rate: 28% discount from Standard to reduce adoption friction
-- Fleet rate: 20% discount from Standard for volume commitment
+- Pilot rate: 20% discount from Standard to reduce adoption friction
+- Fleet rate: 14% discount from Standard for volume commitment
 - All tiers include robot, software, maintenance, and support
 
 ### 2.2 What's Included in Every Tier
@@ -97,9 +97,9 @@ NRE budget: $108,000 (mid-range estimate). Amortized over cumulative production.
 
 | Tier | Revenue/mo | Recurring Cost/mo | **Gross Margin/mo** | **Margin %** |
 |------|-----------|-------------------|---------------------|-------------|
-| Pilot ($1,800) | $1,800 | $350 | $1,450 | 80.6% |
-| Standard ($2,500) | $2,500 | $350 | $2,150 | 86.0% |
-| Fleet ($2,000) | $2,000 | $350 | $1,650 | 82.5% |
+| Pilot ($2,800) | $2,800 | $350 | $2,450 | 87.5% |
+| Standard ($3,500) | $3,500 | $350 | $3,150 | 90.0% |
+| Fleet ($3,000) | $3,000 | $350 | $2,650 | 88.3% |
 
 ---
 
@@ -109,15 +109,15 @@ NRE budget: $108,000 (mid-range estimate). Amortized over cumulative production.
 
 "Breakeven" = months until cumulative gross margin equals the unit's manufactured cost.
 
-| COGS Scenario | Pilot ($1,450/mo margin) | Standard ($2,150/mo margin) | Fleet ($1,650/mo margin) |
+| COGS Scenario | Pilot ($2,450/mo margin) | Standard ($3,150/mo margin) | Fleet ($2,650/mo margin) |
 |---------------|-------------------------|----------------------------|--------------------------|
-| 10 units ($14,699) | 10.1 months | 6.8 months | 8.9 months |
-| 50 units ($11,360) | 7.8 months | 5.3 months | 6.9 months |
-| 100 units ($10,082) | 7.0 months | 4.7 months | 6.1 months |
-| 500 units ($7,976) | 5.5 months | 3.7 months | 4.8 months |
-| 1,000 units ($6,963) | 4.8 months | 3.2 months | 4.2 months |
+| 10 units ($14,699) | 6.0 months | 4.7 months | 5.5 months |
+| 50 units ($11,360) | 4.6 months | 3.6 months | 4.3 months |
+| 100 units ($10,082) | 4.1 months | 3.2 months | 3.8 months |
+| 500 units ($7,976) | 3.3 months | 2.5 months | 3.0 months |
+| 1,000 units ($6,963) | 2.8 months | 2.2 months | 2.6 months |
 
-**Key insight:** Even at pilot pricing and low-volume COGS, unit-level breakeven occurs within the 12-month contract period. At production scale (500+ units), payback is under 5 months on all tiers.
+**Key insight:** At $3,500/mo standard pricing, unit-level breakeven occurs within 5 months even at low-volume COGS. At production scale (500+ units), payback is under 3 months on all tiers.
 
 ### 4.2 Lifetime Value Per Unit (36-Month Contract Life)
 
@@ -125,10 +125,10 @@ Assuming average contract life of 36 months before major refurbishment:
 
 | COGS Scenario | Tier | 36-mo Revenue | 36-mo Recurring | COGS | **Net Profit/Unit** |
 |---------------|------|---------------|-----------------|------|---------------------|
-| 100 units | Pilot | $64,800 | $12,600 | $10,082 | **$42,118** |
-| 100 units | Standard | $90,000 | $12,600 | $10,082 | **$67,318** |
-| 500 units | Fleet | $72,000 | $12,600 | $7,976 | **$51,424** |
-| 1,000 units | Standard | $90,000 | $12,600 | $6,963 | **$70,437** |
+| 100 units | Pilot | $100,800 | $12,600 | $10,082 | **$78,118** |
+| 100 units | Standard | $126,000 | $12,600 | $10,082 | **$103,318** |
+| 500 units | Fleet | $108,000 | $12,600 | $7,976 | **$87,424** |
+| 1,000 units | Standard | $126,000 | $12,600 | $6,963 | **$106,437** |
 
 ---
 
@@ -157,14 +157,14 @@ Units needed to cover fixed overhead from gross margin:
 
 | Tier | Gross Margin/Unit/Mo | Units to Cover $75K/mo | Units to Cover $75K + 15% Profit |
 |------|---------------------|----------------------|----------------------------------|
-| Pilot ($1,800) | $1,450 | 52 units | 60 units |
-| Standard ($2,500) | $2,150 | 35 units | 41 units |
-| Fleet ($2,000) | $1,650 | 46 units | 53 units |
-| Blended (~$2,200 avg) | $1,850 | 41 units | 47 units |
+| Pilot ($2,800) | $2,450 | 31 units | 36 units |
+| Standard ($3,500) | $3,150 | 24 units | 28 units |
+| Fleet ($3,000) | $2,650 | 29 units | 33 units |
+| Blended (~$3,100 avg) | $2,750 | 28 units | 32 units |
 
-**Fleet breakeven at blended rate: ~41 deployed units.**
+**Fleet breakeven at blended rate: ~28 deployed units.**
 
-At a blended average rate of $2,200/mo (mix of tiers), the company reaches cash-flow breakeven at approximately 41 deployed and billing units.
+At a blended average rate of $3,100/mo (mix of tiers), the company reaches cash-flow breakeven at approximately 28 deployed and billing units.
 
 ---
 
@@ -174,11 +174,11 @@ At a blended average rate of $2,200/mo (mix of tiers), the company reaches cash-
 
 | Year | New Units | Cumulative Deployed | Avg Deployed (for revenue) | Avg Monthly Rate | COGS/Unit |
 |------|-----------|--------------------|-----------------------------|-----------------|-----------|
-| Y1 | 10 | 10 | 5 | $1,800 (pilot) | $14,699 |
-| Y2 | 40 | 50 | 30 | $2,100 (mix) | $11,360 |
-| Y3 | 150 | 200 | 125 | $2,300 (mix) | $9,500 |
-| Y4 | 300 | 500 | 350 | $2,200 (fleet-heavy) | $7,976 |
-| Y5 | 500 | 1,000 | 750 | $2,100 (fleet-heavy) | $6,963 |
+| Y1 | 10 | 10 | 5 | $2,800 (pilot) | $14,699 |
+| Y2 | 40 | 50 | 30 | $3,200 (mix) | $11,360 |
+| Y3 | 150 | 200 | 125 | $3,300 (mix) | $9,500 |
+| Y4 | 300 | 500 | 350 | $3,100 (fleet-heavy) | $7,976 |
+| Y5 | 500 | 1,000 | 750 | $3,000 (fleet-heavy) | $6,963 |
 
 Notes:
 - "Avg Deployed" accounts for gradual ramp within each year
@@ -189,11 +189,11 @@ Notes:
 
 | Year | Avg Units | Avg Rate | **Annual Revenue** | Cumulative Revenue |
 |------|-----------|----------|--------------------|--------------------|
-| Y1 | 5 | $1,800 | **$108,000** | $108,000 |
-| Y2 | 30 | $2,100 | **$756,000** | $864,000 |
-| Y3 | 125 | $2,300 | **$3,450,000** | $4,314,000 |
-| Y4 | 350 | $2,200 | **$9,240,000** | $13,554,000 |
-| Y5 | 750 | $2,100 | **$18,900,000** | $32,454,000 |
+| Y1 | 5 | $2,800 | **$168,000** | $168,000 |
+| Y2 | 30 | $3,200 | **$1,152,000** | $1,320,000 |
+| Y3 | 125 | $3,300 | **$4,950,000** | $6,270,000 |
+| Y4 | 350 | $3,100 | **$13,020,000** | $19,290,000 |
+| Y5 | 750 | $3,000 | **$27,000,000** | $46,290,000 |
 
 ### 6.3 Cost Model
 
@@ -214,20 +214,20 @@ Notes:
 
 | Year | Revenue | Total Costs | **Net Income** | **Margin** | Cumulative P&L |
 |------|---------|-------------|----------------|-----------|----------------|
-| Y1 | $108,000 | $767,990 | **-$659,990** | -611% | -$659,990 |
-| Y2 | $756,000 | $1,480,400 | **-$724,400** | -96% | -$1,384,390 |
-| Y3 | $3,450,000 | $3,150,000 | **+$300,000** | +8.7% | -$1,084,390 |
-| Y4 | $9,240,000 | $5,662,800 | **+$3,577,200** | +38.7% | +$2,492,810 |
-| Y5 | $18,900,000 | $9,031,500 | **+$9,868,500** | +52.2% | +$12,361,310 |
+| Y1 | $168,000 | $767,990 | **-$599,990** | -357% | -$599,990 |
+| Y2 | $1,152,000 | $1,480,400 | **-$328,400** | -29% | -$928,390 |
+| Y3 | $4,950,000 | $3,150,000 | **+$1,800,000** | +36.4% | +$871,610 |
+| Y4 | $13,020,000 | $5,662,800 | **+$7,357,200** | +56.5% | +$8,228,810 |
+| Y5 | $27,000,000 | $9,031,500 | **+$17,968,500** | +66.5% | +$26,197,310 |
 
 ### 6.5 Milestone Summary
 
 | Milestone | Units | Annual Revenue Run-Rate | Status |
 |-----------|-------|------------------------|--------|
-| **10 units** | 10 | $216,000 ARR | Pilot validation, product-market fit |
-| **50 units** | 50 | $1.26M ARR | Fleet breakeven achieved |
-| **200 units** | 200 | $5.52M ARR | Profitable, Series A territory |
-| **500 units** | 500 | $13.2M ARR | Scale production, strong margins |
+| **10 units** | 10 | $336,000 ARR | Pilot validation, product-market fit |
+| **50 units** | 50 | $1.86M ARR | Fleet breakeven achieved |
+| **200 units** | 200 | $7.92M ARR | Profitable, Series A territory |
+| **500 units** | 500 | $18.6M ARR | Scale production, strong margins |
 
 ---
 
@@ -271,9 +271,9 @@ Notes:
 
 | Scenario | Avg Rate | Breakeven Units | Y3 Net Income | Y5 Net Income |
 |----------|----------|-----------------|---------------|---------------|
-| Bear (15% lower) | $1,870 | 55 units | -$450K | +$5.2M |
-| Base | $2,200 | 41 units | +$300K | +$9.9M |
-| Bull (15% higher) | $2,530 | 33 units | +$1.1M | +$14.5M |
+| Bear (15% lower) | $2,635 | 35 units | +$800K | +$12.1M |
+| Base | $3,100 | 28 units | +$1.8M | +$18.0M |
+| Bull (15% higher) | $3,565 | 23 units | +$2.8M | +$23.8M |
 
 ### 8.2 COGS Sensitivity
 
