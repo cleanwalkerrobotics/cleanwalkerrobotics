@@ -1,0 +1,10 @@
+[package]
+name = "cw-motor-driver"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+description = "CleanWalker motor control module"
+
+[lib]
+name = "cw_motor_driver"
+path = "src/lib.rs"

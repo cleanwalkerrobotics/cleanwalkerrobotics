@@ -1,0 +1,42 @@
+name: Hardware Issue
+description: Report a hardware or PCB issue
+title: "[Hardware] "
+labels: ["hardware"]
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: Issue Type
+      options:
+        - PCB Bug
+        - Design Change Request
+        - BOM Update
+        - Manufacturing Issue
+    validations:
+      required: true
+
+  - type: dropdown
+    id: board
+    attributes:
+      label: Board
+      description: Which board is affected?
+      options:
+        - Mainboard (Jetson Orin carrier)
+        - Motor Driver PCB
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the hardware issue
+    validations:
+      required: true
+
+  - type: textarea
+    id: schematic
+    attributes:
+      label: Schematic Reference
+      description: Reference specific schematic sheets, nets, or components if applicable

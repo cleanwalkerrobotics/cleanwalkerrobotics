@@ -1,0 +1,20 @@
+{
+	"name": "@cleanwalker/config",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"exports": {
+		"./tailwind": {
+			"types": "./src/tailwind.config.ts",
+			"import": "./src/tailwind.config.ts",
+			"require": "./src/tailwind.config.ts"
+		},
+		"./typescript/base": "./typescript/base.json",
+		"./typescript/nextjs": "./typescript/nextjs.json",
+		"./typescript/library": "./typescript/library.json"
+	},
+	"files": ["src", "typescript"],
+	"scripts": {
+		"lint": "biome check ."
+	}
+}

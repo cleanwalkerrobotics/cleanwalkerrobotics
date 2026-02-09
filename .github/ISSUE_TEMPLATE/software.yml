@@ -1,0 +1,54 @@
+name: Software Issue
+description: Report a software bug or request a feature
+title: "[Software] "
+labels: ["software"]
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: Issue Type
+      options:
+        - Bug
+        - Feature Request
+        - Enhancement
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which part of the system is affected?
+      options:
+        - Firmware (controller)
+        - Firmware (motor-driver)
+        - Firmware (comms)
+        - ML (perception)
+        - ML (training)
+        - Web App
+        - Dashboard
+        - API
+        - CI/CD
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the issue or feature request
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce (for bugs)
+      description: How can we reproduce this issue?
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should happen?

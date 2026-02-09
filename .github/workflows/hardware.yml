@@ -1,0 +1,52 @@
+name: Hardware
+
+on:
+  push:
+    paths:
+      - "hardware/**"
+  pull_request:
+    paths:
+      - "hardware/**"
+
+jobs:
+  hardware-checks:
+    name: Hardware Design Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO: Install KiCad CLI tools
+      # - name: Install KiCad
+      #   run: |
+      #     sudo add-apt-repository ppa:kicad/kicad-8.0-releases
+      #     sudo apt-get update
+      #     sudo apt-get install -y kicad
+
+      # TODO: Run Electrical Rules Check (ERC)
+      # - name: ERC
+      #   run: |
+      #     kicad-cli sch erc hardware/mainboard/mainboard.kicad_sch
+      #     kicad-cli sch erc hardware/motor-driver-pcb/motor-driver.kicad_sch
+
+      # TODO: Run Design Rules Check (DRC)
+      # - name: DRC
+      #   run: |
+      #     kicad-cli pcb drc hardware/mainboard/mainboard.kicad_pcb
+      #     kicad-cli pcb drc hardware/motor-driver-pcb/motor-driver.kicad_pcb
+
+      # TODO: Export Gerber files
+      # - name: Export Gerbers
+      #   run: |
+      #     mkdir -p output/gerbers
+      #     kicad-cli pcb export gerbers hardware/mainboard/mainboard.kicad_pcb -o output/gerbers/mainboard/
+      #     kicad-cli pcb export gerbers hardware/motor-driver-pcb/motor-driver.kicad_pcb -o output/gerbers/motor-driver/
+
+      # TODO: Upload Gerber artifacts
+      # - name: Upload Gerbers
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: gerber-files
+      #     path: output/gerbers/
+
+      - name: Placeholder
+        run: echo "Hardware CI pipeline — KiCad checks will be enabled when PCB designs are added"
