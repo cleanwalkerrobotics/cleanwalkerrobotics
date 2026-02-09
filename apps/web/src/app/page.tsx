@@ -172,7 +172,7 @@ export default function Home() {
 							<p className="mt-3 leading-relaxed text-gray-600">
 								Save $52,000 to $100,000 per site annually compared to manual litter
 								collection. No labor overhead, no benefits costs, no sick days. Simple
-								monthly pricing.
+								flexible service agreements.
 							</p>
 						</div>
 					</div>
@@ -299,10 +299,10 @@ export default function Home() {
 								better data, more hours, and zero sick days.
 							</p>
 							<a
-								href="/pricing"
+								href="/contact"
 								className="mt-8 inline-block rounded-lg bg-cw-green px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-cw-green-dark"
 							>
-								View Pricing
+								Contact Sales
 							</a>
 						</div>
 						<div className="grid grid-cols-2 gap-6">
@@ -343,10 +343,10 @@ export default function Home() {
 							Schedule a Demo
 						</a>
 						<a
-							href="/pricing"
+							href="/contact"
 							className="rounded-lg border border-white/20 px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:border-white/40 hover:bg-white/5"
 						>
-							See Pricing
+							Contact Sales
 						</a>
 					</div>
 				</div>

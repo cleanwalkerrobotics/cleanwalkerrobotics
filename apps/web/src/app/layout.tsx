@@ -7,7 +7,7 @@ import "./globals.css";
 export const metadata: Metadata = {
 	title: "CleanWalker Robotics — Autonomous Litter Collection",
 	description:
-		"CleanWalker deploys autonomous litter-collecting robots to parks, campuses, and public spaces. Robot-as-a-Service starting at $2,800/mo.",
+		"CleanWalker deploys autonomous litter-collecting robots to parks, campuses, and public spaces. Robot-as-a-Service for municipalities and property managers.",
 };
 
 function Navbar() {
@@ -28,10 +28,10 @@ function Navbar() {
 						Product
 					</a>
 					<a
-						href="/pricing"
+						href="/demos"
 						className="text-sm text-gray-300 transition-colors hover:text-cw-green"
 					>
-						Pricing
+						Demos
 					</a>
 					<a
 						href="/about"
@@ -43,19 +43,19 @@ function Navbar() {
 						href="/contact"
 						className="rounded-lg bg-cw-green px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-cw-green-dark"
 					>
-						Get a Demo
+						Contact Sales
 					</a>
 				</div>
 				{/* Mobile: show key links */}
 				<div className="flex items-center gap-4 md:hidden">
-					<a href="/pricing" className="text-sm text-gray-300">
-						Pricing
+					<a href="/product" className="text-sm text-gray-300">
+						Product
 					</a>
 					<a
 						href="/contact"
 						className="rounded-lg bg-cw-green px-4 py-2 text-sm font-semibold text-white"
 					>
-						Demo
+						Contact Sales
 					</a>
 				</div>
 			</div>
@@ -93,8 +93,8 @@ function Footer() {
 								</a>
 							</li>
 							<li>
-								<a href="/pricing" className="transition-colors hover:text-cw-green">
-									Pricing
+								<a href="/demos" className="transition-colors hover:text-cw-green">
+									Demos
 								</a>
 							</li>
 							<li>
