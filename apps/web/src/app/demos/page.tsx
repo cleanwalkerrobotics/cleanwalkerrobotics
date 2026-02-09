@@ -45,7 +45,8 @@ const demos = [
 	},
 	{
 		title: "Fleet Dashboard",
-		status: "coming",
+		status: "live",
+		slug: "fleet-dashboard",
 		description:
 			"Real-time fleet management for city-wide deployments. Monitor every robot, track coverage, analyze litter patterns, and optimize routes — all from one dashboard.",
 		placeholder: "Interactive fleet management dashboard preview",
