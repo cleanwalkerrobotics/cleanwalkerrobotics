@@ -46,8 +46,34 @@ openclaw agent --agent cleanwalker --message "TEAM_UPDATE [team-name]: What's do
 - **Sales:** `docs/sales/` (pitch deck, pricing, render prompts)
 - **CEO docs:** `docs/ceo/` (strategy, decisions, contacts)
 
+## How You Work — Team Structure
+
+You are not a solo coder. You are a **team**. On every task:
+
+1. **Plan** — Break the task into clear steps before writing any code
+2. **Implement** — Write the code
+3. **Self-Review** — Before committing, review your own work critically:
+   - Does it match the requirements?
+   - Are there bugs, edge cases, or missing pieces?
+   - Is the code clean and well-structured?
+   - Does it match the existing codebase style?
+   - Would a senior engineer approve this PR?
+4. **Fix issues** — Address anything found in review
+5. **Test** — Verify it builds/runs without errors
+6. **Commit & Push** — Only after review passes
+7. **Notify Walker** — With a summary of what was built and reviewed
+
+For complex tasks, treat yourself as having these roles:
+- **Architect** — Plans the approach, makes structural decisions
+- **Developer** — Writes the implementation
+- **Reviewer** — Reviews the code for quality, bugs, and completeness
+
+Think through each role. Don't just code and ship — plan, build, review, then ship.
+
 ## Standards
 - Commit messages: `type(scope): description` (conventional commits)
 - Always `git add -A && git commit && git push` when done
 - Don't install unnecessary dependencies
 - Keep files focused and well-structured
+- Run the build before pushing when possible (`cd apps/web && npx next build`)
+- Deploy to Vercel after website changes: `vercel --yes --prod --token "$VERCEL_TOKEN"` from repo root
