@@ -15,9 +15,9 @@
 
 | Measurement | Value | Ratio Reference |
 |---|---|---|
-| **Body length (L)** | ~45cm (nose to tail of body) | 1.0× (base unit) |
-| **Body width (W)** | ~30cm | 0.67× body length |
-| **Body height (H)** | ~15cm (body enclosure only) | 0.33× body length |
+| **Body length (L)** | ~60cm (nose to tail of body) | 1.0× (base unit) |
+| **Body width (W)** | ~15cm | 0.25× body length (1:4 W:L ratio) |
+| **Body height (H)** | ~12cm (body enclosure only) | 0.20× body length |
 | **Total height (standing)** | ~55-60cm at top of body | ~3.7× body height |
 | **Leg length** | ~40-45cm (hip to foot) | ~1.0× body length |
 | **Upper leg segment** | ~20cm | 0.5× leg length |
@@ -30,7 +30,7 @@
 | **Overall footprint** | ~45cm L × 35cm W (legs spread slightly wider than body) | — |
 
 ### Key Proportions (visual guide)
-- The body is a wide, flat, horizontal slab — roughly **3:2:1** (L:W:H)
+- The body is a long, narrow, flat slab — roughly **4:1** width-to-length ratio (L:W:H ≈ 60:15:12cm)
 - Legs are approximately the same length as the body — the robot does NOT look stubby or squatted
 - The arm is the tallest element, rising ~40cm above the body
 - The bag system (frame + bag) extends ~22cm behind the body's rear edge
@@ -46,10 +46,10 @@
 
 ## 3. HEAD
 
-- **Shape:** A compact rectangular module integrated at the front of the body. The head is slightly narrower than the body and has a **flat front face**. It can have gentle rounding on the top and sides but the FRONT FACE must be flat/vertical.
-- **CRITICAL:** The head shape is similar to Spot/Go2's head module — it is NOT a literal dog head with a snout. It's a sensor housing module. Some gentle contouring is fine and expected, but it should NOT look like an organic animal head.
-- **Front face:** Two square bright green LED panels (#22c55e) as "eyes" (camera/sensor windows). These are the robot's most recognizable feature — they give it a friendly, identifiable face.
-- **Size:** ~12cm wide × 10cm tall × 10cm deep. About 0.27× body length wide.
+- **Shape:** NOT a separate block — the head is a smooth integrated extension of the front of the body. It's a slight narrowing/protrusion at the front, almost flush with the body. Think of it as the body tapering slightly at the front to form a sensor face, not a separate module bolted on top.
+- **CRITICAL:** The head should look like PART of the body, not a separate piece. Small and compact. It should NOT look like a dog head or a large separate block.
+- **Front face:** Two square bright green LED panels (#22c55e) as "eyes" (camera/sensor windows) on the flat front face of this integrated head section.
+- **Size:** Same width as body (~15cm), ~8cm tall, ~8cm deep. Barely extends beyond the body's front edge.
 
 ## 4. LEGS (×4)
 
@@ -62,7 +62,7 @@
 
 ## 5. ARM (×1)
 
-- **Mounting point:** Top of body, front-center, just behind the head module. The shoulder joint sits on the dorsal surface.
+- **Mounting point:** Top of body, front-center, just behind the head. Mounted on a **strong cylindrical base/turret** (like an industrial robot arm base) that sits on the dorsal surface. The cylinder is ~8cm diameter, ~5cm tall, dark grey/black.
 - **Type:** Single multi-joint industrial robotic arm. Joints: shoulder (pitch + yaw), elbow (pitch), wrist (pitch + roll), gripper.
 - **Segments:** 
   - Upper arm: ~18cm (shoulder to elbow)
