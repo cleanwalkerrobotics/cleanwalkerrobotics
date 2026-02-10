@@ -4,17 +4,19 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { ViewMode } from "./types";
 
 // ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 
 export default function ThreeDRobotViewerPage() {
+	const [viewMode, setViewMode] = useState<ViewMode>("full");
+
 	return (
 		<div className="min-h-screen bg-cw-dark">
-			{/* Header bar */}
 			<div className="border-b border-white/10 bg-black/40 backdrop-blur-sm">
-				<div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
+				<div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-6 py-3">
 					<div className="flex items-center gap-4">
 						<a
 							href="/demos"
@@ -28,21 +30,60 @@ export default function ThreeDRobotViewerPage() {
 						</h1>
 					</div>
 					<div className="flex items-center gap-2">
+						<ViewToggle mode={viewMode} onChange={setViewMode} />
+						<div className="ml-2 h-4 w-px bg-white/20" />
 						<div className="h-2 w-2 animate-pulse rounded-full bg-cw-green" />
-						<span className="font-mono text-xs text-cw-green">Interactive</span>
+						<span className="font-mono text-xs text-cw-green">
+							Interactive
+						</span>
 					</div>
 				</div>
 			</div>
 
-			{/* Content */}
 			<div className="lg:grid lg:grid-cols-4">
 				<div className="lg:col-span-3">
-					<RobotViewer />
+					<RobotViewer viewMode={viewMode} />
 				</div>
 				<div className="border-t border-white/10 bg-black/20 lg:border-l lg:border-t-0">
-					<RobotSpecs />
+					<RobotSpecs viewMode={viewMode} />
 				</div>
 			</div>
+		</div>
+	);
+}
+
+// ---------------------------------------------------------------------------
+// View Toggle
+// ---------------------------------------------------------------------------
+
+const VIEW_MODES: { key: ViewMode; label: string }[] = [
+	{ key: "full", label: "Full Robot" },
+	{ key: "body", label: "Robot Body" },
+	{ key: "bag", label: "Bag System" },
+];
+
+function ViewToggle({
+	mode,
+	onChange,
+}: {
+	mode: ViewMode;
+	onChange: (m: ViewMode) => void;
+}) {
+	return (
+		<div className="flex rounded-lg border border-white/10 bg-black/40 p-0.5">
+			{VIEW_MODES.map((m) => (
+				<button
+					key={m.key}
+					onClick={() => onChange(m.key)}
+					className={`rounded-md px-2.5 py-1 font-mono text-xs transition-all ${
+						mode === m.key
+							? "bg-cw-green/20 text-cw-green"
+							: "text-gray-400 hover:text-white"
+					}`}
+				>
+					{m.label}
+				</button>
+			))}
 		</div>
 	);
 }
@@ -51,10 +92,29 @@ export default function ThreeDRobotViewerPage() {
 // 3D Viewer
 // ---------------------------------------------------------------------------
 
-function RobotViewer() {
+interface SceneParts {
+	bodyGroup: import("three").Group;
+	bagGroup: import("three").Group;
+	ghostBody: import("three").Mesh;
+}
+
+function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [loading, setLoading] = useState(true);
+	const partsRef = useRef<SceneParts | null>(null);
+	const viewModeRef = useRef(viewMode);
+	viewModeRef.current = viewMode;
 
+	// Update visibility on mode change
+	useEffect(() => {
+		const p = partsRef.current;
+		if (!p) return;
+		p.bodyGroup.visible = viewMode !== "bag";
+		p.bagGroup.visible = viewMode !== "body";
+		p.ghostBody.visible = viewMode === "bag";
+	}, [viewMode]);
+
+	// Initialize scene
 	useEffect(() => {
 		const container = containerRef.current;
 		if (!container) return;
@@ -68,6 +128,10 @@ function RobotViewer() {
 			const THREE = await import("three");
 			const { OrbitControls } = await import(
 				"three/examples/jsm/controls/OrbitControls.js"
+			);
+			const { buildRobotBody } = await import("./build-robot-body");
+			const { buildBagSystem, buildGhostBody } = await import(
+				"./build-bag-system"
 			);
 
 			if (disposed) return;
@@ -84,7 +148,7 @@ function RobotViewer() {
 				0.01,
 				50,
 			);
-			camera.position.set(1.4, 0.9, 1.4);
+			camera.position.set(1.2, 0.8, 1.2);
 
 			// Renderer
 			renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -104,13 +168,12 @@ function RobotViewer() {
 			controls.autoRotateSpeed = 0.5;
 			controls.minDistance = 0.5;
 			controls.maxDistance = 4;
-			controls.target.set(0, 0.25, 0);
+			controls.target.set(0, 0.35, 0);
 			controls.maxPolarAngle = Math.PI * 0.85;
 			controls.update();
 
-			// ------ Lighting ------
-			const hemiLight = new THREE.HemisphereLight(0x1a2030, 0x080c08, 0.7);
-			scene.add(hemiLight);
+			// Lighting
+			scene.add(new THREE.HemisphereLight(0x1a2030, 0x080c08, 0.7));
 
 			const dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
 			dirLight.position.set(3, 5, 2);
@@ -133,14 +196,15 @@ function RobotViewer() {
 			rimLight.position.set(0, 0.6, -1.2);
 			scene.add(rimLight);
 
-			// ------ Ground ------
-			const groundGeom = new THREE.PlaneGeometry(12, 12);
-			const groundMat = new THREE.MeshStandardMaterial({
-				color: 0x0d1117,
-				roughness: 0.95,
-				metalness: 0.05,
-			});
-			const ground = new THREE.Mesh(groundGeom, groundMat);
+			// Ground
+			const ground = new THREE.Mesh(
+				new THREE.PlaneGeometry(12, 12),
+				new THREE.MeshStandardMaterial({
+					color: 0x0d1117,
+					roughness: 0.95,
+					metalness: 0.05,
+				}),
+			);
 			ground.rotation.x = -Math.PI / 2;
 			ground.receiveShadow = true;
 			scene.add(ground);
@@ -149,28 +213,50 @@ function RobotViewer() {
 			grid.position.y = 0.001;
 			scene.add(grid);
 
-			// ------ Robot ------
-			const robot = buildRobot(THREE);
-			scene.add(robot.group);
+			// Build robot
+			const bodyResult = buildRobotBody(THREE);
+			const bagResult = buildBagSystem(THREE);
+			const ghostBody = buildGhostBody(THREE);
+
+			const robot = new THREE.Group();
+			robot.add(bodyResult.group);
+			robot.add(bagResult.group);
+			robot.add(ghostBody);
+
+			// Z-up to Y-up
+			robot.rotation.x = -Math.PI / 2;
+			const baseY = 0.48;
+			robot.position.y = baseY;
+			scene.add(robot);
+
+			// Store refs
+			partsRef.current = {
+				bodyGroup: bodyResult.group,
+				bagGroup: bagResult.group,
+				ghostBody,
+			};
+
+			// Apply initial visibility
+			const mode = viewModeRef.current;
+			bodyResult.group.visible = mode !== "bag";
+			bagResult.group.visible = mode !== "body";
+			ghostBody.visible = mode === "bag";
 
 			if (disposed) return;
 			setLoading(false);
 
-			// ------ Animation ------
+			// Animation
 			const clock = new THREE.Clock();
-
 			const animate = () => {
 				if (disposed) return;
 				animationId = requestAnimationFrame(animate);
-
 				const t = clock.getElapsedTime();
 
-				// Subtle idle breathing
-				robot.group.position.y =
-					robot.baseY + Math.sin(t * 1.5) * 0.004;
+				// Idle breathing
+				robot.position.y = baseY + Math.sin(t * 1.5) * 0.004;
 
-				// Micro leg movements
-				for (const leg of robot.legs) {
+				// Leg micro-movements
+				for (const leg of bodyResult.legs) {
 					leg.hipPitch.rotation.y =
 						leg.baseHipPitch +
 						Math.sin(t * 1.2 + leg.phase) * 0.02;
@@ -179,17 +265,24 @@ function RobotViewer() {
 						Math.sin(t * 1.5 + leg.phase + 0.5) * 0.015;
 				}
 
+				// Arm subtle sway
+				bodyResult.arm.shoulderPitch.rotation.y =
+					bodyResult.arm.baseShoulderPitch +
+					Math.sin(t * 0.8) * 0.03;
+				bodyResult.arm.elbowPitch.rotation.y =
+					bodyResult.arm.baseElbowPitch +
+					Math.sin(t * 0.6 + 0.5) * 0.02;
+
 				// LED glow pulse
-				robot.ledMaterial.emissiveIntensity =
+				bodyResult.ledMaterial.emissiveIntensity =
 					0.35 + Math.sin(t * 2) * 0.2;
 
 				controls.update();
 				renderer!.render(scene, camera);
 			};
-
 			animate();
 
-			// ------ Resize ------
+			// Resize
 			resizeObserver = new ResizeObserver(() => {
 				if (disposed || !renderer) return;
 				const w = container.clientWidth;
@@ -208,9 +301,8 @@ function RobotViewer() {
 			resizeObserver?.disconnect();
 			if (renderer) {
 				renderer.dispose();
-				if (container.contains(renderer.domElement)) {
+				if (container.contains(renderer.domElement))
 					container.removeChild(renderer.domElement);
-				}
 			}
 		};
 	}, []);
@@ -234,7 +326,8 @@ function RobotViewer() {
 			{!loading && (
 				<div className="pointer-events-none absolute bottom-4 left-4 rounded-lg bg-black/60 px-3 py-2 backdrop-blur-sm">
 					<p className="font-mono text-xs text-gray-400">
-						Drag to rotate &bull; Scroll to zoom &bull; Right-drag to pan
+						Drag to rotate &bull; Scroll to zoom &bull; Right-drag
+						to pan
 					</p>
 				</div>
 			)}
@@ -246,18 +339,7 @@ function RobotViewer() {
 // Specs sidebar
 // ---------------------------------------------------------------------------
 
-function RobotSpecs() {
-	const specs = [
-		{ label: "Type", value: "Quadruped" },
-		{ label: "Degrees of Freedom", value: "12 DOF" },
-		{ label: "Target Mass", value: "~46 kg" },
-		{ label: "Body Dimensions", value: "600 x 250 x 120 mm" },
-		{ label: "Upper Leg", value: "250 mm" },
-		{ label: "Lower Leg", value: "250 mm" },
-		{ label: "Standing Height", value: "~500 mm" },
-		{ label: "Joints per Leg", value: "3 (yaw, pitch, knee)" },
-	];
-
+function RobotSpecs({ viewMode }: { viewMode: ViewMode }) {
 	return (
 		<div className="space-y-6 p-6">
 			<div>
@@ -265,83 +347,115 @@ function RobotSpecs() {
 					CleanWalker CW-1
 				</h2>
 				<p className="mt-1 text-sm text-gray-400">
-					12-DOF Autonomous Litter-Collecting Quadruped
+					{viewMode === "bag"
+						? "V2 Bag System — Folding Frame + Roll Dispenser"
+						: viewMode === "body"
+							? "Robot Body — Quadruped Platform + Arm"
+							: "Autonomous Litter-Collecting Quadruped"}
 				</p>
 			</div>
 
-			{/* Spec list */}
-			<div className="space-y-3">
-				{specs.map((s) => (
-					<div
-						key={s.label}
-						className="flex items-center justify-between border-b border-white/5 pb-2"
-					>
-						<span className="text-xs uppercase tracking-wider text-gray-500">
-							{s.label}
-						</span>
-						<span className="font-mono text-sm text-white">{s.value}</span>
-					</div>
-				))}
-			</div>
+			{(viewMode === "full" || viewMode === "body") && (
+				<>
+					<SpecList
+						items={[
+							{ label: "Body (L×W×H)", value: "450 × 300 × 150 mm" },
+							{ label: "Standing Height", value: "~550-600 mm" },
+							{ label: "Upper Leg", value: "200 mm" },
+							{ label: "Lower Leg", value: "200 mm" },
+							{ label: "Ground Clearance", value: "~350 mm" },
+							{ label: "DOF", value: "12 (legs) + 5 (arm)" },
+							{ label: "Arm Reach", value: "~500 mm" },
+						]}
+					/>
 
-			{/* Joint ranges */}
-			<div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-				<h3 className="mb-2 text-sm font-medium text-white">
-					Joint Ranges
-				</h3>
-				<div className="grid grid-cols-2 gap-y-2 text-xs">
-					<span className="text-gray-400">Hip Yaw</span>
-					<span className="font-mono text-white">&plusmn;28.6&deg;</span>
-					<span className="text-gray-400">Hip Pitch</span>
-					<span className="font-mono text-white">&plusmn;90.0&deg;</span>
-					<span className="text-gray-400">Knee (Front)</span>
-					<span className="font-mono text-white">
-						&minus;5.7&deg; to 149&deg;
-					</span>
-					<span className="text-gray-400">Knee (Rear)</span>
-					<span className="font-mono text-white">
-						&minus;149&deg; to 5.7&deg;
-					</span>
-				</div>
-			</div>
+					<InfoCard title="Joint Ranges">
+						<div className="grid grid-cols-2 gap-y-2 text-xs">
+							<span className="text-gray-400">Hip Yaw</span>
+							<span className="font-mono text-white">
+								&plusmn;28.6&deg;
+							</span>
+							<span className="text-gray-400">Hip Pitch</span>
+							<span className="font-mono text-white">
+								&plusmn;90.0&deg;
+							</span>
+							<span className="text-gray-400">Knee (Front)</span>
+							<span className="font-mono text-white">
+								&minus;5.7&deg; to 149&deg;
+							</span>
+							<span className="text-gray-400">Knee (Rear)</span>
+							<span className="font-mono text-white">
+								&minus;149&deg; to 5.7&deg;
+							</span>
+						</div>
+					</InfoCard>
+				</>
+			)}
 
-			{/* Materials legend */}
-			<div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-				<h3 className="mb-3 text-sm font-medium text-white">
-					Materials
-				</h3>
+			{(viewMode === "full" || viewMode === "bag") && (
+				<>
+					<SpecList
+						items={[
+							{ label: "Bag Capacity", value: "30-50 L" },
+							{ label: "Roll Width", value: "280 mm" },
+							{ label: "Roll Diameter", value: "80 mm" },
+							{ label: "Frame Width", value: "300 mm" },
+							{ label: "Frame Depth", value: "220 mm" },
+							{ label: "Frame Angle", value: "135° open" },
+							{ label: "Moving Parts", value: "1 (frame servo)" },
+						]}
+					/>
+
+					<InfoCard title="Bag Swap Cycle">
+						<ol className="list-inside list-decimal space-y-1.5 text-xs text-gray-400">
+							<li>
+								<strong className="text-white">Fold In</strong>{" "}
+								— Frame closes, full bag drops by gravity
+							</li>
+							<li>
+								<strong className="text-white">Clip</strong> —
+								Frame clips new bag edge from roll
+							</li>
+							<li>
+								<strong className="text-white">
+									Fold Out
+								</strong>{" "}
+								— Frame opens to 135°, new bag ready
+							</li>
+						</ol>
+					</InfoCard>
+
+					<InfoCard title="Gravity Seal">
+						<p className="text-xs leading-relaxed text-gray-400">
+							Drawstring bags cinch closed under their own weight
+							when released — no extra actuator needed. The sealed
+							bag drops behind the robot for curbside collection.
+						</p>
+					</InfoCard>
+				</>
+			)}
+
+			<InfoCard title="Materials">
 				<div className="space-y-2">
 					{[
 						{ color: "#3B4A3F", label: "Body & Legs — Olive Green" },
-						{ color: "#D98C26", label: "Joint Housings — Orange Amber" },
-						{ color: "#333333", label: "Mounts — Dark Grey" },
+						{ color: "#2A2A2A", label: "Joint Housings — Dark Grey" },
+						{ color: "#1A1A1A", label: "Frame & Roll — Black Anodized" },
 						{ color: "#22C55E", label: "LEDs & Eyes — Status Green" },
 						{ color: "#1A1A1A", label: "Feet — Rubber Black" },
 					].map((m) => (
-						<div key={m.color} className="flex items-center gap-2">
+						<div key={m.label} className="flex items-center gap-2">
 							<div
-								className="h-3 w-3 rounded-sm"
+								className="h-3 w-3 rounded-sm border border-white/10"
 								style={{ backgroundColor: m.color }}
 							/>
-							<span className="text-xs text-gray-400">{m.label}</span>
+							<span className="text-xs text-gray-400">
+								{m.label}
+							</span>
 						</div>
 					))}
 				</div>
-			</div>
-
-			{/* Description */}
-			<div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-				<h3 className="mb-2 text-sm font-medium text-white">
-					About This Model
-				</h3>
-				<p className="text-xs leading-relaxed text-gray-400">
-					This interactive 3D model is rendered directly from our engineering
-					URDF specification &mdash; 23 links and 22 joints, with accurate
-					dimensions and materials. The robot features a mammalian quadruped
-					stance with front knees bending forward and rear knees bending
-					backward for optimal stability across all terrain types.
-				</p>
-			</div>
+			</InfoCard>
 
 			<p className="text-xs text-gray-600">
 				Drag to rotate &bull; Scroll to zoom &bull; Right-click to pan
@@ -350,219 +464,37 @@ function RobotSpecs() {
 	);
 }
 
-// ---------------------------------------------------------------------------
-// Robot builder — creates Three.js scene graph from URDF specifications
-// ---------------------------------------------------------------------------
-
-interface LegRef {
-	hipPitch: import("three").Group;
-	knee: import("three").Group;
-	baseHipPitch: number;
-	baseKneePitch: number;
-	phase: number;
+function SpecList({ items }: { items: { label: string; value: string }[] }) {
+	return (
+		<div className="space-y-3">
+			{items.map((s) => (
+				<div
+					key={s.label}
+					className="flex items-center justify-between border-b border-white/5 pb-2"
+				>
+					<span className="text-xs uppercase tracking-wider text-gray-500">
+						{s.label}
+					</span>
+					<span className="font-mono text-sm text-white">
+						{s.value}
+					</span>
+				</div>
+			))}
+		</div>
+	);
 }
 
-function buildRobot(THREE: typeof import("three")) {
-	// -- Materials --
-	const oliveGreen = new THREE.MeshStandardMaterial({
-		color: 0x3b4a3f,
-		roughness: 0.8,
-		metalness: 0.15,
-	});
-	const orangeAmber = new THREE.MeshStandardMaterial({
-		color: 0xd98c26,
-		roughness: 0.5,
-		metalness: 0.3,
-	});
-	const darkGrey = new THREE.MeshStandardMaterial({
-		color: 0x333333,
-		roughness: 0.7,
-		metalness: 0.2,
-	});
-	const rubberBlack = new THREE.MeshStandardMaterial({
-		color: 0x1a1a1a,
-		roughness: 0.95,
-		metalness: 0.02,
-	});
-	const ledGreen = new THREE.MeshStandardMaterial({
-		color: 0x22c55e,
-		roughness: 0.3,
-		metalness: 0.1,
-		emissive: new THREE.Color(0x22c55e),
-		emissiveIntensity: 0.5,
-	});
-
-	// Root group — built in URDF coordinates (Z-up), then rotated to Y-up
-	const robot = new THREE.Group();
-	const legs: LegRef[] = [];
-
-	// ---------- Body (base_link) ----------
-	const bodyMesh = new THREE.Mesh(
-		new THREE.BoxGeometry(0.60, 0.25, 0.12),
-		oliveGreen,
+function InfoCard({
+	title,
+	children,
+}: {
+	title: string;
+	children: React.ReactNode;
+}) {
+	return (
+		<div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+			<h3 className="mb-2 text-sm font-medium text-white">{title}</h3>
+			{children}
+		</div>
 	);
-	bodyMesh.castShadow = true;
-	robot.add(bodyMesh);
-
-	// Slight raised panel on top for visual interest
-	const bodyTop = new THREE.Mesh(
-		new THREE.BoxGeometry(0.54, 0.22, 0.02),
-		oliveGreen,
-	);
-	bodyTop.position.set(0, 0, 0.07);
-	bodyTop.castShadow = true;
-	robot.add(bodyTop);
-
-	// ---------- LED strips ----------
-	const ledGeom = new THREE.BoxGeometry(0.40, 0.012, 0.016);
-	const ledLeft = new THREE.Mesh(ledGeom, ledGreen);
-	ledLeft.position.set(0, 0.131, 0);
-	robot.add(ledLeft);
-	const ledRight = new THREE.Mesh(ledGeom, ledGreen);
-	ledRight.position.set(0, -0.131, 0);
-	robot.add(ledRight);
-
-	// ---------- Eyes (camera windows) ----------
-	const eyeGeom = new THREE.BoxGeometry(0.012, 0.04, 0.04);
-	const eyeLeft = new THREE.Mesh(eyeGeom, ledGreen);
-	eyeLeft.position.set(0.301, 0.06, 0.02);
-	robot.add(eyeLeft);
-	const eyeRight = new THREE.Mesh(eyeGeom, ledGreen);
-	eyeRight.position.set(0.301, -0.06, 0.02);
-	robot.add(eyeRight);
-
-	// ---------- Arm mount (top-front) ----------
-	const armMount = new THREE.Mesh(
-		new THREE.CylinderGeometry(0.03, 0.03, 0.04, 16),
-		darkGrey,
-	);
-	// URDF cylinders are Z-aligned; Three.js cylinders are Y-aligned — rotate
-	armMount.rotation.x = Math.PI / 2;
-	armMount.position.set(0.20, 0, 0.08);
-	armMount.castShadow = true;
-	robot.add(armMount);
-
-	// ---------- Bag frame mount (top-rear) ----------
-	const bagMount = new THREE.Mesh(
-		new THREE.BoxGeometry(0.10, 0.10, 0.02),
-		darkGrey,
-	);
-	bagMount.position.set(-0.15, 0, 0.07);
-	bagMount.castShadow = true;
-	robot.add(bagMount);
-
-	// ---------- Legs ----------
-	const legConfigs: {
-		origin: [number, number, number];
-		pitchOffset: [number, number, number];
-		isRear: boolean;
-		phase: number;
-	}[] = [
-		{
-			origin: [0.25, 0.125, -0.03],
-			pitchOffset: [0, 0.04, 0],
-			isRear: false,
-			phase: 0,
-		},
-		{
-			origin: [0.25, -0.125, -0.03],
-			pitchOffset: [0, -0.04, 0],
-			isRear: false,
-			phase: Math.PI / 2,
-		},
-		{
-			origin: [-0.25, 0.125, -0.03],
-			pitchOffset: [0, 0.04, 0],
-			isRear: true,
-			phase: Math.PI,
-		},
-		{
-			origin: [-0.25, -0.125, -0.03],
-			pitchOffset: [0, -0.04, 0],
-			isRear: true,
-			phase: Math.PI * 1.5,
-		},
-	];
-
-	for (const cfg of legConfigs) {
-		const legGroup = new THREE.Group();
-		legGroup.position.set(...cfg.origin);
-
-		// Hip yaw link (orange joint housing cylinder)
-		const hipYaw = new THREE.Group();
-		const hipMesh = new THREE.Mesh(
-			new THREE.CylinderGeometry(0.04, 0.04, 0.08, 16),
-			orangeAmber,
-		);
-		hipMesh.rotation.x = Math.PI / 2;
-		hipMesh.castShadow = true;
-		hipYaw.add(hipMesh);
-
-		// Hip pitch group — contains upper leg
-		const hipPitch = new THREE.Group();
-		hipPitch.position.set(...cfg.pitchOffset);
-
-		const upperLeg = new THREE.Mesh(
-			new THREE.CylinderGeometry(0.035, 0.035, 0.25, 16),
-			oliveGreen,
-		);
-		upperLeg.rotation.x = Math.PI / 2;
-		upperLeg.position.set(0, 0, -0.125);
-		upperLeg.castShadow = true;
-		hipPitch.add(upperLeg);
-
-		// Small orange sphere at the knee joint for visual detail
-		const kneeJointVis = new THREE.Mesh(
-			new THREE.SphereGeometry(0.038, 12, 12),
-			orangeAmber,
-		);
-		kneeJointVis.position.set(0, 0, -0.25);
-		kneeJointVis.castShadow = true;
-		hipPitch.add(kneeJointVis);
-
-		// Knee group — contains lower leg + foot
-		const knee = new THREE.Group();
-		knee.position.set(0, 0, -0.25);
-
-		const lowerLeg = new THREE.Mesh(
-			new THREE.CylinderGeometry(0.03, 0.03, 0.25, 16),
-			oliveGreen,
-		);
-		lowerLeg.rotation.x = Math.PI / 2;
-		lowerLeg.position.set(0, 0, -0.125);
-		lowerLeg.castShadow = true;
-		knee.add(lowerLeg);
-
-		const foot = new THREE.Mesh(
-			new THREE.SphereGeometry(0.025, 16, 16),
-			rubberBlack,
-		);
-		foot.position.set(0, 0, -0.25);
-		foot.castShadow = true;
-		knee.add(foot);
-
-		// Standing pose — mammalian stance
-		const baseHipPitch = cfg.isRear ? -0.12 : 0.12;
-		const baseKneePitch = cfg.isRear ? -0.24 : 0.24;
-		hipPitch.rotation.y = baseHipPitch;
-		knee.rotation.y = baseKneePitch;
-
-		// Assemble
-		hipPitch.add(knee);
-		hipYaw.add(hipPitch);
-		legGroup.add(hipYaw);
-		robot.add(legGroup);
-
-		legs.push({ hipPitch, knee, baseHipPitch, baseKneePitch, phase: cfg.phase });
-	}
-
-	// Convert URDF Z-up to Three.js Y-up
-	robot.rotation.x = -Math.PI / 2;
-
-	// Position so feet touch ground plane at y = 0
-	// With pose angles ~0.12/0.24 rad, foot bottom ≈ 0.545 below body center
-	const baseY = 0.545;
-	robot.position.y = baseY;
-
-	return { group: robot, legs, ledMaterial: ledGreen, baseY };
 }
