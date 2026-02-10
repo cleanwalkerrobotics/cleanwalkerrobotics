@@ -43,9 +43,9 @@ const demos = [
 		status: "live",
 		slug: "pick-and-compact",
 		description:
-			"The full litter collection cycle: detect, approach, pick up with articulated gripper, compact, and continue. 200+ items per charge cycle.",
+			"The full litter collection cycle: detect, approach, pick up with articulated gripper, deposit into collection bag, compress, and continue. Sealed bags dropped at curbside for municipal pickup.",
 		placeholder: "Simulation demo — full litter collection pipeline",
-		tags: ["Manipulation", "Gripper", "Compaction"],
+		tags: ["Manipulation", "Gripper", "Bag Cassette"],
 	},
 	{
 		title: "Fleet Dashboard",

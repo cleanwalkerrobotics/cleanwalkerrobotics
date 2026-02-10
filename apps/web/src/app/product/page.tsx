@@ -69,7 +69,7 @@ export default function ProductPage() {
 								},
 								{
 									title: "Self-Charging",
-									desc: "When the battery runs low or the waste bin is full, the robot autonomously returns to its charging dock. Pogo-pin contacts and self-alignment make docking fully automatic.",
+									desc: "When the battery runs low or the bag cassette needs replacing, the robot autonomously returns to its charging dock. Pogo-pin contacts and self-alignment make docking fully automatic.",
 								},
 							].map((item) => (
 								<div key={item.title} className="flex gap-4">
@@ -152,7 +152,7 @@ export default function ProductPage() {
 									"12 servo actuators for adaptive quadrupedal locomotion",
 									"OAK-D Pro stereo depth + 2D RPLiDAR sensor fusion",
 									"2-DOF gripper arm with 5g–500g pickup range",
-									"20L compacting waste bin with auto-eject",
+									"Bag Cassette System with 20-30 bags per cartridge",
 									"IP54+ weatherproof enclosure for year-round operation",
 								].map((feature) => (
 									<div key={feature} className="flex items-start gap-3">
@@ -195,7 +195,7 @@ export default function ProductPage() {
 									["Size", "~80cm L x 40cm W x 50cm H"],
 									["Weight", "~25kg (estimated)"],
 									["Weatherproofing", "IP54+ rated"],
-									["Waste Bin", "~20L compacting bin, top-loading"],
+									["Collection", "Bag Cassette System, 20-30 bags per cartridge"],
 									["Mobility", "Grass, pavement, gravel, slopes"],
 								].map(([label, value]) => (
 									<div
@@ -238,6 +238,7 @@ export default function ProductPage() {
 									["Battery", "48V 20Ah Li-ion"],
 									["Litter Range", "5g to 500g items"],
 									["Litter Types", "Bottles, cans, wrappers, cups, butts, paper"],
+									["Curb Drop", "Sealed bags at municipal collection points"],
 									["Charging", "Autonomous self-docking"],
 								].map(([label, value]) => (
 									<div
@@ -348,7 +349,7 @@ export default function ProductPage() {
 							},
 							{
 								title: "Alerts & Notifications",
-								desc: "Get notified about bin capacity, maintenance needs, unusual events, and performance reports.",
+								desc: "Get notified about bag cassette status, maintenance needs, unusual events, and performance reports.",
 							},
 							{
 								title: "API Access",

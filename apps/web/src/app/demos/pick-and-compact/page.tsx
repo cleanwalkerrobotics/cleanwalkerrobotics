@@ -40,21 +40,21 @@ const PHASES: Phase[] = [
 		id: "lift",
 		label: "Lift",
 		description:
-			"Arm retracts with the item secured. Accelerometer confirms stable hold — no slip detected. Wrist rotates to align with compactor intake.",
+			"Arm retracts with the item secured. Accelerometer confirms stable hold — no slip detected. Wrist positions over the open collection bag on the X-frame.",
 		durationMs: 2000,
 	},
 	{
 		id: "compact",
-		label: "Compact",
+		label: "Deposit",
 		description:
-			"Onboard compactor engages at 180N. Item volume reduced by 70%. Bin capacity preserved — this is how we fit 200+ items per charge cycle.",
+			"Arm positions over the open collection bag held by the X-frame. Item released into bag. The Bag Cassette System tracks fill level — bag 34% full.",
 		durationMs: 3000,
 	},
 	{
 		id: "deposit",
-		label: "Deposit",
+		label: "Compress",
 		description:
-			"Compacted item deposited in sorted bin compartment. Bin level updated: 34% full. System ready — scanning for next target.",
+			"Gripper arm presses down into the collection bag, compressing items to maximize capacity. Bag fill updated: 34%. System ready — scanning for next target.",
 		durationMs: 2000,
 	},
 ];
@@ -71,8 +71,8 @@ interface StatConfig {
 
 const STAT_CONFIGS: StatConfig[] = [
 	{ label: "Grip Force", unit: "N", baseValue: 6.3, fluctuation: 0.8, decimals: 1 },
-	{ label: "Compaction Ratio", unit: "%", baseValue: 70, fluctuation: 5, decimals: 0 },
-	{ label: "Bin Capacity", unit: "%", baseValue: 34, fluctuation: 0, decimals: 0 },
+	{ label: "Compression", unit: "%", baseValue: 70, fluctuation: 5, decimals: 0 },
+	{ label: "Bag Fill", unit: "%", baseValue: 34, fluctuation: 0, decimals: 0 },
 	{ label: "Items / Hour", unit: "items", baseValue: 210, fluctuation: 15, decimals: 0 },
 ];
 
@@ -125,10 +125,10 @@ export default function PickAndCompactPage() {
 				if (nextIndex === 0) {
 					setCycleCount((c) => c + 1);
 					setTotalItems((t) => t + 1);
-					// Increment bin capacity
+					// Increment bag fill level
 					setStats((prev) =>
 						prev.map((v, i) =>
-							STAT_CONFIGS[i].label === "Bin Capacity"
+							STAT_CONFIGS[i].label === "Bag Fill"
 								? Math.min(100, v + 2)
 								: v,
 						),
@@ -385,7 +385,7 @@ export default function PickAndCompactPage() {
 												{stats[i].toFixed(config.decimals)}
 												<span className="ml-1 text-sm text-gray-500">{config.unit}</span>
 											</p>
-											{config.label === "Bin Capacity" && (
+											{config.label === "Bag Fill" && (
 												<div className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
 													<div
 														className="h-full rounded-full bg-cw-green transition-all duration-300"
@@ -477,7 +477,7 @@ export default function PickAndCompactPage() {
 							</p>
 						</div>
 
-						{/* Force Feedback & Compaction */}
+						{/* Bag Cassette & Compression */}
 						<div className="rounded-xl border border-white/10 bg-white/[0.03] p-6">
 							<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-cw-green/10">
 								<svg className="h-6 w-6 text-cw-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
@@ -486,15 +486,16 @@ export default function PickAndCompactPage() {
 								</svg>
 							</div>
 							<h3 className="mb-2 text-lg font-semibold text-white">
-								Force Feedback &amp; Compaction
+								Bag Cassette &amp; Compression
 							</h3>
 							<p className="text-sm leading-relaxed text-gray-400">
-								Six-axis force/torque sensor at the wrist measures grip quality
-								before compaction begins. The onboard screw-driven compactor
-								applies up to 200N — reducing item volume by 60-80%. This means
-								a 4-liter bin holds 200+ items per charge cycle. Sorted
-								compartments separate recyclables automatically based on material
-								classification from the perception pipeline.
+								The Bag Cassette System uses replaceable cartridges containing
+								20-30 collection bags. An X-shaped raising frame holds each bag
+								open during collection. The gripper arm periodically presses down
+								to compress contents. When a bag is full, a snap-close mechanism
+								seals it, the frame lowers, and the robot drops the sealed bag
+								at the nearest curb for municipal pickup. The frame rises with a
+								fresh bag from the cassette and collection continues.
 							</p>
 						</div>
 					</div>
@@ -516,11 +517,11 @@ export default function PickAndCompactPage() {
 									["Finger material", "Shore 30A silicone w/ strain gauges"],
 									["Max grip force", "12N per finger (36N total)"],
 									["Grip response time", "< 200ms close, < 50ms re-grip"],
-									["Compaction force", "200N (screw-driven)"],
-									["Volume reduction", "60-80% depending on material"],
-									["Bin capacity", "4L (200+ compacted items)"],
+									["Compression", "Gripper arm press-down into bag"],
+									["Bag Cassette", "20-30 bags per cartridge"],
+									["Curb Drop", "Sealed bags at municipal collection points"],
 									["Items per charge", "200+ across mixed litter types"],
-									["Sorting", "3-compartment (recyclable, organic, general)"],
+									["Integration", "Works with existing waste pickup infrastructure"],
 								].map(([spec, value]) => (
 									<tr key={spec} className="transition-colors hover:bg-white/[0.02]">
 										<td className="px-6 py-3 text-sm font-medium text-gray-300">{spec}</td>
@@ -828,90 +829,100 @@ function LiftScene({ progress }: { progress: number }) {
 }
 
 function CompactScene({ progress }: { progress: number }) {
-	const scaleY = Math.max(0.3, 1 - progress * 0.7);
-	return (
-		<>
-			<RobotBody x="35%" bottom={32} />
-
-			{/* Compactor box */}
-			<div className="absolute right-[22%] bottom-[40px]">
-				<div className="relative flex flex-col items-center">
-					{/* Compactor housing */}
-					<div className="h-20 w-16 rounded-md border border-white/20 bg-gray-800">
-						{/* Piston */}
-						<div
-							className="mx-auto mt-1 w-12 rounded bg-gray-600 transition-all duration-200"
-							style={{ height: progress * 40 }}
-						/>
-						{/* Item being compressed */}
-						<div
-							className="mx-auto rounded-sm bg-blue-400/60 transition-all duration-200"
-							style={{
-								width: 20 + (1 - scaleY) * 10,
-								height: 24 * scaleY,
-								marginTop: 4,
-							}}
-						/>
-					</div>
-					<span className="mt-1 font-mono text-[9px] text-gray-500">
-						{Math.round(progress * 180)}N
-					</span>
-				</div>
-			</div>
-
-			{/* Force graph */}
-			<div className="absolute right-[10%] top-[20%] w-20">
-				<div className="mb-1 font-mono text-[8px] text-gray-500">FORCE</div>
-				<div className="h-12 w-full overflow-hidden rounded bg-white/5">
-					<div
-						className="w-full bg-cw-green/40 transition-all duration-200"
-						style={{ height: `${progress * 100}%` }}
-					/>
-				</div>
-			</div>
-		</>
-	);
-}
-
-function DepositScene({ progress }: { progress: number }) {
 	const itemFall = Math.min(1, progress * 2);
-	const itemOpacity = progress > 0.7 ? Math.max(0, 1 - (progress - 0.7) * 3.3) : 1;
 	return (
 		<>
 			<RobotBody x="35%" bottom={32} />
 
-			{/* Bin */}
+			{/* X-frame with open bag */}
 			<div className="absolute right-[22%] bottom-[32px]">
-				<div className="relative">
-					<div className="h-16 w-14 rounded-b-md rounded-t-sm border border-white/20 bg-gray-800">
+				<div className="relative flex flex-col items-center">
+					{/* X-frame arms */}
+					<div className="flex items-end gap-0">
+						<div className="h-6 w-1 -rotate-12 bg-gray-500" />
+						<div className="h-6 w-1 rotate-12 bg-gray-500" />
+					</div>
+					{/* Open bag */}
+					<div className="h-16 w-14 rounded-b-lg border-b-2 border-l-2 border-r-2 border-cw-green/40 bg-cw-green/10">
 						{/* Fill level */}
-						<div className="absolute bottom-0 left-0 right-0 rounded-b-md bg-cw-green/20" style={{ height: "34%" }} />
-						{/* Bin label */}
+						<div className="absolute bottom-0 left-0 right-0 rounded-b-lg bg-cw-green/20" style={{ height: "34%" }} />
 						<div className="absolute inset-0 flex items-center justify-center">
-							<span className="font-mono text-[8px] text-gray-500">BIN</span>
+							<span className="font-mono text-[8px] text-gray-500">BAG</span>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			{/* Falling compacted item */}
+			{/* Falling item into bag */}
 			{progress < 0.8 && (
 				<div
 					className="absolute right-[25%] transition-all duration-100"
 					style={{
-						top: `${20 + itemFall * 45}%`,
-						opacity: itemOpacity,
+						top: `${15 + itemFall * 40}%`,
+						opacity: Math.max(0, 1 - progress * 1.5),
 					}}
 				>
-					<div className="h-3 w-5 rounded-sm bg-blue-400/60" />
+					<div className="flex flex-col items-center">
+						<div className="h-2 w-3 rounded-t-sm bg-blue-400/80" />
+						<div className="h-5 w-4 rounded-b-sm bg-blue-400/60" />
+					</div>
 				</div>
 			)}
+
+			{/* Status readout */}
+			{progress > 0.5 && (
+				<div className="absolute right-[10%] top-[20%] rounded bg-black/60 px-2 py-1 font-mono text-[10px] text-cw-green backdrop-blur-sm">
+					BAG: 34%
+				</div>
+			)}
+		</>
+	);
+}
+
+function DepositScene({ progress }: { progress: number }) {
+	const pressDown = Math.min(1, progress * 1.5);
+	return (
+		<>
+			<RobotBody x="35%" bottom={32} />
+
+			{/* Bag with items */}
+			<div className="absolute right-[22%] bottom-[32px]">
+				<div className="relative flex flex-col items-center">
+					{/* X-frame arms */}
+					<div className="flex items-end gap-0">
+						<div className="h-6 w-1 -rotate-12 bg-gray-500" />
+						<div className="h-6 w-1 rotate-12 bg-gray-500" />
+					</div>
+					{/* Bag */}
+					<div className="h-16 w-14 rounded-b-lg border-b-2 border-l-2 border-r-2 border-cw-green/40 bg-cw-green/10">
+						{/* Fill level — compresses as gripper pushes */}
+						<div
+							className="absolute bottom-0 left-0 right-0 rounded-b-lg bg-cw-green/30 transition-all duration-200"
+							style={{ height: `${34 + pressDown * 10}%` }}
+						/>
+						<div className="absolute inset-0 flex items-center justify-center">
+							<span className="font-mono text-[8px] text-gray-500">BAG</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{/* Gripper arm pressing down */}
+			<div
+				className="absolute right-[24%] transition-all duration-200"
+				style={{ top: `${20 + pressDown * 30}%` }}
+			>
+				<div className="flex flex-col items-center">
+					<div className="h-8 w-2 bg-gray-500" />
+					<div className="h-3 w-6 rounded-b-md bg-cw-green/80" />
+				</div>
+			</div>
 
 			{/* Status */}
 			{progress > 0.5 && (
 				<div className="absolute left-[15%] top-[25%] rounded bg-black/60 px-3 py-2 backdrop-blur-sm">
-					<p className="font-mono text-[10px] text-cw-green">DEPOSITED</p>
-					<p className="font-mono text-[9px] text-gray-500">Bin: 34% full</p>
+					<p className="font-mono text-[10px] text-cw-green">COMPRESSED</p>
+					<p className="font-mono text-[9px] text-gray-500">Bag: 34% full</p>
 					<p className="mt-1 font-mono text-[9px] text-gray-500">Scanning...</p>
 				</div>
 			)}
