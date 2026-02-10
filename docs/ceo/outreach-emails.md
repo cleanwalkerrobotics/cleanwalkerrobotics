@@ -310,3 +310,177 @@ MB Software Studio LLC
 - **Emaar is the only private-sector target here.** The pitch angle is different: it's about brand, PR, and premium image, not municipal efficiency. Lean into that.
 - **Copenhagen Solutions Lab has a formal application process.** Research whether they have an open call for proposals and align your outreach with their intake cycle.
 - **Same rules as Tier 1:** LinkedIn first, no attachments on first email, track in `docs/ceo/outreach-tracker.md`.
+
+---
+
+## Email 9: Majid Al Futtaim / Enova — Veolia JV & Smart Facilities
+
+**To:** Enova (Majid Al Futtaim–Veolia JV) — Facilities Innovation or Operations lead; alternatively Majid Al Futtaim Launchpad Accelerator team (research on LinkedIn; look for FM innovation contacts or Launchpad program managers)
+
+**Subject:** Autonomous litter robot for your properties -- Veolia connection, startup-ready
+
+**Body:**
+
+Hi [Name],
+
+I'm Maurits Bos, founder of CleanWalker Robotics. Enova -- the Majid Al Futtaim–Veolia joint venture -- sits at the intersection of premium property management and smart technology adoption. We've built a robot designed for exactly that intersection.
+
+CleanWalker is the world's first commercial quadrupedal litter-collecting robot. AI-powered detection, all-terrain locomotion (landscaped areas, plazas, pathways, stairs), and autonomous operation 20+ hours per day. Silent and designed for guest-facing environments.
+
+Majid Al Futtaim is already deploying robots at Dubai Festival City through Emrill. CleanWalker extends that vision to outdoor spaces -- the promenades, gardens, and open-air retail zones where wheeled robots can't go. And with Veolia as your JV partner, you already understand autonomous waste technology.
+
+We're also a fit for the MAF Launchpad Accelerator if there's an open cohort.
+
+**Would you have 20 minutes for a call about a pilot at one of your properties?** Happy to share a site-specific proposal.
+
+Website: https://cleanwalkerrobotics.com
+
+Best regards,
+Maurits Bos
+Founder, CleanWalker Robotics
+MB Software Studio LLC
+
+*(~170 words)*
+
+---
+
+## Email 10: City of Sydney — Open Space Investment & Carbon Neutrality
+
+**To:** City of Sydney — City Greening or Sustainability lead (research on LinkedIn; look for contacts in the Greening Sydney Plan or Environmental Strategy team)
+
+**Subject:** Autonomous litter robot for Sydney's parks -- AUD 2.7B open space, zero emissions
+
+**Body:**
+
+Hi [Name],
+
+I'm Maurits Bos, founder of CleanWalker Robotics. Sydney's AUD 2.7 billion open space investment and carbon-neutral targets signal a city that's serious about how public spaces are maintained. We've built a robot that fits both priorities.
+
+CleanWalker is the world's first commercial quadrupedal litter-collecting robot. AI-powered detection, all-terrain locomotion (grass, sand, park paths, harbour foreshore, stairs), and fully electric operation -- zero direct emissions, 20+ hours per day.
+
+Sydney's parks, beaches, and harbourside promenades are exactly the terrain our quadruped is designed for. Areas too uneven for wheeled robots, too large for manual teams alone. And Veolia already operates across Australia and New Zealand -- a potential operational partner you already work with.
+
+A pilot in Sydney would make it the first Australian city to deploy an autonomous litter-collecting quadruped. That's global headlines.
+
+**Would you have 20 minutes for a call about a pilot in one of Sydney's open spaces?** Happy to share a site-specific proposal.
+
+Website: https://cleanwalkerrobotics.com
+
+Best regards,
+Maurits Bos
+Founder, CleanWalker Robotics
+MB Software Studio LLC
+
+*(~175 words)*
+
+---
+
+## Email 11: City of Melbourne — Emerging Technology Testbed & Smart Bins
+
+**To:** City of Melbourne — Smart City Office or Urban Sustainability lead (research on LinkedIn; look for contacts managing the Emerging Technology Testbed program or the smart bins rollout)
+
+**Subject:** Quadrupedal litter robot for Melbourne -- built for your Emerging Technology Testbed
+
+**Body:**
+
+Hi [Name],
+
+I'm Maurits Bos, founder of CleanWalker Robotics. Melbourne's Emerging Technology Testbed program exists to trial exactly this kind of technology -- autonomous systems that improve urban liveability. We'd like to bring our robot through it.
+
+CleanWalker is the world's first commercial quadrupedal litter-collecting robot. AI vision detects litter, four-legged locomotion handles grass, gravel, garden paths, and stairs, and waste is bagged for existing collection routes. Fully electric, 20+ hours per day.
+
+Melbourne is already investing in smart waste infrastructure -- your sensor-equipped smart bins pilot proves the appetite for technology-driven cleanliness. CleanWalker is the next step: autonomous collection between the bins. The Royal Botanic Gardens alone would be an ideal pilot site -- high-profile, varied terrain, and thousands of daily visitors.
+
+Your Testbed program provides the structured trial framework we need, and Melbourne gets to be the first Australian city with a litter-collecting quadruped.
+
+**Would you have 20 minutes to discuss a Testbed application?** Happy to share our technical specs.
+
+Website: https://cleanwalkerrobotics.com
+
+Best regards,
+Maurits Bos
+Founder, CleanWalker Robotics
+MB Software Studio LLC
+
+*(~175 words)*
+
+---
+
+## Email 12: University of Texas at Austin — NSF Robotics Grant & Campus Deployment
+
+**To:** UT Austin — Texas Robotics faculty lead or Office of Research (research on LinkedIn; look for PIs on the NSF "Living and Working with Robots" grant or robotics dept leadership)
+
+**Subject:** Commercial litter quadruped for UT Austin -- co-publication + campus deployment
+
+**Body:**
+
+Hi [Name],
+
+I'm Maurits Bos, founder of CleanWalker Robotics. UT Austin's USD 3.6 million NSF "Living and Working with Robots" grant is studying exactly what we've built: an autonomous robot that operates alongside people in everyday environments.
+
+CleanWalker is the world's first commercial quadrupedal litter-collecting robot. AI-powered detection trained on 25,000+ litter images, all-terrain locomotion (grass, paths, plazas, stairs), and fully autonomous operation. UT Austin already has autonomous robots on campus -- adding a litter-collecting quadruped is a natural extension.
+
+We're offering a research partnership: deploy CleanWalker units on the UT Austin campus, share our perception and locomotion data with Texas Robotics, and co-publish on real-world autonomous robot operation in populated environments. You get a live research platform; we get validation from a world-class robotics department.
+
+This isn't a sponsorship request. It's a research collaboration with a commercial robot that's already built.
+
+**Would you have 20 minutes for a call about a campus pilot and co-publication framework?**
+
+Website: https://cleanwalkerrobotics.com
+
+Best regards,
+Maurits Bos
+Founder, CleanWalker Robotics
+MB Software Studio LLC
+
+*(~175 words)*
+
+---
+
+## Email 13: Walt Disney Parks & Resorts — Zero Waste Goal & Guest Experience
+
+**To:** Walt Disney Parks, Experiences and Products — Environmental Sustainability or Imagineering Operations lead (research on LinkedIn; look for contacts in Disney's environmental programs or theme park innovation teams)
+
+**Subject:** Litter-collecting robot for Disney Parks -- zero waste, guest attraction, brand magic
+
+**Body:**
+
+Hi [Name],
+
+I'm Maurits Bos, founder of CleanWalker Robotics. Disney has committed to zero waste to landfill by 2030 and is investing USD 60 billion in parks over the next decade. We've built a robot that serves both goals -- and creates a new guest experience in the process.
+
+CleanWalker is the world's first commercial quadrupedal litter-collecting robot. AI-powered detection, four-legged locomotion across any terrain (landscaping, pathways, plazas, stairs), and silent autonomous operation 20+ hours per day.
+
+But here's the Disney angle: a quadruped robot picking up litter isn't just a cleaning tool -- it's a character. Guests will stop, watch, film, and share it. It's a walking embodiment of Disney's environmental commitment that generates organic social media content every single day.
+
+You've already proven this instinct with themed trash cans that became fan favourites. CleanWalker is the autonomous, living version.
+
+**Would you have 20 minutes for a call about a pilot at one of your parks?** Happy to share a themed deployment concept.
+
+Website: https://cleanwalkerrobotics.com
+
+Best regards,
+Maurits Bos
+Founder, CleanWalker Robotics
+MB Software Studio LLC
+
+*(~175 words)*
+
+---
+
+## Timing (Tier 2 — Emails 9-13)
+
+- **Majid Al Futtaim / Enova:** Send Sunday-Tuesday, 9-10 AM GST (UAE work week). Avoid Ramadan and Friday/Saturday (weekend).
+- **City of Sydney:** Send Tuesday-Wednesday, 9-10 AM AEDT. Avoid Australian holiday season (late December-January) and Easter week.
+- **City of Melbourne:** Send Tuesday-Wednesday, 9-10 AM AEDT. Same Australian holiday guidance. Check Emerging Technology Testbed intake cycle.
+- **UT Austin:** Send Tuesday-Wednesday, 9-10 AM CT. Avoid finals weeks (May, December) and spring break. Academic outreach best during semester (Feb-April, Sep-Nov).
+- **Walt Disney Parks:** Send Tuesday-Wednesday, 9-10 AM ET. Avoid Thanksgiving-Christmas peak season (Nov-Jan) when park ops teams are slammed.
+
+## Notes for Maurits (Tier 2 — Emails 9-13)
+
+- **Majid Al Futtaim has dual entry points:** Enova (the Veolia JV) for facilities management, and the MAF Launchpad Accelerator for startup partnerships. Try both angles.
+- **Sydney and Melbourne are a natural pair.** If one Australian city says yes, use that momentum to approach the other. Lead with whichever responds first.
+- **UT Austin is a different pitch entirely.** This is research partnership, not a sales email. Emphasise co-publication and data sharing, not cost savings.
+- **Disney is high-risk, high-reward.** Long sales cycles, many gatekeepers, but a Disney pilot would be the single most valuable brand validation possible. Be patient and persistent.
+- **The Veolia connection threads through multiple targets** (Enova, Sydney, Melbourne). If you land a Veolia relationship through Tier 1 outreach, leverage it across all Veolia-adjacent Tier 2 targets.
+- **Same rules as always:** LinkedIn first, no attachments on first email, track in `docs/ceo/outreach-tracker.md`.
