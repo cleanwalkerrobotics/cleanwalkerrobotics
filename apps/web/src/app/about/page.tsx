@@ -85,7 +85,7 @@ export default function AboutPage() {
 								pristine.
 							</p>
 							<p className="mt-4 leading-relaxed text-gray-600">
-								Our Robot-as-a-Service model eliminates the capital and operational
+								Our flexible deployment model eliminates the operational
 								complexity of deploying robotics, making autonomous cleaning accessible
 								to communities of all sizes.
 							</p>
@@ -114,7 +114,7 @@ export default function AboutPage() {
 					<div className="mt-16 grid gap-8 md:grid-cols-4">
 						{[
 							{
-								stat: "$27M",
+								stat: "1,000+",
 								label: "Projected Year 5 revenue",
 							},
 							{
@@ -240,7 +240,7 @@ export default function AboutPage() {
 							},
 							{
 								title: "Accessible Robotics",
-								desc: "Our RaaS model removes capital barriers. Communities of all sizes should benefit from autonomous technology, not just those with the biggest budgets.",
+								desc: "Our flexible model removes barriers to adoption. Communities of all sizes should benefit from autonomous technology, not just those with the biggest budgets.",
 							},
 						].map((value) => (
 							<div

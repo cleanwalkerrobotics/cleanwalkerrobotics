@@ -7,7 +7,7 @@ import "./globals.css";
 export const metadata: Metadata = {
 	title: "CleanWalker Robotics — Autonomous Litter Collection",
 	description:
-		"CleanWalker deploys autonomous litter-collecting robots to parks, campuses, and public spaces. Robot-as-a-Service for municipalities and property managers.",
+		"CleanWalker deploys autonomous litter-collecting robots to parks, campuses, and public spaces. Autonomous litter collection for municipalities and property managers.",
 };
 
 function Navbar() {

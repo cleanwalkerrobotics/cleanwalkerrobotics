@@ -31,7 +31,7 @@ const steps = [
 		number: "3",
 		title: "Custom Proposal",
 		description:
-			"You receive a tailored plan with fleet sizing, coverage maps, and transparent pricing.",
+			"You receive a tailored plan with fleet sizing, coverage maps, and a deployment roadmap.",
 	},
 	{
 		number: "4",
@@ -65,7 +65,7 @@ const faqs = [
 	{
 		question: "How does maintenance work?",
 		answer:
-			"CleanWalker is a fully managed Robot-as-a-Service. We handle all maintenance, software updates, and repairs. Each unit runs remote diagnostics continuously, and our field team handles any physical service within 24 hours of a flag.",
+			"CleanWalker is a fully managed service. We handle all maintenance, software updates, and repairs. Each unit runs remote diagnostics continuously, and our field team handles any physical service within 24 hours of a flag.",
 	},
 ];
 
