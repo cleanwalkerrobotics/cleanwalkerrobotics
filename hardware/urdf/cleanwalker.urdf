@@ -1,0 +1,851 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  CleanWalker Robotics — URDF Robot Model v1
+  ============================================
+  12-DOF quadruped (3 joints per leg: hip_yaw, hip_pitch, knee_pitch)
+  with gripper arm attachment point.
+
+  Reference: docs/design/robot-design-spec.md
+  Convention: X-forward, Y-left, Z-up (ROS REP-103)
+
+  Dimensions derived from spec:
+    Body:   0.60m (L) x 0.25m (W) x 0.12m (H)
+    Upper leg: 0.25m
+    Lower leg: 0.25m
+    Standing height to body center: ~0.50m
+    Total mass: ~50 kg
+
+  Colors:
+    Body — dark matte olive-green (#3B4A3F)
+    Accents — orange-amber for joint housings
+    Feet — dark rubber black
+-->
+<robot name="cleanwalker">
+
+  <!-- ============================== -->
+  <!-- MATERIALS                       -->
+  <!-- ============================== -->
+  <material name="olive_green">
+    <color rgba="0.231 0.290 0.247 1.0"/>  <!-- #3B4A3F -->
+  </material>
+  <material name="orange_amber">
+    <color rgba="0.85 0.55 0.15 1.0"/>     <!-- accent color for joints -->
+  </material>
+  <material name="dark_grey">
+    <color rgba="0.2 0.2 0.2 1.0"/>        <!-- joint housings -->
+  </material>
+  <material name="rubber_black">
+    <color rgba="0.1 0.1 0.1 1.0"/>        <!-- foot pads -->
+  </material>
+  <material name="led_green">
+    <color rgba="0.133 0.773 0.369 1.0"/>  <!-- #22c55e LED strips -->
+  </material>
+
+  <!-- ============================== -->
+  <!-- BASE LINK (BODY)                -->
+  <!-- ============================== -->
+  <!--
+    Main body: horizontally elongated rectangular box, slightly convex top.
+    Simplified as a box for this first-pass URDF.
+    Mass: 25 kg (half of total robot mass).
+  -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.60 0.25 0.12"/>
+      </geometry>
+      <material name="olive_green"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.60 0.25 0.12"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="25.0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.1602" ixy="0" ixz="0"
+               iyy="0.7800" iyz="0"
+               izz="0.8802"/>
+    </inertial>
+  </link>
+
+  <!-- LED strip left (cosmetic, fixed to body) -->
+  <link name="led_strip_left">
+    <visual>
+      <geometry>
+        <box size="0.40 0.01 0.015"/>
+      </geometry>
+      <material name="led_green"/>
+    </visual>
+  </link>
+  <joint name="led_strip_left_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="led_strip_left"/>
+    <origin xyz="0 0.131 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- LED strip right (cosmetic, fixed to body) -->
+  <link name="led_strip_right">
+    <visual>
+      <geometry>
+        <box size="0.40 0.01 0.015"/>
+      </geometry>
+      <material name="led_green"/>
+    </visual>
+  </link>
+  <joint name="led_strip_right_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="led_strip_right"/>
+    <origin xyz="0 -0.131 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Front "eyes" — left camera window -->
+  <link name="eye_left">
+    <visual>
+      <geometry>
+        <box size="0.01 0.04 0.04"/>
+      </geometry>
+      <material name="led_green"/>
+    </visual>
+  </link>
+  <joint name="eye_left_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="eye_left"/>
+    <origin xyz="0.301 0.06 0.02" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Front "eyes" — right camera window -->
+  <link name="eye_right">
+    <visual>
+      <geometry>
+        <box size="0.01 0.04 0.04"/>
+      </geometry>
+      <material name="led_green"/>
+    </visual>
+  </link>
+  <joint name="eye_right_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="eye_right"/>
+    <origin xyz="0.301 -0.06 0.02" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ============================== -->
+  <!-- GRIPPER ARM ATTACHMENT POINT    -->
+  <!-- ============================== -->
+  <!--
+    Fixed mount point on top-front of body for the articulated arm.
+    Arm itself is out of scope for v1; this provides the interface.
+  -->
+  <link name="arm_mount">
+    <visual>
+      <geometry>
+        <cylinder radius="0.03" length="0.04"/>
+      </geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.03" length="0.04"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0"
+               iyy="0.0001" iyz="0"
+               izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="arm_mount_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="arm_mount"/>
+    <!-- Top-front of body: x = +0.20 (front), z = +0.08 (above body surface) -->
+    <origin xyz="0.20 0 0.08" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ============================== -->
+  <!-- BAG FRAME ATTACHMENT POINT      -->
+  <!-- ============================== -->
+  <!--
+    Fixed mount point on top-rear of body for the X-shaped scissor bag frame.
+    Frame itself is out of scope for v1; this provides the interface.
+  -->
+  <link name="bag_frame_mount">
+    <visual>
+      <geometry>
+        <box size="0.10 0.10 0.02"/>
+      </geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.10 0.10 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0"
+               iyy="0.0001" iyz="0"
+               izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="bag_frame_mount_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="bag_frame_mount"/>
+    <!-- Top-rear of body -->
+    <origin xyz="-0.15 0 0.07" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ============================================================ -->
+  <!-- LEG MACRO — defined inline for each leg                       -->
+  <!-- ============================================================ -->
+  <!--
+    Each leg has 3 revolute joints:
+      1. hip_yaw   — rotates about Z (vertical), allows leg to swing laterally
+      2. hip_pitch — rotates about Y (lateral), swings leg forward/backward
+      3. knee_pitch — rotates about Y (lateral), bends the knee
+
+    Leg link structure:
+      base_link → hip_yaw_link → upper_leg → lower_leg → foot
+
+    Mass distribution per leg (~5 kg):
+      hip_yaw_link:  1.5 kg (actuator housing)
+      upper_leg:     2.0 kg (thigh segment)
+      lower_leg:     1.3 kg (shin segment)
+      foot:          0.2 kg (rubber pad)
+  -->
+
+  <!-- ============================== -->
+  <!-- FRONT-LEFT LEG (FL)             -->
+  <!-- ============================== -->
+
+  <!-- FL hip yaw joint — vertical rotation at body corner -->
+  <joint name="fl_hip_yaw" type="revolute">
+    <parent link="base_link"/>
+    <child link="fl_hip_yaw_link"/>
+    <origin xyz="0.25 0.125 -0.03" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.5" upper="0.5" effort="80" velocity="5.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <link name="fl_hip_yaw_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+      <material name="orange_amber"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.0014" ixy="0" ixz="0"
+               iyy="0.0014" iyz="0"
+               izz="0.0012"/>
+    </inertial>
+  </link>
+
+  <!-- FL hip pitch joint — forward/backward leg swing -->
+  <joint name="fl_hip_pitch" type="revolute">
+    <parent link="fl_hip_yaw_link"/>
+    <child link="fl_upper_leg"/>
+    <origin xyz="0 0.04 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="120" velocity="5.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <link name="fl_upper_leg">
+    <visual>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.25"/>
+      </geometry>
+      <material name="olive_green"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.25"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.0"/>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <inertia ixx="0.0110" ixy="0" ixz="0"
+               iyy="0.0110" iyz="0"
+               izz="0.0012"/>
+    </inertial>
+  </link>
+
+  <!-- FL knee pitch joint -->
+  <joint name="fl_knee_pitch" type="revolute">
+    <parent link="fl_upper_leg"/>
+    <child link="fl_lower_leg"/>
+    <origin xyz="0 0 -0.25" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <!-- Front legs: knees bend forward (positive pitch) per mammalian stance -->
+    <limit lower="-0.1" upper="2.6" effort="120" velocity="5.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <link name="fl_lower_leg">
+    <visual>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.03" length="0.25"/>
+      </geometry>
+      <material name="olive_green"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.03" length="0.25"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.3"/>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <inertia ixx="0.0070" ixy="0" ixz="0"
+               iyy="0.0070" iyz="0"
+               izz="0.0006"/>
+    </inertial>
+  </link>
+
+  <!-- FL foot — rubber pad (fixed to lower leg) -->
+  <joint name="fl_foot_joint" type="fixed">
+    <parent link="fl_lower_leg"/>
+    <child link="fl_foot"/>
+    <origin xyz="0 0 -0.25" rpy="0 0 0"/>
+  </joint>
+
+  <link name="fl_foot">
+    <visual>
+      <geometry>
+        <sphere radius="0.025"/>
+      </geometry>
+      <material name="rubber_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.00004" ixy="0" ixz="0"
+               iyy="0.00004" iyz="0"
+               izz="0.00004"/>
+    </inertial>
+  </link>
+
+  <!-- ============================== -->
+  <!-- FRONT-RIGHT LEG (FR)            -->
+  <!-- ============================== -->
+
+  <!-- FR hip yaw joint -->
+  <joint name="fr_hip_yaw" type="revolute">
+    <parent link="base_link"/>
+    <child link="fr_hip_yaw_link"/>
+    <origin xyz="0.25 -0.125 -0.03" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.5" upper="0.5" effort="80" velocity="5.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <link name="fr_hip_yaw_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+      <material name="orange_amber"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.0014" ixy="0" ixz="0"
+               iyy="0.0014" iyz="0"
+               izz="0.0012"/>
+    </inertial>
+  </link>
+
+  <!-- FR hip pitch joint -->
+  <joint name="fr_hip_pitch" type="revolute">
+    <parent link="fr_hip_yaw_link"/>
+    <child link="fr_upper_leg"/>
+    <origin xyz="0 -0.04 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="120" velocity="5.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <link name="fr_upper_leg">
+    <visual>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.25"/>
+      </geometry>
+      <material name="olive_green"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.25"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.0"/>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <inertia ixx="0.0110" ixy="0" ixz="0"
+               iyy="0.0110" iyz="0"
+               izz="0.0012"/>
+    </inertial>
+  </link>
+
+  <!-- FR knee pitch joint -->
+  <joint name="fr_knee_pitch" type="revolute">
+    <parent link="fr_upper_leg"/>
+    <child link="fr_lower_leg"/>
+    <origin xyz="0 0 -0.25" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.1" upper="2.6" effort="120" velocity="5.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <link name="fr_lower_leg">
+    <visual>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.03" length="0.25"/>
+      </geometry>
+      <material name="olive_green"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.03" length="0.25"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.3"/>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <inertia ixx="0.0070" ixy="0" ixz="0"
+               iyy="0.0070" iyz="0"
+               izz="0.0006"/>
+    </inertial>
+  </link>
+
+  <!-- FR foot -->
+  <joint name="fr_foot_joint" type="fixed">
+    <parent link="fr_lower_leg"/>
+    <child link="fr_foot"/>
+    <origin xyz="0 0 -0.25" rpy="0 0 0"/>
+  </joint>
+
+  <link name="fr_foot">
+    <visual>
+      <geometry>
+        <sphere radius="0.025"/>
+      </geometry>
+      <material name="rubber_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.00004" ixy="0" ixz="0"
+               iyy="0.00004" iyz="0"
+               izz="0.00004"/>
+    </inertial>
+  </link>
+
+  <!-- ============================== -->
+  <!-- REAR-LEFT LEG (RL)              -->
+  <!-- ============================== -->
+
+  <!-- RL hip yaw joint -->
+  <joint name="rl_hip_yaw" type="revolute">
+    <parent link="base_link"/>
+    <child link="rl_hip_yaw_link"/>
+    <origin xyz="-0.25 0.125 -0.03" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.5" upper="0.5" effort="80" velocity="5.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <link name="rl_hip_yaw_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+      <material name="orange_amber"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.0014" ixy="0" ixz="0"
+               iyy="0.0014" iyz="0"
+               izz="0.0012"/>
+    </inertial>
+  </link>
+
+  <!-- RL hip pitch joint -->
+  <joint name="rl_hip_pitch" type="revolute">
+    <parent link="rl_hip_yaw_link"/>
+    <child link="rl_upper_leg"/>
+    <origin xyz="0 0.04 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="120" velocity="5.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <link name="rl_upper_leg">
+    <visual>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.25"/>
+      </geometry>
+      <material name="olive_green"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.25"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.0"/>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <inertia ixx="0.0110" ixy="0" ixz="0"
+               iyy="0.0110" iyz="0"
+               izz="0.0012"/>
+    </inertial>
+  </link>
+
+  <!-- RL knee pitch joint — rear legs: knees bend backward (negative pitch) -->
+  <joint name="rl_knee_pitch" type="revolute">
+    <parent link="rl_upper_leg"/>
+    <child link="rl_lower_leg"/>
+    <origin xyz="0 0 -0.25" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <!-- Rear legs: knees bend backward per mammalian stance -->
+    <limit lower="-2.6" upper="0.1" effort="120" velocity="5.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <link name="rl_lower_leg">
+    <visual>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.03" length="0.25"/>
+      </geometry>
+      <material name="olive_green"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.03" length="0.25"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.3"/>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <inertia ixx="0.0070" ixy="0" ixz="0"
+               iyy="0.0070" iyz="0"
+               izz="0.0006"/>
+    </inertial>
+  </link>
+
+  <!-- RL foot -->
+  <joint name="rl_foot_joint" type="fixed">
+    <parent link="rl_lower_leg"/>
+    <child link="rl_foot"/>
+    <origin xyz="0 0 -0.25" rpy="0 0 0"/>
+  </joint>
+
+  <link name="rl_foot">
+    <visual>
+      <geometry>
+        <sphere radius="0.025"/>
+      </geometry>
+      <material name="rubber_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.00004" ixy="0" ixz="0"
+               iyy="0.00004" iyz="0"
+               izz="0.00004"/>
+    </inertial>
+  </link>
+
+  <!-- ============================== -->
+  <!-- REAR-RIGHT LEG (RR)             -->
+  <!-- ============================== -->
+
+  <!-- RR hip yaw joint -->
+  <joint name="rr_hip_yaw" type="revolute">
+    <parent link="base_link"/>
+    <child link="rr_hip_yaw_link"/>
+    <origin xyz="-0.25 -0.125 -0.03" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.5" upper="0.5" effort="80" velocity="5.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <link name="rr_hip_yaw_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+      <material name="orange_amber"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.0014" ixy="0" ixz="0"
+               iyy="0.0014" iyz="0"
+               izz="0.0012"/>
+    </inertial>
+  </link>
+
+  <!-- RR hip pitch joint -->
+  <joint name="rr_hip_pitch" type="revolute">
+    <parent link="rr_hip_yaw_link"/>
+    <child link="rr_upper_leg"/>
+    <origin xyz="0 -0.04 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="120" velocity="5.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <link name="rr_upper_leg">
+    <visual>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.25"/>
+      </geometry>
+      <material name="olive_green"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.25"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.0"/>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <inertia ixx="0.0110" ixy="0" ixz="0"
+               iyy="0.0110" iyz="0"
+               izz="0.0012"/>
+    </inertial>
+  </link>
+
+  <!-- RR knee pitch joint — rear legs: knees bend backward -->
+  <joint name="rr_knee_pitch" type="revolute">
+    <parent link="rr_upper_leg"/>
+    <child link="rr_lower_leg"/>
+    <origin xyz="0 0 -0.25" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.6" upper="0.1" effort="120" velocity="5.0"/>
+    <dynamics damping="0.5" friction="0.1"/>
+  </joint>
+
+  <link name="rr_lower_leg">
+    <visual>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.03" length="0.25"/>
+      </geometry>
+      <material name="olive_green"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.03" length="0.25"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.3"/>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <inertia ixx="0.0070" ixy="0" ixz="0"
+               iyy="0.0070" iyz="0"
+               izz="0.0006"/>
+    </inertial>
+  </link>
+
+  <!-- RR foot -->
+  <joint name="rr_foot_joint" type="fixed">
+    <parent link="rr_lower_leg"/>
+    <child link="rr_foot"/>
+    <origin xyz="0 0 -0.25" rpy="0 0 0"/>
+  </joint>
+
+  <link name="rr_foot">
+    <visual>
+      <geometry>
+        <sphere radius="0.025"/>
+      </geometry>
+      <material name="rubber_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.00004" ixy="0" ixz="0"
+               iyy="0.00004" iyz="0"
+               izz="0.00004"/>
+    </inertial>
+  </link>
+
+  <!-- ============================== -->
+  <!-- GAZEBO-SPECIFIC PROPERTIES      -->
+  <!-- ============================== -->
+  <!--
+    Gazebo material colors (Gazebo ignores URDF <material> tags,
+    so we set colors via <gazebo> extensions).
+  -->
+
+  <!-- Body -->
+  <gazebo reference="base_link">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>0.8</mu1>
+    <mu2>0.8</mu2>
+  </gazebo>
+
+  <!-- LED strips -->
+  <gazebo reference="led_strip_left">
+    <material>Gazebo/Green</material>
+  </gazebo>
+  <gazebo reference="led_strip_right">
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+  <!-- Eyes -->
+  <gazebo reference="eye_left">
+    <material>Gazebo/Green</material>
+  </gazebo>
+  <gazebo reference="eye_right">
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+  <!-- Arm mount -->
+  <gazebo reference="arm_mount">
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <!-- Bag frame mount -->
+  <gazebo reference="bag_frame_mount">
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <!-- FL leg -->
+  <gazebo reference="fl_hip_yaw_link">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+  <gazebo reference="fl_upper_leg">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="fl_lower_leg">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="fl_foot">
+    <material>Gazebo/FlatBlack</material>
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1e6</kp>
+    <kd>1e2</kd>
+  </gazebo>
+
+  <!-- FR leg -->
+  <gazebo reference="fr_hip_yaw_link">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+  <gazebo reference="fr_upper_leg">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="fr_lower_leg">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="fr_foot">
+    <material>Gazebo/FlatBlack</material>
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1e6</kp>
+    <kd>1e2</kd>
+  </gazebo>
+
+  <!-- RL leg -->
+  <gazebo reference="rl_hip_yaw_link">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+  <gazebo reference="rl_upper_leg">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="rl_lower_leg">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="rl_foot">
+    <material>Gazebo/FlatBlack</material>
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1e6</kp>
+    <kd>1e2</kd>
+  </gazebo>
+
+  <!-- RR leg -->
+  <gazebo reference="rr_hip_yaw_link">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+  <gazebo reference="rr_upper_leg">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="rr_lower_leg">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="rr_foot">
+    <material>Gazebo/FlatBlack</material>
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1e6</kp>
+    <kd>1e2</kd>
+  </gazebo>
+
+</robot>
