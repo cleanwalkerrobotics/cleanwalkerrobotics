@@ -1,6 +1,6 @@
 # CleanWalker Robotics -- Investor & Customer Pitch Deck
 
-**Autonomous Litter Collection as a Service**
+**Autonomous Litter Collection for Public Spaces**
 
 *February 2026*
 
@@ -10,13 +10,13 @@
 
 # CleanWalker Robotics
 
-### Autonomous Litter Collection as a Service
+### Autonomous Litter Collection for Parks, Campuses, and Public Spaces
 
 [PLACEHOLDER: CleanWalker logo, full-width hero graphic]
 
 **The world's first commercial quadrupedal litter-collecting robot.**
 
-Deploy autonomous robots to your parks, campuses, and public spaces. Pay a simple monthly fee. We handle everything else.
+Deploy autonomous robots that walk any terrain, collect litter 20+ hours a day, and integrate seamlessly with your existing waste infrastructure.
 
 *cleanwalkerrobotics.com | sales@cleanwalkerrobotics.com*
 
@@ -60,15 +60,13 @@ Deploy autonomous robots to your parks, campuses, and public spaces. Pay a simpl
 - **See** litter using AI-powered computer vision (bottles, cans, wrappers, cups, cigarette butts -- 5g to 500g)
 - **Walk** across any terrain -- grass, gravel, cobblestones, curbs, stairs, beaches
 - **Pick up** items with a soft-grip robotic arm that handles irregular shapes without crushing
-- **Compact** collected litter into an onboard 20L bin (3:1 compaction ratio)
+- **Bag it** using a replaceable Bag Cassette System -- collects into standard trash bags, seals when full, drops at the curb for existing waste collection
 - **Self-charge** by autonomously returning to a docking station
 - **Report** everything in real time via a fleet management dashboard
 
-**Delivered as a Service (RaaS):**
+**Fully managed. Zero new infrastructure.**
 
-No upfront capital. No maintenance headaches. No hiring. Just cleaner spaces.
-
-You pay a monthly fee per robot. We own the hardware, handle all maintenance, push software updates over-the-air, and provide 4G-connected real-time monitoring.
+We handle hardware, maintenance, software updates, and real-time monitoring. CleanWalker integrates with your existing waste collection routes -- no special bins, no new workflows, no disruption. Contact us for flexible pricing tailored to your site.
 
 ---
 
@@ -85,7 +83,8 @@ You pay a monthly fee per robot. We own the hardware, handle all maintenance, pu
 | **Perception** | OAK-D Pro stereo depth camera + RPLidar A1 (360-degree safety) |
 | **AI compute** | NVIDIA Jetson Orin Nano (67 TOPS) -- real-time YOLO litter detection |
 | **Manipulation** | 2-DOF robotic arm with soft silicone gripper (conforms to irregular shapes) |
-| **Litter capacity** | 20L compacting bin (3:1 ratio = 60L effective) |
+| **Waste collection** | Bag Cassette System -- motorized X-frame holds standard trash bag open; gripper arm compresses at ~80% capacity; snap-close seals full bag; robot drops sealed bag at curb and deploys fresh bag automatically |
+| **Bag capacity** | Replaceable cassette holds ~20-30 bags per cartridge; dramatically increases effective capacity vs. fixed bins |
 | **Detectable items** | Bottles, cans, wrappers, cups, cigarette butts, paper (5g-500g) |
 | **Runtime** | 4-6 hours continuous operation per charge |
 | **Charging** | Self-docking contact charger (~4 hours to full) |
@@ -99,6 +98,10 @@ You pay a monthly fee per robot. We own the hardware, handle all maintenance, pu
 **Why legs, not wheels?**
 
 Quadrupedal locomotion goes where wheeled robots can't: park grass, beach sand, cobblestone plazas, curbs, stairs, and uneven terrain. This opens market segments that no wheeled cleaning robot can serve.
+
+**Why bag cassettes, not bins?**
+
+The Bag Cassette System means CleanWalker integrates directly with existing municipal waste collection. Sealed bags are dropped at the curb -- collected by the same trucks on the same routes. No special emptying, no new infrastructure, no workflow changes for operations teams.
 
 ---
 
@@ -170,60 +173,56 @@ Quadrupedal locomotion goes where wheeled robots can't: park grass, beach sand, 
 
 ## Slide 7: Business Model
 
-### Robot-as-a-Service: High Margins, Recurring Revenue
+### Fully Managed Service with High-Margin Recurring Revenue
 
-**Pricing tiers:**
+**How it works:** We deploy and manage the robots. You pay a monthly fee per robot that covers everything -- hardware, fleet software, 4G connectivity, preventive maintenance, OTA software updates, customer support, replacement parts, charging dock, and bag cassette refills. No setup fees.
 
-| Tier | Monthly Rate | Commitment | Target Customer | Gross Margin |
-|------|-------------|------------|-----------------|-------------|
-| **Pilot** | **$2,800/mo** per robot | 6-month minimum | New customers, proof-of-value | **87.5%** |
-| **Standard** | **$3,500/mo** per robot | 12-month contract | Single-site deployments | **90.0%** |
-| **Fleet** | **$3,000/mo** per robot | 24-month, 50+ units | Multi-site / city-wide | **88.3%** |
+**Flexible engagement models:**
 
-**What's included in every tier:** Robot hardware, fleet software + dashboard, 4G connectivity, preventive maintenance, software/firmware updates (OTA), customer support, replacement parts, and charging dock. No setup fees.
+| Model | Commitment | Best For |
+|-------|------------|----------|
+| **Pilot** | 6-month minimum | Proving value at a single site before scaling |
+| **Standard** | 12-month contract | Ongoing autonomous litter collection at one or more sites |
+| **Fleet** | 24-month, multi-site | City-wide or campus-wide deployment across many locations |
+
+*Pricing is tailored to site requirements, fleet size, and contract duration. Contact us for a proposal.*
 
 **Unit economics at scale:**
 
-| Metric | Value |
-|--------|-------|
-| Recurring cost per deployed unit | **$350/month** (connectivity, insurance, maintenance, parts, support, cloud) |
-| Blended gross margin | **87-90%** |
-| COGS per unit (at 100 units) | **$10,082** |
-| COGS per unit (at 500 units) | **$7,976** |
-| Unit-level breakeven (Standard tier, 100 units) | **3.2 months** |
-| Lifetime value per unit (36-month contract) | **$103,318** net profit (Standard tier, 100-unit COGS) |
-
-**Fleet breakeven: ~28 deployed units** at blended average rate covers all fixed overhead ($75K/month).
+| Metric | Detail |
+|--------|--------|
+| **COGS per unit** | Drops significantly with volume (manufacturing scale advantages) |
+| **Gross margin** | **87-90%** at production scale |
+| **Unit-level breakeven** | Months, not years |
+| **Fleet breakeven** | ~28 deployed units covers all fixed overhead |
+| **Consumable revenue** | Proprietary Bag Cassette refills create a recurring consumable revenue stream |
 
 ---
 
 ## Slide 8: ROI for Customers
 
-### 25-48% Cost Reduction vs. Manual Litter Collection
+### Significant Cost Reduction vs. Manual Litter Collection
 
-| Metric | Manual (2 Workers) | CleanWalker (2 Robots, Standard) |
-|--------|-------------------|----------------------------------|
-| Monthly cost | $9,320-$13,360 | **$7,000** |
-| Daily coverage hours | 16 hrs (2x 8-hr shifts) | **20+ hrs** (autonomous, self-charging) |
-| Night / weekend / holiday | Limited or overtime | **Full capability, no extra cost** |
-| Weather operation | Limited | **Rain-capable (IP54+)** |
-| Data and reporting | None | **Real-time dashboard, litter analytics** |
-| Scalability | Linear (hire more people) | **Incremental (add robots)** |
-| **Annual savings per site** | -- | **$27,840-$76,320** |
+| Dimension | Manual (2 Workers) | CleanWalker (2 Robots) |
+|-----------|-------------------|------------------------|
+| **Monthly labor cost** | $9,320-$13,360 | **Significantly lower** |
+| **Daily coverage hours** | 16 hrs (2x 8-hr shifts) | **20+ hrs** (autonomous, self-charging) |
+| **Night / weekend / holiday** | Limited or overtime | **Full capability, no extra cost** |
+| **Weather operation** | Limited | **Rain-capable (IP54+)** |
+| **Data and reporting** | None | **Real-time dashboard, litter analytics** |
+| **Waste infrastructure** | Manual bag changes, bin runs | **Bag Cassette integrates with existing routes** |
+| **Scalability** | Linear (hire more people) | **Incremental (add robots)** |
 
-**Payback summary:**
+**What CleanWalker delivers that manual collection can't:**
 
-| Scenario | Monthly Savings | Annual Savings |
-|----------|----------------|----------------|
-| Replace 2 workers with 2 robots (Standard) | $2,320-$6,360 | $27,840-$76,320 |
-| Replace 2 workers with 2 robots (Fleet) | $3,320-$7,360 | $39,840-$88,320 |
-| Supplement 1 worker with 1 robot (Pilot) | $1,860-$3,880 | $22,320-$46,560 |
+- **Litter heatmaps** showing where and when litter accumulates
+- **Coverage verification** -- proof that areas were actually cleaned
+- **Consistent quality** -- no variation by worker, shift, or weather
+- **Waste composition data** -- what litter types dominate, by location and time
+- **Municipal integration** -- sealed bags at the curb, collected by existing trucks
+- **Sustainability reporting** -- hard data for grant applications and ESG reporting
 
-**What customers also get that manual collection can't provide:**
-- Litter heatmaps showing where and when litter accumulates
-- Coverage verification -- proof that areas were actually cleaned
-- Consistent quality -- no variation by worker, shift, or weather
-- Data for grant applications and sustainability reporting
+*Contact us for a site-specific ROI analysis tailored to your operations.*
 
 ---
 
@@ -304,23 +303,45 @@ Quadrupedal locomotion goes where wheeled robots can't: park grass, beach sand, 
 
 ### No Commercial Quadrupedal Litter Robot Exists Today
 
-| Company | Type | Form Factor | Stage | Funding | Limitation |
-|---------|------|-------------|-------|---------|------------|
-| **CleanWalker** | Litter collection | **Quadruped** | **Commercial (pilot-ready)** | Pre-seed | -- |
-| VERO (IIT Genoa) | Litter collection (cigarette butts) | Quadruped | Academic research | University grant | Research prototype only; not a company |
-| Angsa Robotics (Germany) | Litter picking (grass/gravel) | Wheeled | Early-stage startup | Husqvarna-backed | Wheeled -- can't handle stairs, curbs, sand, rough terrain |
-| Enway / Bucher Municipal | Street sweeping | Wheeled sweeper | Acquired (2022) | EUR 6.7M pre-acquisition | Sweeps surfaces; doesn't pick discrete litter items |
-| Trombia / FAUN Group | Street sweeping | Wheeled sweeper | Acquired | EUR 6M pre-acquisition | Large vehicle form factor; limited to roads |
-| Autowise.ai (China) | Autonomous sanitation | Wheeled fleet | Series B | $30M+ | China-only; road sweeping, not litter picking |
-| Gaussian/Gausium (China) | Cleaning robots | Wheeled | Series C | $304M (SoftBank-led) | Primarily **indoor** commercial cleaning |
+**Direct competitors (litter picking):**
 
-**CleanWalker's defensible advantages:**
+| Company | Form Factor | Terrain | Litter Types | Stage | Funding | Key Limitation |
+|---------|-------------|---------|--------------|-------|---------|----------------|
+| **CleanWalker** | **Quadruped** | **Grass, gravel, slopes, stairs, curbs, trails, sand** | **Bottles, cans, wrappers, cups, butts, paper (5g-500g)** | **Pilot-ready** | Pre-seed | -- |
+| Angsa Robotics (Germany) | Wheeled | Grass, gravel, flat outdoor only | Small trash (butts, wrappers) | Pilot (Berlin BSR) | EUR 2.78M (Husqvarna Ventures) | Wheeled -- no stairs, curbs, slopes, sand. Limited litter diversity. |
+| VERO (IIT Genoa) | Quadruped (Unitree) | Beaches, stairs | Cigarette butts only (vacuum) | Academic research | University grant | Research prototype only. Butts only. No company. |
+| TechTics BeachBot (Netherlands) | Wheeled/tracked | Beach sand only | Cigarette butts, cans | Prototype/pilot | TU Delft, Do IoT Fieldlab | Niche (beach only). Small scale. Limited funding. |
 
-1. **First-to-market** in commercial quadrupedal litter collection -- no direct competitor
-2. **Terrain access** that wheeled robots cannot match: grass, sand, cobblestone, stairs, curbs
-3. **RaaS model** creates switching costs and recurring revenue
-4. **Market validation** -- Veolia (EUR 45B) already trialed this exact concept at Bondi Beach and is actively seeking the technology
-5. **Acquisition precedent** -- Bucher acquired Enway, FAUN acquired Trombia, confirming strategic value of autonomous cleaning robotics startups
+**Adjacent competitors (autonomous sweepers -- different category):**
+
+| Company | Form Factor | What It Does | Stage | Funding | Why It's Not Us |
+|---------|-------------|-------------|-------|---------|-----------------|
+| Trombia / FAUN Group | Large vehicle (2,300 kg) | Road sweeping | Commercial pilot | EUR 6M + FAUN acquisition | ~$450K/unit. Roads only. Broad sweeping, not targeted litter picking. |
+| Enway / Bucher Municipal | Compact wheeled sweeper | Industrial/road sweeping | Commercial (acquired 2022) | $6.6M pre-acquisition | Sweeps surfaces. No litter detection or manipulation. |
+| Gaussian/Gausium (China) | Various wheeled | Indoor commercial cleaning | Commercial at scale (40+ countries) | **$361M** (SoftBank-led) | Primarily **indoor**. No outdoor litter picking. |
+| Autowise.ai / WIBOT (China/Switzerland) | Wheeled fleet | Road sweeping | Commercial (Shanghai, EU, US) | $30M+ (JV with Boschung) | Large road sweepers. Different use case entirely. |
+
+**Competitive scoring (weighted):**
+
+| Dimension | CleanWalker | Angsa | VERO | Trombia | Enway | Gaussian |
+|-----------|:-----------:|:-----:|:----:|:-------:|:-----:|:--------:|
+| Terrain capability (25%) | **10** | 5 | 8 | 3 | 4 | 3 |
+| Litter diversity (20%) | **9** | 6 | 2 | 4 | 3 | 3 |
+| AI perception (15%) | **9** | 7 | 6 | 3 | 3 | 5 |
+| Autonomy level (15%) | **9** | 8 | 7 | 9 | 9 | 9 |
+| Infrastructure integration (10%) | **9** | 4 | 1 | 6 | 7 | 5 |
+| Deployment readiness (10%) | 2 | 5 | 1 | 6 | 8 | **10** |
+| Funding/resources (5%) | 1 | 3 | 2 | 5 | 7 | **10** |
+| **Weighted total** | **8.2** | **5.6** | **4.6** | **4.1** | **4.6** | **4.8** |
+
+**CleanWalker's four defensible moats:**
+
+1. **Terrain moat** -- Quadrupedal locomotion accesses parks, trails, slopes, stairs, and beaches that no wheeled competitor can serve. This is a multi-year engineering barrier.
+2. **Infrastructure moat** -- The Bag Cassette System integrates with existing municipal waste collection (bags at curb, existing trucks, existing routes). Competitors haven't solved the "what happens after pickup" problem.
+3. **AI perception moat** -- Multi-class YOLO detection across 20+ litter categories. Fleet-wide learning creates a data flywheel: more robots = more training data = better detection = better service.
+4. **Market validation** -- Veolia (EUR 45B, 56 countries) already trialed this exact concept ("Scoop Doggy Dog" at Bondi Beach). They want to deploy this technology, not build it. We are the solution they're looking for.
+
+**M&A signal:** Bucher acquired Enway, FAUN acquired Trombia -- confirming strategic value of autonomous cleaning robotics startups to major equipment manufacturers.
 
 ---
 
@@ -395,38 +416,48 @@ Quadrupedal locomotion goes where wheeled robots can't: park grass, beach sand, 
 
 ## Slide 14: The Ask
 
-### We're Looking for Pilot Partners with Conviction
+### We Want a Pilot Partner Who Believes in the Future of Autonomous Public Spaces
 
-**For Customers -- Pilot Program:**
+**We're not looking for a "maybe." We're looking for a committed partner.**
+
+CleanWalker is seeking one founding pilot partner -- a municipality, waste management company, or campus operator -- who will deploy 10 robots at a real site and prove this technology in the field.
+
+**For Pilot Partners -- What We're Proposing:**
 
 | What You Commit | What You Get |
 |-----------------|-------------|
-| 6-month pilot agreement | 10 autonomous litter-collecting robots on your site |
-| $2,800/month per robot | Full onboarding, site assessment, and deployment |
-| Feedback and collaboration | Real-time fleet dashboard and weekly performance reports |
-| | Measurable cleanliness improvement within Month 1 |
-| | Data-driven case study for your stakeholders |
-| | First-mover pricing locked in for contract extension |
+| A 6-month pilot agreement with upfront commitment | 10 autonomous litter-collecting robots deployed on your site |
+| A real site with real litter and real pedestrians | Full onboarding: site survey, dock installation, robot configuration, staff training |
+| Active collaboration and feedback throughout the pilot | Real-time fleet dashboard with weekly performance reports |
+| Senior stakeholder buy-in before we begin | Measurable cleanliness improvement within Month 1 |
+| Intent to scale if the pilot succeeds | A published case study proving autonomous litter collection works |
+| | **First-mover advantage** -- be the reference customer the entire industry points to |
+
+**Why commit now?**
+
+- No commercial quadrupedal litter robot exists anywhere in the world -- you would be the first
+- Veolia (EUR 45B) already trialed this concept at Bondi Beach -- the demand is validated, the solution doesn't exist yet
+- EU Machinery Regulation (Jan 2027) creates a clear regulatory pathway for autonomous outdoor robots
+- The founding pilot partner shapes the product -- your feedback directly influences what we build
+- Early partners lock in preferred pricing and priority access as we scale
 
 **For Investors -- Seed Round:**
 
 | Parameter | Detail |
 |-----------|--------|
 | **Raising** | **$1.5M Seed** |
-| **Use of funds** | Prototype development ($287K), manufacturing setup ($108K), first 10 pilot units ($147K), Year 1 operations ($600K), certification ($250K), working capital ($100K) |
+| **Use of funds** | Prototype development, manufacturing setup, first 10 pilot units, Year 1 operations, EU certification, working capital |
 | **Milestone** | 10-unit commercial pilot deployed and generating revenue |
-| **Path to profitability** | Profitable at company level by Year 3 with 200 deployed units |
-| **Growth capital (Series A)** | $1.7M additional to scale from 10 to 50 units and reach fleet breakeven |
+| **Path to profitability** | Company-level profitability by Year 3 with 200 deployed units |
 | **Total to self-sustaining** | ~$3.2M cumulative through profitability |
 
-**Why invest now?**
+**Why this is a compelling investment:**
 
-- No commercial quadrupedal litter robot exists -- genuine first-mover window
-- Veolia ($50B+ revenue) has already validated market demand with their own quadruped trial
-- Major equipment manufacturers acquiring autonomous cleaning startups (Bucher/Enway, FAUN/Trombia)
+- Genuine first-mover in a category with zero commercial competitors
 - $400M+ already invested in autonomous cleaning robotics by VCs (SoftBank alone put $188M into Gaussian Robotics)
-- EU Machinery Regulation (Jan 2027) opens a clear regulatory pathway
-- RaaS model delivers 87-90% gross margins at scale with strong recurring revenue
+- Major equipment OEMs acquiring autonomous cleaning startups (Bucher/Enway, FAUN/Trombia) -- clear exit path
+- 87-90% gross margins at scale with strong recurring revenue
+- Bag Cassette consumables create an additional recurring revenue stream
 
 ---
 
@@ -437,7 +468,7 @@ Quadrupedal locomotion goes where wheeled robots can't: park grass, beach sand, 
 [PLACEHOLDER: CleanWalker logo]
 
 **CleanWalker Robotics**
-*Autonomous Litter Collection as a Service*
+*Autonomous Litter Collection for Public Spaces*
 
 | | |
 |---|---|
