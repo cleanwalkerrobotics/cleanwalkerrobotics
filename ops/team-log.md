@@ -2,6 +2,19 @@
 
 ## 2026-02-10
 
+### 3D Viewer: Bag Always Open + Play/Pause Button (cw-software) — COMPLETED
+
+| 2025-02-10 17:00 | cw-software | Bag defaults to open (135°), removed continuous fold loop, added play button for on-demand bag swap cycle | 8da2803 |
+
+### 3D Bag Dispensary System + Body Shell (cw-hardware) — COMPLETED
+- **Task:** Detailed mechanical design of bag dispensary system and robot body shell as Three.js 3D models
+- **Team A (Bag System):** Roll dispenser, folding frame, clip mechanisms, catenary bag mesh, drawstrings, animated fold cycle
+- **Team B (Body):** Chamfered body shell, panel seams, hinge mount brackets, roll cradle, tapered head, turret flange
+- **Coordination:** Mounting interface verified — hinge at (-0.30, ±0.05, 0.065), roll at X=-0.06, frame 150×220mm
+- **Files:** build-bag-system.ts, build-robot-body.ts, types.ts, page.tsx
+- **Commit:** 972e0fa
+- **Status:** Complete, pushed to main
+
 ### Website Image Optimization (cw-software) — SPAWNED 14:50 UTC
 - **Assigned:** WebP conversion of 14 renders, next/image optimization, OG meta images, SEO meta tags, Core Web Vitals fixes
 - **Status:** In progress
