@@ -86,3 +86,5 @@
 
 ---
 *cw-software complete. cw-bizdev complete. cw-hardware killed (URDF done, Gazebo N/A).*
+| 2026-02-10 15:15 | render-team | Regenerated 11 renders without competitor branding, updated prompts, visual QA passed all | 2584a4d |
+| 2026-02-10 | render-team | V2.2 full render regeneration: updated all 14 prompts to V2.2 spec (folding frame, bag roll, sensor head, upper-leg LEDs), regenerated all 14 via Seedream 4.5, all passed visual QA first try, converted to WebP, build verified | a5f3f4d |
