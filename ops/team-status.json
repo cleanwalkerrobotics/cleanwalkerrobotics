@@ -1,23 +1,23 @@
 {
-  "lastUpdated": "2026-02-10T06:46:00Z",
+  "lastUpdated": "2026-02-10T08:50:00Z",
   "teams": {
     "cw-software": {
-      "status": "idle",
-      "lastTask": "Bag Cassette copy refactor + copy softening + 3 new demos + render integration",
-      "lastTaskResult": "completed",
-      "lastActive": "2026-02-10T02:03:00Z"
+      "status": "active",
+      "lastTask": "Three.js 3D robot viewer page — interactive URDF visualization on website",
+      "lastTaskResult": "in-progress",
+      "lastActive": "2026-02-10T08:50:00Z"
     },
     "cw-hardware": {
-      "status": "active",
-      "lastTask": "URDF robot model v1 — 12-DOF quadruped from design spec",
-      "lastTaskResult": "in-progress",
-      "lastActive": "2026-02-10T06:46:00Z"
+      "status": "idle",
+      "lastTask": "URDF robot model v1 — 12-DOF quadruped (COMPLETED)",
+      "lastTaskResult": "completed",
+      "lastActive": "2026-02-10T08:00:00Z"
     },
     "cw-bizdev": {
-      "status": "idle",
-      "lastTask": "Pitch deck overhaul — bag cassette, competitive data, no pricing",
-      "lastTaskResult": "completed",
-      "lastActive": "2026-02-10T02:46:00Z"
+      "status": "active",
+      "lastTask": "Outreach email drafts — Veolia ANZ, BEEAH Group, Amsterdam municipality",
+      "lastTaskResult": "in-progress",
+      "lastActive": "2026-02-10T08:50:00Z"
     },
     "cw-research": {
       "status": "idle",
@@ -27,7 +27,7 @@
     },
     "cw-renders": {
       "status": "idle",
-      "lastTask": "Regenerated all 14 renders with Seedream 4.5 at 4K 16:9 using canonical design spec",
+      "lastTask": "Regenerated all 14 renders with Seedream 4.5 at 4K 16:9",
       "lastTaskResult": "completed",
       "lastActive": "2026-02-10T02:44:00Z"
     },
@@ -38,7 +38,7 @@
       "lastActive": null
     }
   },
-  "activeSessions": 1,
-  "vpsSpec": "30GB RAM (upgraded from 7.6GB)",
-  "notes": "CAD/URDF team spawned at 06:46 UTC — critical path item #1. Strategy.md IFAT references cleaned up. 28GB RAM available."
+  "activeSessions": 2,
+  "vpsSpec": "30GB RAM",
+  "notes": "2 sessions active: cw-software (3D viewer) + cw-bizdev (outreach emails). URDF done. No ROS/Gazebo on VPS."
 }

@@ -46,6 +46,8 @@
 | 2026-02-10 06:46 | cw-hardware | URDF robot model v1 — 12-DOF quadruped from design spec | c134b39 |
 
 | 2026-02-10 | cw-hardware | Website build verified (14/14 pages clean), all 14 renders confirmed referenced. URDF validated: fixed 4 cosmetic links missing inertials, created validate.py | 735d802 |
+| 2026-02-10 08:50 | cw-software | Three.js 3D robot viewer page — interactive URDF visualization on website demos | in-progress |
+| 2026-02-10 08:50 | cw-bizdev | Outreach email drafts — Veolia ANZ, BEEAH Group, Amsterdam municipality | in-progress |
 
 ---
-*cw-hardware active. All other sessions terminated.*
+*cw-software + cw-bizdev active. cw-hardware killed (URDF done, Gazebo N/A).*

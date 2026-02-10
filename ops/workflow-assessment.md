@@ -1,5 +1,86 @@
 # Workflow Assessments
 
+## Assessment #7 — 2026-02-10 08:46 UTC
+
+### Context
+Seventh assessment. 09:46 CET (Maurits' morning). cw-hardware session ran for ~2 hours and completed URDF. No other sessions running. VPS at 30GB RAM, 28GB available.
+
+### What Happened Since Last Assessment (#6 at 06:46 UTC)
+**URDF robot model v1 — COMPLETE.** The #1 critical path item is done.
+
+| Time (UTC) | Commit | What |
+|------------|--------|------|
+| ~07:00 | c134b39 | URDF robot model v1 — 12-DOF quadruped, 23 links, 22 joints |
+| ~07:10 | 577c9c0 | Team log update with commit hash |
+| ~07:30 | 735d802 | Fixed 4 cosmetic links missing inertials + created validate.py |
+| ~07:45 | 10348e1 | Ops log: website verification + URDF validation |
+
+**URDF specs:** 12 DOF (3 per leg: hip_yaw, hip_pitch, knee_pitch), mammalian stance, 0.60m x 0.25m body, 46kg total mass, gripper arm mount, bag frame mount, olive-green + orange-amber colors, full inertia tensors, Gazebo material properties. Parses cleanly.
+
+**Session killed:** cw-hardware was stuck trying to run Gazebo simulation — **no ROS2/Gazebo installed on VPS**. Killed the idle session.
+
+### Scores (1-10)
+| Metric | Score | Notes |
+|--------|-------|-------|
+| Task throughput | 7 | 1 major deliverable (URDF) + 1 fix (inertials) + validation script. Solid for 2 hours. URDF was the #1 critical path item. |
+| Quality | 8 | URDF validated: 12 DOF confirmed, all links have inertials, Gazebo materials set. Created validate.py for future use. Iteration happened (inertial fix). |
+| Resource efficiency | 5 | Session completed useful work in ~45 min, then sat idle trying to run Gazebo (impossible on this VPS). ~75 min of idle time before I killed it. Should have monitored sooner. |
+| Priority alignment | 9 | URDF was literally #1 on the critical path. Correct call. |
+
+### Overall: 7.3/10
+
+### Honest Assessment
+**The URDF deliverable is strong.** 12-DOF quadruped matching the design spec, validated, committed and pushed. This unblocks the simulation pipeline.
+
+**What went wrong:** The session tried to run Gazebo after completing the URDF. No ROS2/Gazebo is installed on this VPS. It sat at a permission prompt for ~75 minutes before I caught and killed it. That's wasted compute time. **Fix: The task brief should have explicitly stated "DO NOT attempt to run Gazebo — just create the URDF file."** Or the 06:46 assessment should have monitored the session at the 07:46 mark (1 hour in).
+
+**Key realization: Gazebo simulation is NOT the right next step.** We don't have ROS2/Gazebo and installing it is heavy. More importantly — for a sales-focused pre-revenue company, a **web-based 3D robot viewer (Three.js + URDF-loader)** is FAR more impactful than a Gazebo screenshot. Prospects can spin the robot in their browser. That's a demo. A Gazebo window is an engineering tool.
+
+**Process improvement:** Add monitoring check at T+60 min for spawned sessions. Don't wait for the 2-hour assessment cycle.
+
+### Current Deliverable State
+| Deliverable | Status | Change |
+|-------------|--------|--------|
+| Marketing website (5 pages + 6 demos) | ✅ Live | — |
+| Robot renders (14 images at 4K) | ✅ Live | — |
+| All interactive demos (6) | ✅ Live | — |
+| ML pipeline + YOLO training | ✅ Done | — |
+| Financial model + pricing | ✅ Done | — |
+| Pitch deck | ✅ Done | — |
+| Competitive landscape | ✅ Done | — |
+| Robot design spec v1.0 | ✅ Done | — |
+| **URDF robot model v1** | **✅ Done** | **NEW — 12-DOF quadruped, validated** |
+| Web-based 3D robot viewer | ❌ Not started | **NEW PRIORITY — Three.js + URDF-loader** |
+| Simulation demo (Gazebo) | ❌ Blocked | No ROS2/Gazebo on VPS. Deprioritize in favor of web 3D viewer. |
+| Outreach email drafts | ❌ Not started | Materials ready, can draft without email access |
+| Municipality contact research | ❌ Not started | |
+
+### Bottlenecks
+1. **No simulation environment.** ROS2/Gazebo not installed. Installing it is 2-4GB and hours of setup. **Pivot: web-based 3D viewer using Three.js + urdf-loader npm package instead.** This serves the sales goal better anyway.
+2. **No outreach pipeline.** All materials ready (pitch deck, competitive analysis, financial model). Email templates not drafted. This is pure execution — no blockers.
+3. **Assessment cycle too slow for session monitoring.** 2-hour gaps mean sessions can sit idle for 75+ minutes. Need mid-cycle checks.
+
+### Decisions
+- **Decision:** Kill cw-hardware session. URDF is done. Gazebo attempt was a dead end.
+- **Decision:** PIVOT simulation strategy. Web-based 3D robot viewer (Three.js + urdf-loader) replaces Gazebo as the demo path. Gazebo only needed if/when we do actual physics simulation (Phase 2+). For sales demos, interactive web 3D > screenshots.
+- **Decision:** Spawn 2 sessions this cycle: (1) cw-software for Three.js URDF viewer on website, (2) cw-bizdev for outreach email drafts.
+- **Decision:** Add to HEARTBEAT.md: mid-cycle session monitoring note.
+
+### Next Cycle Priorities (10:46 UTC = 11:46 CET)
+1. **Check cw-software output** — Three.js URDF viewer should be done or near-done
+2. **Check cw-bizdev output** — outreach email drafts should be ready for Maurits review
+3. **Deploy to Vercel** if new features landed
+4. **Consider:** Municipality budget research task (web search based)
+
+### Resource State
+- **RAM: 1.9G used / 30G total (28G available)** — all clean, 0 sessions running
+- Docker: traefik (113MB), watchtower (19MB), n8n (438MB), postgres (52MB) — ~622MB, stable
+- No cw-* tmux sessions — cw-hardware killed
+- Git: HEAD = 10348e1, fully pushed
+- **ROS2/Gazebo: NOT INSTALLED. Do not attempt Gazebo tasks on this VPS.**
+
+---
+
 ## Assessment #6 — 2026-02-10 06:46 UTC
 
 ### Context
