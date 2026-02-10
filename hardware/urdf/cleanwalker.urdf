@@ -78,6 +78,13 @@
       </geometry>
       <material name="led_green"/>
     </visual>
+    <inertial>
+      <mass value="0.05"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0"
+               iyy="0.00001" iyz="0"
+               izz="0.00001"/>
+    </inertial>
   </link>
   <joint name="led_strip_left_joint" type="fixed">
     <parent link="base_link"/>
@@ -93,6 +100,13 @@
       </geometry>
       <material name="led_green"/>
     </visual>
+    <inertial>
+      <mass value="0.05"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0"
+               iyy="0.00001" iyz="0"
+               izz="0.00001"/>
+    </inertial>
   </link>
   <joint name="led_strip_right_joint" type="fixed">
     <parent link="base_link"/>
@@ -108,6 +122,13 @@
       </geometry>
       <material name="led_green"/>
     </visual>
+    <inertial>
+      <mass value="0.05"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0"
+               iyy="0.00001" iyz="0"
+               izz="0.00001"/>
+    </inertial>
   </link>
   <joint name="eye_left_joint" type="fixed">
     <parent link="base_link"/>
@@ -123,6 +144,13 @@
       </geometry>
       <material name="led_green"/>
     </visual>
+    <inertial>
+      <mass value="0.05"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0"
+               iyy="0.00001" iyz="0"
+               izz="0.00001"/>
+    </inertial>
   </link>
   <joint name="eye_right_joint" type="fixed">
     <parent link="base_link"/>
