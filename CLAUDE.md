@@ -28,11 +28,12 @@ openclaw agent --agent cleanwalker --message "TEAM_UPDATE [team-name]: What's do
 ```
 
 ### Rules
-- **Always notify on completion** — don't just exit silently
+- **ALWAYS notify on completion** — this is NON-NEGOTIABLE. If you don't call back, Walker doesn't know you're done and the entire pipeline stalls. NEVER exit without calling back.
+- **The callback is your LAST action** — commit, push, THEN call openclaw agent --message. Never exit silently.
 - **Notify on blockers** — don't spin for 10 minutes, ask for help
 - **One message at completion is enough** — don't spam updates
-- **Include file paths** in your completion message so Walker can review
-- **Commit and push your work** before sending the completion message
+- **Include file paths and commit hashes** in your completion message so Walker can review
+- **If you hit token limits or errors**, still call back with whatever you completed
 
 ## Project Context
 
@@ -70,6 +71,14 @@ For complex tasks, treat yourself as having these roles:
 - **Reviewer** — Reviews the code for quality, bugs, and completeness
 
 Think through each role. Don't just code and ship — plan, build, review, then ship.
+
+## Visual QA (MANDATORY for any image or website change)
+
+Before committing any render, image, or website visual change:
+1. **Inspect every generated image** — Look for unintended branding, logos, text, watermarks, or artifacts
+2. **NEVER reference competitor brands** in render prompts (no "Unitree", "Boston Dynamics", "Spot", etc.) — AI models will embed their branding
+3. **Always include in render prompts:** "No text, no logos, no branding, no watermarks on the robot body"
+4. For website changes: use `node scripts/screenshot.mjs <url> <output.png>` to screenshot pages and visually verify layout
 
 ## Standards
 - Commit messages: `type(scope): description` (conventional commits)
