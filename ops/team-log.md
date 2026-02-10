@@ -39,5 +39,7 @@
 | 2026-02-10 | cw-research | Comprehensive competitive landscape analysis: direct competitors, adjacent competitors, competitive matrix, moats, market gaps, strategic implications | 7184699 |
 | 2026-02-10 | cw-software | Soften landing page + product page copy: remove all pricing/savings/$, replace RaaS with vision-focused language, benefit metrics instead of dollar stats | f5058c5 |
 
+| 2026-02-10 | cw-renders | Regenerated all 14 robot renders with Seedream 4.5 using canonical design spec — all prompts start with exact core description, all images 1.2-2.0MB at 4K 16:9 | pending |
+
 ---
 *All sessions terminated after completion.*
