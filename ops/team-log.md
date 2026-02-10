@@ -45,5 +45,7 @@
 | 2026-02-10 06:46 | cw-ops (Walker) | Strategy.md IFAT cleanup: marked IFAT as SCRATCHED in priority stack, decisions table, trade shows, closing requirements | 9e2fc30 |
 | 2026-02-10 06:46 | cw-hardware | URDF robot model v1 — 12-DOF quadruped from design spec | c134b39 |
 
+| 2026-02-10 | cw-hardware | Website build verified (14/14 pages clean), all 14 renders confirmed referenced. URDF validated: fixed 4 cosmetic links missing inertials, created validate.py | 735d802 |
+
 ---
 *cw-hardware active. All other sessions terminated.*
