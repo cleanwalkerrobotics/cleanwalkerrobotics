@@ -47,7 +47,7 @@
 
 | 2026-02-10 | cw-hardware | Website build verified (14/14 pages clean), all 14 renders confirmed referenced. URDF validated: fixed 4 cosmetic links missing inertials, created validate.py | 735d802 |
 | 2026-02-10 08:50 | cw-software | Three.js 3D robot viewer page — interactive URDF visualization on website demos | in-progress |
-| 2026-02-10 08:50 | cw-bizdev | Outreach email drafts — Veolia ANZ, BEEAH Group, Amsterdam municipality | in-progress |
+| 2026-02-10 08:50 | cw-bizdev | Outreach email drafts — Veolia ANZ, BEEAH Group, Amsterdam municipality | 8db4ddd |
 
 ---
 *cw-software + cw-bizdev active. cw-hardware killed (URDF done, Gazebo N/A).*
