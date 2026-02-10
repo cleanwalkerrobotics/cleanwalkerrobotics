@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-10T12:46:00Z",
+  "lastUpdated": "2026-02-10T14:46:00Z",
   "teams": {
     "cw-software": {
       "status": "idle",
@@ -15,15 +15,15 @@
     },
     "cw-bizdev": {
       "status": "idle",
-      "lastTask": "Outreach emails + tracker (13 targets) + contacts database — COMPLETE",
+      "lastTask": "Outreach emails + tracker (13 targets) + contacts database + additional grant research",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-10T09:30:00Z"
+      "lastActive": "2026-02-10T14:31:00Z"
     },
     "cw-research": {
       "status": "idle",
-      "lastTask": "Grant application research — 17+ grants across EU, NL, UAE, US, SG. Key: WBSO (50% starter), Eurostars (URGENT Mar 19 deadline), VFF, MBRIF, ADIO",
+      "lastTask": "Autonomy stack architecture (1,011 lines) + perception demo PoC (Replicate API YOLOv8s)",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-10T11:15:00Z"
+      "lastActive": "2026-02-10T14:10:00Z"
     },
     "cw-renders": {
       "status": "idle",
@@ -40,5 +40,7 @@
   },
   "activeSessions": 0,
   "vpsSpec": "30GB RAM",
-  "notes": "All sessions idle. cw-research completed grant research (17+ grants, 3 commits) and killed at 12:46 UTC. VPS at 28GB available — ready for next task spawn. CRITICAL: Eurostars deadline March 19, 2026 (37 days)."
+  "notes": "Assessment #10: RESEARCH MORATORIUM in effect. All sessions idle. Next spawns must be deal-advancing only: website optimization, municipality one-pagers, contact form backend. Outreach escalation to Maurits EXECUTED this cycle. Eurostars deadline: March 19, 2026 (37 days).",
+  "researchMoratorium": true,
+  "nextAllowedTaskTypes": ["website-optimization", "municipality-proposals", "contact-form-backend", "outreach-support"]
 }
