@@ -70,7 +70,7 @@
   - Gripper: ~10cm
 - **Reach:** Can reach the ground in front of the robot AND reach back to the bag behind for compression.
 - **Color:** Dark grey/black joint housings with olive-green arm segment panels.
-- **Gripper:** 2-3 finger mechanical gripper. Dark grey/black. Industrial, NOT soft/silicone.
+- **Gripper:** 2-3 finger mechanical gripper. Dark grey/black metal fingers with silicone tips for grip. The structure is rigid mechanical — NOT a fully soft/silicone gripper. The silicone is only on the fingertips as grip pads.
 - **Wrist camera:** Small round camera lens (~2cm) near the gripper wrist for precision pickup.
 - **Height:** When extended upward, the arm tip is ~40cm above the body top — making it the tallest point of the robot.
 - **Default render pose:** Arm extended forward and slightly downward, actively reaching for or holding a piece of litter.
