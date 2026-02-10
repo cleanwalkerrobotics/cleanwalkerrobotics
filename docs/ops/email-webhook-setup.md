@@ -128,3 +128,22 @@ Authorization header: `Bearer <OPENCLAW_HOOK_TOKEN>`
 - Replay attack protection: rejects events with timestamps > 5 minutes old
 - Hook token auth on the gateway side
 - No secrets in source code — all via environment variables
+
+## Environment Variables Needed in Vercel Dashboard
+
+Since the Vercel CLI token is expired, set these manually in the Vercel project dashboard:
+
+| Variable | Value | Scope |
+|---|---|---|
+| `OPENCLAW_GATEWAY_URL` | `http://46.224.145.42:18789` | Production |
+| `OPENCLAW_HOOK_TOKEN` | `16d6ed044c39eec7ea4c748dbf025b9f8a9304052f83e633` | Production |
+| `RESEND_API_KEY` | *(already set? check dashboard)* | Production |
+| `RESEND_WEBHOOK_SECRET` | *(get from Resend dashboard → Webhooks → signing secret)* | Production |
+
+After setting vars, trigger a redeploy. Then configure the Resend webhook:
+1. Go to Resend dashboard → Webhooks
+2. Add endpoint: `https://cleanwalkerrobotics.com/api/email/webhook`
+3. Subscribe to `email.received` event
+4. Copy the signing secret → set as `RESEND_WEBHOOK_SECRET`
+
+**Note:** Gateway is on HTTP (not HTTPS) at port 18789. Consider setting up Caddy/Cloudflare Tunnel for HTTPS in production.
