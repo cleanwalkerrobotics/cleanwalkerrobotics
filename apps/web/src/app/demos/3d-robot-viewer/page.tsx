@@ -3,8 +3,8 @@
 
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import type { ViewMode } from "./types";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { BagResult, ViewMode } from "./types";
 
 // ---------------------------------------------------------------------------
 // Page
@@ -12,6 +12,15 @@ import type { ViewMode } from "./types";
 
 export default function ThreeDRobotViewerPage() {
 	const [viewMode, setViewMode] = useState<ViewMode>("full");
+	const bagRef = useRef<BagResult | null>(null);
+	const [bagPlaying, setBagPlaying] = useState(false);
+
+	const handlePlayBag = useCallback(() => {
+		const bag = bagRef.current;
+		if (!bag || bag.playing) return;
+		bag.play();
+		setBagPlaying(true);
+	}, []);
 
 	return (
 		<div className="min-h-screen bg-cw-dark">
@@ -42,7 +51,13 @@ export default function ThreeDRobotViewerPage() {
 
 			<div className="lg:grid lg:grid-cols-4">
 				<div className="lg:col-span-3">
-					<RobotViewer viewMode={viewMode} />
+					<RobotViewer
+						viewMode={viewMode}
+						bagRef={bagRef}
+						bagPlaying={bagPlaying}
+						setBagPlaying={setBagPlaying}
+						onPlayBag={handlePlayBag}
+					/>
 				</div>
 				<div className="border-t border-white/10 bg-black/20 lg:border-l lg:border-t-0">
 					<RobotSpecs viewMode={viewMode} />
@@ -98,7 +113,19 @@ interface SceneParts {
 	ghostBody: import("three").Mesh;
 }
 
-function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
+function RobotViewer({
+	viewMode,
+	bagRef,
+	bagPlaying,
+	setBagPlaying,
+	onPlayBag,
+}: {
+	viewMode: ViewMode;
+	bagRef: React.MutableRefObject<BagResult | null>;
+	bagPlaying: boolean;
+	setBagPlaying: (v: boolean) => void;
+	onPlayBag: () => void;
+}) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [loading, setLoading] = useState(true);
 	const partsRef = useRef<SceneParts | null>(null);
@@ -239,6 +266,7 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 				bagGroup: bagResult.group,
 				ghostBody,
 			};
+			bagRef.current = bagResult;
 
 			// Apply initial visibility
 			const mode = viewModeRef.current;
@@ -260,7 +288,9 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 				robot.position.y = baseY + Math.sin(t * 1.5) * 0.004;
 
 				// Bag fold animation
+				const wasPlaying = bagResult.playing;
 				bagResult.update(t);
+				if (wasPlaying && !bagResult.playing) setBagPlaying(false);
 
 				// Leg micro-movements
 				for (const leg of bodyResult.legs) {
@@ -331,12 +361,37 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 				</div>
 			)}
 			{!loading && (
-				<div className="pointer-events-none absolute bottom-4 left-4 rounded-lg bg-black/60 px-3 py-2 backdrop-blur-sm">
-					<p className="font-mono text-xs text-gray-400">
-						Drag to rotate &bull; Scroll to zoom &bull; Right-drag
-						to pan
-					</p>
-				</div>
+				<>
+					<div className="pointer-events-none absolute bottom-4 left-4 rounded-lg bg-black/60 px-3 py-2 backdrop-blur-sm">
+						<p className="font-mono text-xs text-gray-400">
+							Drag to rotate &bull; Scroll to zoom &bull; Right-drag
+							to pan
+						</p>
+					</div>
+					{viewMode !== "body" && (
+						<button
+							onClick={onPlayBag}
+							disabled={bagPlaying}
+							className="absolute bottom-4 right-4 flex items-center gap-2 rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs text-white backdrop-blur-sm transition-all hover:border-cw-green/40 hover:bg-black/80 disabled:opacity-50"
+						>
+							{bagPlaying ? (
+								<>
+									<svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 16 16" fill="none">
+										<circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" strokeDasharray="28" strokeDashoffset="8" />
+									</svg>
+									Running&hellip;
+								</>
+							) : (
+								<>
+									<svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor">
+										<path d="M4 2.5v11l10-5.5z" />
+									</svg>
+									Bag Swap
+								</>
+							)}
+						</button>
+					)}
+				</>
 			)}
 		</div>
 	);

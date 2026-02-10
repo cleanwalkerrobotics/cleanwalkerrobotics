@@ -315,18 +315,18 @@ export function buildBagSystem(
 	}
 
 	/* ═══════════════════════════════════════════════════════════
-	   7. ANIMATION — Fold Cycle
+	   7. ANIMATION — On-demand Fold Cycle
 	   ═══════════════════════════════════════════════════════════
-	   Phase 1: Open hold   (0   – 3.0s)
-	   Phase 2: Fold in     (3.0 – 4.5s)
-	   Phase 3: Closed hold (4.5 – 5.5s)
-	   Phase 4: Fold out    (5.5 – 7.0s)
-	   Total cycle: 7 seconds                                    */
+	   Default: frame open at 135°, bag hanging.
+	   play() triggers a single fold cycle:
+	     Phase 1: Fold in     (0   – 1.5s)
+	     Phase 2: Closed hold (1.5 – 2.5s)
+	     Phase 3: Fold out    (2.5 – 4.0s)
+	   Then returns to open and stops.                           */
 
-	const CYCLE = 7;
-	const T1 = 3;
-	const T2 = 4.5;
-	const T3 = 5.5;
+	const CYCLE = 4;
+	const T1 = 1.5;
+	const T2 = 2.5;
 
 	function ease(t: number) {
 		return t * t * (3 - 2 * t);
@@ -380,26 +380,47 @@ export function buildBagSystem(
 	}
 
 	// Initialize bag at the open position
+	hingeGroup.rotation.y = OPEN_ANGLE;
 	refreshBag(OPEN_ANGLE);
+
+	// Animation state
+	let _playing = false;
+	let startTime = 0;
+
+	/** Trigger one fold cycle */
+	function play() {
+		if (_playing) return;
+		_playing = true;
+		startTime = -1; // will be set on first update call
+	}
 
 	/** Called each frame with elapsed time (seconds) from THREE.Clock */
 	function update(time: number) {
-		const ct = time % CYCLE;
+		if (!_playing) return;
+
+		if (startTime < 0) startTime = time;
+		const ct = time - startTime;
+
+		if (ct >= CYCLE) {
+			// Cycle complete — snap to open and stop
+			hingeGroup.rotation.y = OPEN_ANGLE;
+			refreshBag(OPEN_ANGLE);
+			_playing = false;
+			return;
+		}
+
 		let angle: number;
 
 		if (ct < T1) {
-			// Phase 1: hold open
-			angle = OPEN_ANGLE;
-		} else if (ct < T2) {
-			// Phase 2: fold in (open → closed)
-			const t = ease((ct - T1) / (T2 - T1));
+			// Phase 1: fold in (open → closed)
+			const t = ease(ct / T1);
 			angle = OPEN_ANGLE + (CLOSED_ANGLE - OPEN_ANGLE) * t;
-		} else if (ct < T3) {
-			// Phase 3: hold closed
+		} else if (ct < T2) {
+			// Phase 2: hold closed
 			angle = CLOSED_ANGLE;
 		} else {
-			// Phase 4: fold out (closed → open)
-			const t = ease((ct - T3) / (CYCLE - T3));
+			// Phase 3: fold out (closed → open)
+			const t = ease((ct - T2) / (CYCLE - T2));
 			angle = CLOSED_ANGLE + (OPEN_ANGLE - CLOSED_ANGLE) * t;
 		}
 
@@ -407,7 +428,14 @@ export function buildBagSystem(
 		refreshBag(angle);
 	}
 
-	return { group, hingeGroup, update };
+	const result: import("./types").BagResult = {
+		group,
+		hingeGroup,
+		update,
+		play,
+		get playing() { return _playing; },
+	};
+	return result;
 }
 
 export function buildGhostBody(

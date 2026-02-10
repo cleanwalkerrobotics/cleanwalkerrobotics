@@ -28,4 +28,6 @@ export interface BagResult {
 	group: Group;
 	hingeGroup: Group;
 	update: (time: number) => void;
+	play: () => void;
+	readonly playing: boolean;
 }
