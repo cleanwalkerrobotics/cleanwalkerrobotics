@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-10T02:46:00Z",
+  "lastUpdated": "2026-02-10T06:46:00Z",
   "teams": {
     "cw-software": {
       "status": "idle",
@@ -8,10 +8,10 @@
       "lastActive": "2026-02-10T02:03:00Z"
     },
     "cw-hardware": {
-      "status": "idle",
-      "lastTask": null,
-      "lastTaskResult": null,
-      "lastActive": null
+      "status": "active",
+      "lastTask": "URDF robot model v1 — 12-DOF quadruped from design spec",
+      "lastTaskResult": "in-progress",
+      "lastActive": "2026-02-10T06:46:00Z"
     },
     "cw-bizdev": {
       "status": "idle",
@@ -38,7 +38,7 @@
       "lastActive": null
     }
   },
-  "activeSessions": 0,
+  "activeSessions": 1,
   "vpsSpec": "30GB RAM (upgraded from 7.6GB)",
-  "notes": "All sessions terminated. VPS upgraded to 30GB RAM — multi-session constraint LIFTED. 15 commits landed this cycle. All 14 robot renders generated via Replicate API (no longer blocked on Maurits). Website fully live with real renders, 6 interactive demos, softened copy, no public pricing. Pitch deck overhauled."
+  "notes": "CAD/URDF team spawned at 06:46 UTC — critical path item #1. Strategy.md IFAT references cleaned up. 28GB RAM available."
 }

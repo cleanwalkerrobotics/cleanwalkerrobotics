@@ -1,5 +1,84 @@
 # Workflow Assessments
 
+## Assessment #6 — 2026-02-10 06:46 UTC
+
+### Context
+Sixth assessment. 07:46 CET (early morning — Maurits' waking hours approaching). One cw-hardware tmux session just spawned. VPS at 30GB RAM, 28GB available.
+
+### What Happened Since Last Assessment (#5 at 04:46 UTC)
+**Zero deliverables in the past 2 hours** (nighttime idle policy). But this assessment is the trigger point — Assessment #5 planned to spawn CAD/URDF at 07:00-08:00 CET, and we're in that window.
+
+**Actions taken THIS assessment:**
+1. ✅ Spawned `cw-hardware` session with URDF task (using the task brief from Assessment #5)
+2. ✅ Cleaned strategy.md — IFAT Munich marked as SCRATCHED in all 4 locations (priority stack, decisions table, trade shows table, closing requirements)
+3. ✅ Committed and pushed strategy.md cleanup (9e2fc30)
+4. ✅ Updated ORCHESTRATION.md resource constraints (30GB RAM)
+5. ✅ Updated team-status.json — cw-hardware now active
+
+### Scores (1-10)
+| Metric | Score | Notes |
+|--------|-------|-------|
+| Task throughput | 4 | No deliverables completed, but spawned the #1 critical path task and did housekeeping (strategy.md, ORCHESTRATION.md). Points for breaking the 4-hour idle streak. |
+| Quality | 7 | Task brief for CAD/URDF was well-scoped (from Assessment #5). Strategy.md cleanup was thorough (4 locations fixed). |
+| Resource efficiency | 5 | 28GB sat idle for 2 hours. Now 1 session running. Should consider a second session if resources allow. |
+| Priority alignment | 9 | CAD/URDF = #1 on critical path. IFAT cleanup = long-overdue housekeeping. Both correct priorities. |
+
+### Overall: 6.3/10
+
+### Honest Assessment
+**This is the transition from planning to action.** Three consecutive idle assessments (2:46, 4:46, 6:46 UTC) produced zero commits except notes/assessments. The nighttime policy was reasonable, but the CAD/URDF spawn could have happened at 05:00 CET (Assessment #5) instead of waiting until now. That's 3 hours of potential work lost on a task that's fully autonomous and doesn't need human review to proceed.
+
+**Self-criticism:** Assessment #5 said "maintain nighttime idle policy" but also acknowledged that CAD/URDF is autonomous work. The conservative call cost ~3 hours of potential progress on the critical path. Future rule: **if a task is fully autonomous and the task brief is ready, spawn it regardless of time.** Sleep policy should only apply to tasks that might need human interaction.
+
+**What went right:**
+- Task brief was ready to go (prepared in #5). No scoping delay when it was time to spawn.
+- Strategy.md cleanup was overdue by 4 assessments. Done now.
+- Clean transition from planning phase to execution phase.
+
+**Process improvement:**
+- Add to ORCHESTRATION.md: "Autonomous tasks (no human interaction needed) can spawn at any hour. Only delay human-dependent tasks for waking hours."
+
+### Current Deliverable State
+| Deliverable | Status | Change |
+|-------------|--------|--------|
+| Marketing website (5 pages + 6 demos) | ✅ Live | — |
+| Robot renders (14 images at 4K) | ✅ Live | — |
+| All interactive demos (6) | ✅ Live | — |
+| ML pipeline + YOLO training | ✅ Done | — |
+| Financial model + pricing | ✅ Done | — |
+| Pitch deck | ✅ Done | — |
+| Competitive landscape | ✅ Done | — |
+| Robot design spec v1.0 | ✅ Done | — |
+| Strategy.md IFAT cleanup | ✅ Done | **NEW** — cleaned 4 references |
+| **CAD/URDF model** | **🔄 In Progress** | **SPAWNED** — cw-hardware active |
+| Simulation demo video | ❌ Blocked on CAD/URDF | — |
+| Outreach emails | ❌ Blocked on email access | — |
+
+### Bottlenecks
+1. **CAD/URDF is actively being worked.** No longer a bottleneck — it's the in-flight task. ETA: 30-60 min for a first pass URDF.
+2. **Next after URDF: simulation demo.** Once URDF lands, need a Gazebo launch file + basic walking scene. Could be a follow-up task for the same session or a new spawn.
+3. **Outreach still blocked.** Resend API key exists, email templates not drafted. All materials ready. This could be a cw-bizdev task.
+
+### Decisions
+- **Decision:** Spawned cw-hardware with CAD/URDF task. Critical path is now active.
+- **Decision:** Cleaned strategy.md IFAT references (4 locations). Committed 9e2fc30.
+- **Decision:** Future assessments should spawn autonomous tasks regardless of time of day. Update nighttime policy.
+- **Decision:** After URDF completes, evaluate spawning a second session for either (a) Gazebo launch file or (b) outreach email drafts.
+
+### Next Cycle Priorities (08:46 UTC = 09:46 CET)
+1. **Check cw-hardware output** — URDF should be complete or close to it
+2. **If URDF done:** Assign Gazebo launch file + basic sim scene (same session or new spawn)
+3. **Spawn cw-bizdev:** Draft outreach email templates for Veolia, BEEAH, Amsterdam. Use docs/ceo/outreach-tracker.md and contacts.md.
+4. **Consider cw-software:** Next.js image optimization for the 14 renders (1.2-1.9MB each, could compress to WebP)
+
+### Resource State
+- **RAM: 1.6G used / 30G total (28G available)** — 1 session running, room for 2 more
+- Docker: traefik (111MB), watchtower (19MB), n8n (435MB), postgres (51MB) — ~616MB, stable
+- Active tmux: cw-hardware (just spawned, URDF task)
+- Git: HEAD = 9e2fc30 (strategy.md cleanup), fully pushed
+
+---
+
 ## Assessment #5 — 2026-02-10 04:46 UTC
 
 ### Context
