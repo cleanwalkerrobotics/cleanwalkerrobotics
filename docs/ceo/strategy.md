@@ -20,7 +20,7 @@ Zero physical spend until a deal is signed and money is in the bank. Everything 
 6. Robot CAD model + URDF for simulation
 7. Simulation demo video (Gazebo/Isaac Sim)
 8. Pitch deck + financial model (incorporate global market data)
-9. IFAT Munich 2026 startup exhibit registration (May 4-7 — URGENT)
+9. ~~IFAT Munich 2026~~ — SCRATCHED per Maurits (2026-02-09). Not pursuing.
 10. Veolia ANZ outreach (Bondi Beach quadruped trial team)
 11. BEEAH Group outreach (MENA gateway)
 12. Grant applications (EIC Accelerator "Physical AI", DOT SMART, SBIR)
@@ -44,7 +44,7 @@ Zero physical spend until a deal is signed and money is in the bank. Everything 
 | 2026-02-09 | Tariff mitigation priority | Chinese actuators hit with ~49% stacked tariffs; engage customs broker |
 | 2026-02-09 | Global market entry strategy | Phase 1: EU + UAE. Phase 2: UK + Australia + Singapore. Phase 3: US + Japan + Korea |
 | 2026-02-09 | Veolia = #1 strategic partner | Already trialed quadruped litter robots at Bondi Beach; 56 countries; EUR 45B revenue |
-| 2026-02-09 | IFAT Munich 2026 = global launch event | World's largest environmental tech fair; 3,000 exhibitors, 140K attendees; May 4-7 |
+| 2026-02-09 | ~~IFAT Munich 2026~~ — SCRATCHED | Per Maurits: not pursuing. Removed from priority stack. |
 
 ### Global Market Intelligence
 
@@ -86,7 +86,7 @@ Zero physical spend until a deal is signed and money is in the bank. Everything 
 **Key Trade Shows 2026:**
 | Event | Date | Location | Priority |
 |-------|------|----------|----------|
-| IFAT Munich | May 4-7 | Munich | HIGHEST — global launch |
+| ~~IFAT Munich~~ | ~~May 4-7~~ | ~~Munich~~ | SCRATCHED — not pursuing |
 | ICRA 2026 | Jun 1-5 | Vienna | HIGH — technical credibility |
 | Smart City Expo | Nov 3-5 | Barcelona | HIGH — 850+ city delegations |
 | ISWA Congress | Nov 9-12 | London | HIGH — waste industry executives |
@@ -126,4 +126,4 @@ Zero physical spend until a deal is signed and money is in the bank. Everything 
 5. Pilot proposal: 10 units, 1 zone, 6 months, clear KPIs
 6. **Primary targets:** Veolia ANZ (Bondi Beach team), BEEAH (Sharjah), Amsterdam Smart City
 7. **US target:** Austin Resource Recovery Department — Lady Bird Lake trail or 6th Street corridor
-8. **EU credibility:** IFAT Munich startup exhibit (May 2026)
+8. **EU credibility:** ~~IFAT Munich~~ — SCRATCHED. Alternative: ICRA Vienna (Jun 2026) or Smart City Expo Barcelona (Nov 2026)
