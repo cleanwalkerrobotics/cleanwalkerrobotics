@@ -1,5 +1,113 @@
 # Workflow Assessments
 
+## Assessment #8 — 2026-02-10 10:46 UTC
+
+### Context
+Eighth assessment. 11:46 CET (Maurits' midday). Two sessions were running (cw-software, cw-bizdev) — both completed and killed. VPS at 30GB RAM, 28GB available. Zero active sessions.
+
+### What Happened Since Last Assessment (#7 at 08:46 UTC)
+**Both sessions completed all assigned work. 9 commits in 2 hours.**
+
+| Time (UTC) | Commit | What |
+|------------|--------|------|
+| ~09:00 | 8db4ddd | 3 outreach email drafts (Veolia ANZ, BEEAH, Amsterdam) |
+| ~09:00 | e0525d3 | Interactive 3D robot viewer page (Three.js + URDF) |
+| ~09:10 | 284dad3 | Ops log: 3D viewer completion |
+| ~09:10 | e8b3c14 | Ops log: outreach email completion |
+| ~09:15 | a3de77a | Outreach tracker (13 targets) + contacts database |
+| ~09:20 | d8d737c | Ops log: outreach tracker completion |
+| ~09:25 | e5e2923 | Barcelona target enrichment (EUR 300M/yr budget) |
+| ~09:30 | 97d2293 | Outreach tracker enriched with confirmed budgets and intel |
+
+**3D Robot Viewer:**
+- Three.js + URDF-loader implementation
+- Interactive: rotate, zoom, pan the robot model in-browser
+- Deployed live: cleanwalkerrobotics.com/demos/3d-robot-viewer (HTTP 200 ✅)
+- Build clean: 15/15 pages
+
+**Outreach Pipeline — Now the Most Complete Deliverable:**
+- 3 draft-ready emails (Veolia ANZ, BEEAH, Amsterdam) with specific hooks per target
+- 13-target pipeline with budget estimates and contact roles
+- Follow-up cadence defined (Day 0 → Day 4 → Day 10 → Day 21 → Day 30+)
+- Detailed notes for Maurits on personalization and timing
+- Some targets have confirmed budgets: Barcelona EUR 300M/yr, Sydney AUD 86M/yr, Disney USD 1.8B/yr
+
+### Scores (1-10)
+| Metric | Score | Notes |
+|--------|-------|-------|
+| Task throughput | 9 | 2 major deliverables (3D viewer + full outreach pipeline) + enrichment pass on all 13 targets. Both sessions delivered complete, deployed, committed work. |
+| Quality | 8 | 3D viewer is live and working. Emails are well-crafted — each hooks a specific target initiative (Bondi trial, AI City Vision, Schoon & Afvalvrij). Outreach tracker has real budget data. -1 because emails need Maurits to verify contacts on LinkedIn before sending. |
+| Resource efficiency | 7 | Both sessions ran ~90 min of productive work, then sat idle ~30 min waiting for review/next instructions before I caught them. Better than the 75-min idle of Assessment #7, but still room to improve. Killed both promptly at assessment time. |
+| Priority alignment | 9 | 3D viewer = direct follow-up to URDF (critical path). Outreach = Tier 2 items 10-13 on strategy.md. Both are high-value and on the critical path to a deal. |
+
+### Overall: 8.3/10
+
+### Honest Assessment
+**This was a strong execution cycle.** Both spawned tasks (#7 assigned: 3D viewer + outreach emails) completed successfully and exceeded scope — bizdev didn't just draft 3 emails, they built a 13-target pipeline with budget research and follow-up cadence.
+
+**What went right:**
+- Task briefs from Assessment #7 were well-scoped — both sessions hit the mark first try
+- No wasted render cycles or re-runs (unlike the 3-pass render problem in Assessment #4)
+- BizDev team went above and beyond: 3 emails → 13-target tracker + enrichment passes
+- 3D viewer is a real differentiator — prospects can interact with the robot in their browser
+
+**What went wrong:**
+- ~30 min idle on both sessions after completion. Neither session self-terminated — both sat at prompts. The CLAUDE.md callback system notified me, but I didn't act until this assessment cycle. **This is the same monitoring gap from Assessment #7 (75 min idle → now 30 min idle). Improving but not solved.**
+- The 3D viewer got a 307 redirect before resolving to 200. Minor, but should verify the canonical URL handles this cleanly.
+
+**Key realization: We're approaching the end of "things we can build without Maurits."** The remaining high-impact items are:
+1. **Sending the outreach emails** — requires Maurits to verify contacts, personalize, and send
+2. **Gazebo simulation** — blocked by no ROS2 on VPS (and questionable ROI vs. web demos)
+3. **Grant applications** — requires Maurits' involvement for signatures and commitments
+4. **Physical prototype** — blocked on capital
+
+The digital product is essentially complete: website, renders, 7 interactive demos (including 3D viewer), URDF model, ML pipeline, financial model, pitch deck, competitive analysis, outreach pipeline. **The bottleneck has shifted from building to selling.**
+
+### Current Deliverable State
+| Deliverable | Status | Change |
+|-------------|--------|--------|
+| Marketing website (5 pages + 7 demos) | ✅ Live | **+1 demo (3D viewer)** |
+| Robot renders (14 images at 4K) | ✅ Live | — |
+| All interactive demos (7) | ✅ Live | **+1 (3D robot viewer)** |
+| URDF robot model v1 | ✅ Done | — |
+| **3D robot viewer (Three.js)** | **✅ Live** | **NEW — interactive URDF in browser** |
+| ML pipeline + YOLO training | ✅ Done | — |
+| Financial model + pricing | ✅ Done | — |
+| Pitch deck | ✅ Done | — |
+| Competitive landscape | ✅ Done | — |
+| Robot design spec v1.0 | ✅ Done | — |
+| **Outreach emails (3 drafts)** | **✅ Draft Ready** | **NEW — Veolia, BEEAH, Amsterdam** |
+| **Outreach tracker (13 targets)** | **✅ Done** | **NEW — with budgets + contacts + follow-up cadence** |
+| Simulation demo (Gazebo) | ❌ Blocked | No ROS2/Gazebo on VPS. Low priority vs. web demos. |
+| Grant applications | ❌ Not started | Needs Maurits involvement |
+| Outreach send | ❌ Waiting on Maurits | Emails drafted, need review + LinkedIn verification + send |
+
+### Bottlenecks
+1. **🔴 The bottleneck is now Maurits.** Three outreach emails are draft-ready. The entire outreach tracker has 13 targets with budget research. The website is polished with 7 interactive demos and real renders. The pitch deck is done. **Nothing more can be built that materially improves deal chances without actually reaching out to prospects.**
+2. **🟡 Session monitoring gap.** Down from 75 min (Assessment #7) to 30 min (this cycle). Still not real-time. The HEARTBEAT.md should include a "check tmux sessions" item for the regular heartbeat cycle (every ~30 min).
+3. **🟢 Resource utilization.** VPS is clean — 28GB available, 0 sessions running. Ready to sprint on whatever's next.
+
+### Decisions
+- **Decision:** Killed both idle sessions (cw-software, cw-bizdev). Resources freed.
+- **Decision:** Outreach emails are the #1 priority to flag to Maurits. The digital product is as complete as it can be without customer feedback. Time to sell.
+- **Decision:** Next autonomous tasks should focus on: (a) website polish/optimization, (b) grant application research (EIC Accelerator, DOT SMART, SBIR), (c) municipality-specific deployment proposals.
+- **Decision:** Updated HEARTBEAT.md priority queue should reflect the shift from "build" to "sell."
+
+### Next Cycle Priorities (12:46 UTC = 13:46 CET)
+1. **Flag outreach readiness to Maurits** — the 3 emails + 13-target pipeline need his review and action. This is the new critical path.
+2. **Spawn cw-research: Grant application research** — EIC Accelerator "Physical AI", DOT SMART, SBIR. Scope eligibility, deadlines, requirements.
+3. **Spawn cw-software: Website optimization** — image compression (14 renders at 1.2-1.9MB), Core Web Vitals, SEO meta tags, Open Graph images.
+4. **Consider:** Municipality-specific deployment proposals (one-pagers) for the top 3 targets. Makes the outreach more compelling.
+
+### Resource State
+- **RAM: 2.1G used / 30G total (28G available)** — pristine, 0 sessions running
+- Docker: traefik (112MB), watchtower (19MB), n8n (434MB), postgres (52MB) — ~617MB, stable
+- No cw-* tmux sessions — all killed and clean
+- Git: HEAD = 97d2293 (outreach tracker enrichment), fully pushed
+- Vercel: auto-deployed, 15/15 pages, 3D viewer live ✅
+
+---
+
 ## Assessment #7 — 2026-02-10 08:46 UTC
 
 ### Context
