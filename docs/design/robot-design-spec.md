@@ -91,7 +91,7 @@ The entire mechanism has only ONE moving part: the folding frame.
 ### 6.2 Bag Roll Dispenser
 
 - **Position:** Center of the robot's flat back, between the arm mount (front) and the frame hinge (rear).
-- **Orientation:** Cylinder axis runs **LEFT-TO-RIGHT** (perpendicular to the robot's front-to-back axis), **parallel to the frame hinge line**.
+- **Orientation:** Cylinder axis is **orthogonal to the robot's longitudinal (front-to-back) axis** — i.e., the roll spans across the body width, parallel to the frame hinge line. The bag material unrolls toward the rear.
 - **Size:** ~8cm diameter × ~13cm wide (slightly narrower than body width).
 - **Mounting:** Sits LOW and CLOSE to the body surface, in a shallow cradle or recess. Not elevated on a tall mount.
 - **Appearance:** Black anodized aluminum cylindrical housing with visible roll of black bag material.
@@ -187,7 +187,7 @@ The robotic arm doubles as the compressor:
 - ❌ Glossy surfaces (must be matte)
 - ❌ Overly futuristic/sci-fi aesthetic
 - ❌ Stubby legs (legs should be ~same length as body)
-- ❌ Bag roll axis front-to-back (must be LEFT-TO-RIGHT)
+- ❌ Bag roll axis parallel to robot's longitudinal axis (must be orthogonal — spanning across body width)
 
 ## 10. DESIGN EVOLUTION LOG
 
@@ -206,7 +206,7 @@ The robotic arm doubles as the compressor:
 When generating renders, ALWAYS start with this core description. NEVER reference competitor brands.
 
 ```
-A custom-designed quadrupedal robot with a smooth matte dark olive-green body with softly rounded panel edges. The body is a flat horizontal rectangular enclosure, roughly 60cm long, 15cm wide, and 12cm tall. The head is a compact sensor housing module at the front with a flat face featuring two square bright green LED eye panels — not an organic dog head but a sleek sensor module with gentle contouring. Bright green LED light strips on the outward-facing sides of the upper leg segments only. Four articulated legs roughly the same length as the body, mammalian stance, with rubber foot pads. A tall multi-joint robotic arm with mechanical gripper rises from the front top of the body, extending about 40cm above the body with visible shoulder, elbow, and wrist joints. On the center of the flat back, a black cylindrical bag roll dispenser mounted horizontally with its axis running left-to-right across the body width. At the rear edge of the body, a rectangular dark metal tube frame is hinged open at 135 degrees from the back surface, extending backward and upward — it is the same width as the body and about half the body length deep. A heavy-duty black trash bag hangs freely from this frame, draping down behind the robot — no basket, no cage, no mesh. Smooth clean modern surfaces throughout. No text, no logos, no branding, no watermarks.
+A custom-designed quadrupedal robot with a smooth matte dark olive-green body with softly rounded panel edges. The body is a flat horizontal rectangular enclosure, roughly 60cm long, 15cm wide, and 12cm tall. The head is a compact sensor housing module at the front with a flat face featuring two square bright green LED eye panels — not an organic dog head but a sleek sensor module with gentle contouring. Bright green LED light strips on the outward-facing sides of the upper leg segments only. Four articulated legs roughly the same length as the body, mammalian stance, with rubber foot pads. A tall multi-joint robotic arm with mechanical gripper rises from the front top of the body, extending about 40cm above the body with visible shoulder, elbow, and wrist joints. On the center of the flat back, a black cylindrical bag roll dispenser mounted horizontally with its cylinder axis orthogonal to the robot's longitudinal axis (spanning across the body width). At the rear edge of the body, a rectangular dark metal tube frame is hinged open at 135 degrees from the back surface, extending backward and upward — it is the same width as the body and about half the body length deep. A heavy-duty black trash bag hangs freely from this frame, draping down behind the robot — no basket, no cage, no mesh. Smooth clean modern surfaces throughout. No text, no logos, no branding, no watermarks.
 ```
 
 Then append scene-specific details (lighting, environment, pose, camera angle).
