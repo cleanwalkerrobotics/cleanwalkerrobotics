@@ -259,6 +259,9 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 				// Idle breathing
 				robot.position.y = baseY + Math.sin(t * 1.5) * 0.004;
 
+				// Bag fold animation
+				bagResult.update(t);
+
 				// Leg micro-movements
 				for (const leg of bodyResult.legs) {
 					leg.hipPitch.rotation.y =

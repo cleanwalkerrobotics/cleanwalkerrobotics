@@ -25,25 +25,152 @@ export function buildRobotBody(THREE: typeof import("three")): BodyResult {
 		emissiveIntensity: 0.5,
 	});
 
+	// Panel seam material — slightly darker than body
+	const seamDark = new THREE.MeshStandardMaterial({
+		color: 0x2e3b32,
+		roughness: 0.8,
+		metalness: 0.1,
+	});
+
 	const group = new THREE.Group();
 	const legs: LegRef[] = [];
 
-	// ---------- Body (V2.3: 600×150×120mm, 4:1 L:W ratio) ----------
-	const bodyMesh = new THREE.Mesh(
-		new THREE.BoxGeometry(0.60, 0.15, 0.12),
-		oliveGreen,
-	);
+	// ---------- Body Shell (V2.3: 600×150×120mm, chamfered edges) ----------
+	// Rounded rectangle shape for extrusion — creates injection-molded ABS look
+	const bodyW = 0.15; // Y dimension (width)
+	const bodyH = 0.60; // X dimension (length) — extruded along Z, rotated later
+	const bodyD = 0.12; // Z dimension (height) — extrusion depth
+	const bevelR = 0.012; // corner radius
+
+	const bodyShape = new THREE.Shape();
+	const bHW = bodyW / 2 - bevelR;
+	const bHH = bodyH / 2 - bevelR;
+	bodyShape.moveTo(-bHW, -bHH - bevelR);
+	bodyShape.lineTo(bHW, -bHH - bevelR);
+	bodyShape.quadraticCurveTo(bHW + bevelR, -bHH - bevelR, bHW + bevelR, -bHH);
+	bodyShape.lineTo(bHW + bevelR, bHH);
+	bodyShape.quadraticCurveTo(bHW + bevelR, bHH + bevelR, bHW, bHH + bevelR);
+	bodyShape.lineTo(-bHW, bHH + bevelR);
+	bodyShape.quadraticCurveTo(-bHW - bevelR, bHH + bevelR, -bHW - bevelR, bHH);
+	bodyShape.lineTo(-bHW - bevelR, -bHH);
+	bodyShape.quadraticCurveTo(-bHW - bevelR, -bHH - bevelR, -bHW, -bHH - bevelR);
+
+	const bodyExtrudeSettings = {
+		depth: bodyD,
+		bevelEnabled: true,
+		bevelThickness: 0.004,
+		bevelSize: 0.004,
+		bevelSegments: 3,
+	};
+	const bodyGeom = new THREE.ExtrudeGeometry(bodyShape, bodyExtrudeSettings);
+	// Rotate so extrusion goes along Z, then orient: shape XY → body YX, extrude Z → body Z
+	const bodyMesh = new THREE.Mesh(bodyGeom, oliveGreen);
+	// Shape is in XY plane, extruded along +Z. We want: shape X→body Y, shape Y→body X, extrude Z→body Z
+	// After extrusion, geometry spans: X=[-W/2, W/2], Y=[-H/2, H/2], Z=[0, bodyD]
+	// We need body centered at origin: rotate and translate
+	bodyMesh.rotation.set(0, 0, Math.PI / 2); // swap X↔Y so length is along X
+	bodyMesh.position.set(0, 0, -bodyD / 2); // center Z
 	bodyMesh.castShadow = true;
 	group.add(bodyMesh);
 
-	// Raised top panel for visual depth
-	const bodyTop = new THREE.Mesh(
-		new THREE.BoxGeometry(0.55, 0.13, 0.02),
-		oliveGreen,
-	);
-	bodyTop.position.set(0, 0, 0.07);
+	// Raised top panel with bevel (slightly inset from body edges)
+	const topW = 0.13;
+	const topH = 0.55;
+	const topD = 0.015;
+	const topR = 0.008;
+	const topShape = new THREE.Shape();
+	const tHW = topW / 2 - topR;
+	const tHH = topH / 2 - topR;
+	topShape.moveTo(-tHW, -tHH - topR);
+	topShape.lineTo(tHW, -tHH - topR);
+	topShape.quadraticCurveTo(tHW + topR, -tHH - topR, tHW + topR, -tHH);
+	topShape.lineTo(tHW + topR, tHH);
+	topShape.quadraticCurveTo(tHW + topR, tHH + topR, tHW, tHH + topR);
+	topShape.lineTo(-tHW, tHH + topR);
+	topShape.quadraticCurveTo(-tHW - topR, tHH + topR, -tHW - topR, tHH);
+	topShape.lineTo(-tHW - topR, -tHH);
+	topShape.quadraticCurveTo(-tHW - topR, -tHH - topR, -tHW, -tHH - topR);
+	const topGeom = new THREE.ExtrudeGeometry(topShape, {
+		depth: topD,
+		bevelEnabled: true,
+		bevelThickness: 0.002,
+		bevelSize: 0.002,
+		bevelSegments: 2,
+	});
+	const bodyTop = new THREE.Mesh(topGeom, oliveGreen);
+	bodyTop.rotation.set(0, 0, Math.PI / 2);
+	bodyTop.position.set(0, 0, 0.06);
 	bodyTop.castShadow = true;
 	group.add(bodyTop);
+
+	// ---------- Panel Seam Lines (subtle recessed lines on body sides) ----------
+	// Long side seam lines (visible on left and right body sides)
+	for (const side of [1, -1]) {
+		// Mid-height horizontal line on each long side
+		const seamMid = new THREE.Mesh(
+			new THREE.BoxGeometry(0.54, 0.001, 0.003),
+			seamDark,
+		);
+		seamMid.position.set(0, side * 0.076, 0.0);
+		group.add(seamMid);
+
+		// Lower horizontal line
+		const seamLow = new THREE.Mesh(
+			new THREE.BoxGeometry(0.54, 0.001, 0.003),
+			seamDark,
+		);
+		seamLow.position.set(0, side * 0.076, -0.03);
+		group.add(seamLow);
+	}
+
+	// Transverse seam separating rear bag section from main body (at ~X = -0.10)
+	const seamRear = new THREE.Mesh(
+		new THREE.BoxGeometry(0.001, 0.15, 0.10),
+		seamDark,
+	);
+	seamRear.position.set(-0.10, 0, 0.0);
+	group.add(seamRear);
+
+	// ---------- Rear Mounting Points (hinge brackets for bag frame) ----------
+	// Two L-shaped brackets at X = -0.30, Y = ±0.05, Z = 0.065
+	for (const side of [0.05, -0.05]) {
+		// Vertical plate of bracket
+		const bracketVert = new THREE.Mesh(
+			new THREE.BoxGeometry(0.003, 0.015, 0.018),
+			darkGrey,
+		);
+		bracketVert.position.set(-0.30, side, 0.065);
+		bracketVert.castShadow = true;
+		group.add(bracketVert);
+
+		// Horizontal plate of bracket (top flange)
+		const bracketHoriz = new THREE.Mesh(
+			new THREE.BoxGeometry(0.015, 0.015, 0.003),
+			darkGrey,
+		);
+		bracketHoriz.position.set(-0.3075, side, 0.075);
+		bracketHoriz.castShadow = true;
+		group.add(bracketHoriz);
+	}
+
+	// ---------- Roll Cradle / Recess (where bag roll sits) ----------
+	// Two raised guide rails running across body width at X = -0.06
+	for (const offset of [0.02, -0.02]) {
+		const rail = new THREE.Mesh(
+			new THREE.BoxGeometry(0.008, 0.12, 0.005),
+			darkGrey,
+		);
+		rail.position.set(-0.06 + offset, 0, 0.065);
+		rail.castShadow = true;
+		group.add(rail);
+	}
+	// Shallow channel between rails (slightly recessed visual — thin dark strip)
+	const cradleChannel = new THREE.Mesh(
+		new THREE.BoxGeometry(0.032, 0.11, 0.001),
+		seamDark,
+	);
+	cradleChannel.position.set(-0.06, 0, 0.061);
+	group.add(cradleChannel);
 
 	// LiDAR puck on top (between arm mount and bag roll)
 	const lidar = new THREE.Mesh(
@@ -54,14 +181,43 @@ export function buildRobotBody(THREE: typeof import("three")): BodyResult {
 	lidar.position.set(0.05, 0, 0.085);
 	group.add(lidar);
 
-	// ---------- Head (flush integrated sensor housing) ----------
-	// Same width as body, barely extends beyond front edge
-	const head = new THREE.Mesh(
-		new THREE.BoxGeometry(0.08, 0.15, 0.08),
-		oliveGreen,
-	);
-	// Centered at body front edge — back half overlaps body, front half protrudes ~4cm
-	head.position.set(0.30, 0, 0.0);
+	// ---------- Head (integrated tapered sensor housing) ----------
+	// Custom geometry: body tapers from full width to a narrower head at the front
+	// Use a tapered extrusion — narrowing the last ~8cm of the body
+	const headShape = new THREE.Shape();
+	const headFrontW = 0.13; // slightly narrower at front face
+	const headRearW = 0.15; // full body width where it meets body
+	const headLen = 0.08;
+	const headH = 0.08;
+	const hR = 0.006; // small corner radius for head
+
+	// Head profile in XY plane (X = width, Y = length), extruded along Z (height)
+	// Trapezoidal profile: wider at back (Y=0), narrower at front (Y=headLen)
+	const hFHW = headFrontW / 2 - hR;
+	const hRHW = headRearW / 2 - hR;
+	headShape.moveTo(-hRHW, -hR);
+	headShape.lineTo(-hFHW, headLen - hR);
+	headShape.quadraticCurveTo(-hFHW, headLen, -hFHW + hR, headLen);
+	headShape.lineTo(hFHW - hR, headLen);
+	headShape.quadraticCurveTo(hFHW, headLen, hFHW, headLen - hR);
+	headShape.lineTo(hRHW, -hR);
+	headShape.quadraticCurveTo(hRHW, 0, hRHW - hR, 0);
+	headShape.lineTo(-hRHW + hR, 0);
+	headShape.quadraticCurveTo(-hRHW, 0, -hRHW, -hR);
+
+	const headGeom = new THREE.ExtrudeGeometry(headShape, {
+		depth: headH,
+		bevelEnabled: true,
+		bevelThickness: 0.003,
+		bevelSize: 0.003,
+		bevelSegments: 2,
+	});
+	const head = new THREE.Mesh(headGeom, oliveGreen);
+	// Orient: shape X → body Y (width), shape Y → body +X (forward), extrude Z → body Z (height)
+	// Rotation -π/2 around Z: shape Y → world +X, shape X → world -Y (centered, symmetric)
+	head.rotation.set(0, 0, -Math.PI / 2);
+	// Position: rear edge at X=0.26 (4cm overlap with body), front face at X=0.34, Z centered
+	head.position.set(0.26, 0, -headH / 2);
 	head.castShadow = true;
 	group.add(head);
 
@@ -74,7 +230,17 @@ export function buildRobotBody(THREE: typeof import("three")): BodyResult {
 	eyeR.position.set(0.346, -0.03, 0.01);
 	group.add(eyeR);
 
-	// ---------- Arm (multi-joint with turret base, front-center) ----------
+	// ---------- Arm turret mount flange + arm ----------
+	// Mounting flange ring at base of turret (wider than turret, thin disc)
+	const turretFlange = new THREE.Mesh(
+		new THREE.CylinderGeometry(0.05, 0.05, 0.005, 20),
+		darkGrey,
+	);
+	turretFlange.rotation.x = Math.PI / 2;
+	turretFlange.position.set(0.18, 0, 0.0625);
+	turretFlange.castShadow = true;
+	group.add(turretFlange);
+
 	const arm = buildArm(THREE, oliveGreen, darkGrey, ledGreen, group);
 
 	// ---------- Legs (×4, mammalian stance) ----------

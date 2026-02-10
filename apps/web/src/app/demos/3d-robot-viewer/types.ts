@@ -27,4 +27,5 @@ export interface BodyResult {
 export interface BagResult {
 	group: Group;
 	hingeGroup: Group;
+	update: (time: number) => void;
 }
