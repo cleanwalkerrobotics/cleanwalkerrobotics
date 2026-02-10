@@ -5,9 +5,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-	title: "Demos — CleanWalker Robotics",
+	title: "Demos",
 	description:
 		"See CleanWalker's autonomous litter collection technology in action. AI perception, autonomous navigation, and fleet management demos.",
+	openGraph: {
+		title: "Technology Demos — CleanWalker Robotics",
+		description:
+			"Interactive demos of CleanWalker's AI litter detection, autonomous navigation, quadrupedal locomotion, and fleet management technology.",
+	},
 };
 
 const demos = [
@@ -82,7 +87,7 @@ export default function DemosPage() {
 			{/* Hero — Subtle background image */}
 			<section className="relative px-6 py-24 text-center">
 				<Image
-					src="/renders/hero-park.png"
+					src="/renders/hero-park.webp"
 					alt="CleanWalker robot in a park setting"
 					fill
 					className="object-cover opacity-15"

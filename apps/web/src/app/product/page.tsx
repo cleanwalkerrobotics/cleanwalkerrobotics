@@ -5,9 +5,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-	title: "Product — CleanWalker Robotics",
+	title: "Product",
 	description:
 		"Discover the CleanWalker autonomous litter-collecting robot. Quadrupedal, weatherproof, AI-powered, and built for 24/7 outdoor operation.",
+	openGraph: {
+		title: "CleanWalker Robot — Product & Specifications",
+		description:
+			"Quadrupedal, weatherproof, AI-powered autonomous litter collection robot. Built for 24/7 outdoor operation across parks, campuses, and public spaces.",
+	},
 };
 
 export default function ProductPage() {
@@ -29,7 +34,7 @@ export default function ProductPage() {
 						</div>
 						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
 							<Image
-								src="/renders/detail-side-profile.png"
+								src="/renders/detail-side-profile.webp"
 								alt="CleanWalker robot side profile showing quadrupedal design, articulated legs, and sensor array"
 								fill
 								className="object-cover"
@@ -100,7 +105,7 @@ export default function ProductPage() {
 						<div className="space-y-6">
 							<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
 								<Image
-									src="/renders/detail-gripper.png"
+									src="/renders/detail-gripper.webp"
 									alt="Close-up of CleanWalker's robotic gripper picking up an aluminum can with soft silicone fingers"
 									fill
 									className="object-cover"
@@ -109,7 +114,7 @@ export default function ProductPage() {
 							</div>
 							<div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-cw-charcoal">
 								<Image
-									src="/renders/detail-charging-dock.png"
+									src="/renders/detail-charging-dock.webp"
 									alt="CleanWalker robot docked at its weatherproof charging station in a park setting"
 									fill
 									className="object-cover"
@@ -127,7 +132,7 @@ export default function ProductPage() {
 					<div className="grid items-center gap-12 md:grid-cols-2">
 						<div className="relative aspect-square overflow-hidden rounded-2xl bg-cw-light">
 							<Image
-								src="/renders/tech-exploded-view.png"
+								src="/renders/tech-exploded-view.webp"
 								alt="Exploded view of CleanWalker robot showing internal components — motors, sensors, compute module, battery, gripper mechanism"
 								fill
 								className="object-contain"
@@ -296,7 +301,7 @@ export default function ProductPage() {
 						</div>
 						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
 							<Image
-								src="/renders/detail-sensors.png"
+								src="/renders/detail-sensors.webp"
 								alt="Close-up of CleanWalker sensor array showing stereo camera lenses, IR projector, and LiDAR puck"
 								fill
 								className="object-cover"
@@ -321,7 +326,7 @@ export default function ProductPage() {
 					<div className="mt-12">
 						<div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg">
 							<Image
-								src="/renders/tech-dashboard-mockup.png"
+								src="/renders/tech-dashboard-mockup.webp"
 								alt="CleanWalker fleet management dashboard showing real-time robot locations, analytics, and route planning on screen"
 								fill
 								className="object-cover"
@@ -381,7 +386,7 @@ export default function ProductPage() {
 					<div className="mt-12 grid gap-6 md:grid-cols-3">
 						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
 							<Image
-								src="/renders/detail-side-profile.png"
+								src="/renders/detail-side-profile.webp"
 								alt="CleanWalker robot clean side profile showing four articulated legs, folded gripper arm, and LiDAR sensor"
 								fill
 								className="object-cover"
@@ -390,7 +395,7 @@ export default function ProductPage() {
 						</div>
 						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
 							<Image
-								src="/renders/detail-sensors.png"
+								src="/renders/detail-sensors.webp"
 								alt="CleanWalker front-face sensor array with stereo camera lenses and green LED status indicator"
 								fill
 								className="object-cover"
@@ -399,7 +404,7 @@ export default function ProductPage() {
 						</div>
 						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
 							<Image
-								src="/renders/lifestyle-night-ops.png"
+								src="/renders/lifestyle-night-ops.webp"
 								alt="CleanWalker robot operating at night on a city street with green LED strip illumination"
 								fill
 								className="object-cover"

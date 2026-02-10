@@ -4,10 +4,56 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const siteUrl = "https://cleanwalkerrobotics.com";
+
 export const metadata: Metadata = {
-	title: "CleanWalker Robotics — Autonomous Litter Collection",
+	title: {
+		default: "CleanWalker Robotics — Autonomous Litter Collection",
+		template: "%s | CleanWalker Robotics",
+	},
 	description:
-		"CleanWalker deploys autonomous litter-collecting robots to parks, campuses, and public spaces. Autonomous litter collection for municipalities and property managers.",
+		"CleanWalker deploys autonomous litter-collecting robots to parks, campuses, and public spaces. 24/7 autonomous operation, AI-powered detection, zero staffing complexity.",
+	keywords: [
+		"autonomous robots",
+		"litter collection",
+		"smart city",
+		"municipal robotics",
+		"park cleaning",
+		"autonomous litter",
+		"quadrupedal robot",
+		"AI litter detection",
+		"fleet management",
+		"public space maintenance",
+	],
+	metadataBase: new URL(siteUrl),
+	openGraph: {
+		type: "website",
+		locale: "en_US",
+		url: siteUrl,
+		siteName: "CleanWalker Robotics",
+		title: "CleanWalker Robotics — Autonomous Litter Collection",
+		description:
+			"Autonomous litter-collecting robots for parks, campuses, and public spaces. 24/7 operation, AI-powered detection, zero staffing complexity.",
+		images: [
+			{
+				url: "/og-image.jpg",
+				width: 1200,
+				height: 630,
+				alt: "CleanWalker autonomous litter-collecting robot in a sunlit park",
+			},
+		],
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "CleanWalker Robotics — Autonomous Litter Collection",
+		description:
+			"Autonomous litter-collecting robots for parks, campuses, and public spaces. 24/7 operation, AI-powered detection, zero staffing complexity.",
+		images: ["/og-image.jpg"],
+	},
+	robots: {
+		index: true,
+		follow: true,
+	},
 };
 
 function Navbar() {

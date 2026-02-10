@@ -5,9 +5,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-	title: "About — CleanWalker Robotics",
+	title: "About",
 	description:
 		"CleanWalker Robotics is building autonomous robots that keep public spaces clean. Learn about our mission, team, and technology.",
+	openGraph: {
+		title: "About CleanWalker Robotics",
+		description:
+			"Building autonomous robots that keep public spaces clean. Our mission, team, and the technology behind CleanWalker.",
+	},
 };
 
 function TeamPlaceholder({ name, role }: { name: string; role: string }) {
@@ -40,7 +45,7 @@ export default function AboutPage() {
 			{/* Hero — Full-bleed with sidewalk image */}
 			<section className="relative bg-cw-dark px-6 py-24 md:py-32">
 				<Image
-					src="/renders/hero-sidewalk.png"
+					src="/renders/hero-sidewalk.webp"
 					alt="CleanWalker robot navigating a European city sidewalk alongside pedestrians"
 					fill
 					className="object-cover opacity-40"
@@ -92,7 +97,7 @@ export default function AboutPage() {
 						</div>
 						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
 							<Image
-								src="/renders/lifestyle-city-worker.png"
+								src="/renders/lifestyle-city-worker.webp"
 								alt="CleanWalker robot working alongside a city maintenance worker in an urban park"
 								fill
 								className="object-cover"
@@ -260,7 +265,7 @@ export default function AboutPage() {
 			{/* CTA with hero-sidewalk background */}
 			<section className="relative bg-cw-dark px-6 py-24">
 				<Image
-					src="/renders/hero-sidewalk.png"
+					src="/renders/hero-sidewalk.webp"
 					alt="CleanWalker robot on a European sidewalk"
 					fill
 					className="object-cover opacity-20"

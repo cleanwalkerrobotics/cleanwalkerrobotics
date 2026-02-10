@@ -82,6 +82,7 @@
 | 2026-02-10 | cw-bizdev | Municipality deployment proposals: Amsterdam (Schoon & Afvalvrij), Dubai/BEEAH (AI City Vision), Veolia ANZ (Bondi-to-commercial) — 3 one-pagers in docs/sales/proposals/ | ecdcd3d |
 
 | 2026-02-10 | cw-software | Integrate real AI litter detection into demo — Replicate YOLOv8 API route + rewritten UploadSection with real inference, bounding boxes, mock fallback, URL/sample input | d1641d3 |
+| 2026-02-10 | cw-software | Website image optimization: converted 14 PNG renders to WebP (<200KB each), updated all refs, added OG/Twitter meta images, added SEO keywords + per-page meta, contact page metadata | 17346ea |
 
 ---
 *cw-software complete. cw-bizdev complete. cw-hardware killed (URDF done, Gazebo N/A).*
