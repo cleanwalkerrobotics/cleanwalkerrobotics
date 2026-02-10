@@ -45,7 +45,7 @@ export default function AboutPage() {
 			{/* Hero — Full-bleed with sidewalk image */}
 			<section className="relative bg-cw-dark px-6 py-24 md:py-32">
 				<Image
-					src="/renders/hero-sidewalk.webp"
+					src="/renders/v3/hero-sidewalk.png"
 					alt="CleanWalker robot navigating a European city sidewalk alongside pedestrians"
 					fill
 					className="object-cover opacity-40"
@@ -97,7 +97,7 @@ export default function AboutPage() {
 						</div>
 						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
 							<Image
-								src="/renders/lifestyle-city-worker.webp"
+								src="/renders/v3/lifestyle-city-worker.png"
 								alt="CleanWalker robot working alongside a city maintenance worker in an urban park"
 								fill
 								className="object-cover"
@@ -265,7 +265,7 @@ export default function AboutPage() {
 			{/* CTA with hero-sidewalk background */}
 			<section className="relative bg-cw-dark px-6 py-24">
 				<Image
-					src="/renders/hero-sidewalk.webp"
+					src="/renders/v3/hero-sidewalk.png"
 					alt="CleanWalker robot on a European sidewalk"
 					fill
 					className="object-cover opacity-20"
