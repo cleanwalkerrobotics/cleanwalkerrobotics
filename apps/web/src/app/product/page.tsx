@@ -411,6 +411,24 @@ export default function ProductPage() {
 								sizes="(max-width: 768px) 100vw, 33vw"
 							/>
 						</div>
+						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
+							<Image
+								src="/renders/component-actuator.webp"
+								alt="CleanWalker brushless actuator motor with integrated controller board alongside robot"
+								fill
+								className="object-cover"
+								sizes="(max-width: 768px) 100vw, 33vw"
+							/>
+						</div>
+						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
+							<Image
+								src="/renders/component-pcb.webp"
+								alt="CleanWalker robot with exposed main control PCB showing sensor and motor driver connections"
+								fill
+								className="object-cover"
+								sizes="(max-width: 768px) 100vw, 33vw"
+							/>
+						</div>
 					</div>
 				</div>
 			</section>
