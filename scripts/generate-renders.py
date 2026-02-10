@@ -2,6 +2,7 @@
 """
 CleanWalker Robotics — AI Render Generator
 Uses the Replicate API to generate photorealistic robot renders.
+Model: Seedream 4.5 (bytedance/seedream-4.5) at 2560x1440 (16:9)
 """
 
 import os
@@ -24,7 +25,9 @@ HEADERS = {
 BASE_DIR = Path(__file__).resolve().parent.parent / "apps" / "web" / "public" / "renders"
 TEST_DIR = BASE_DIR / "test"
 
-# All 14 render prompts from docs/sales/render-prompts.md
+MODEL_ID = "bytedance/seedream-4.5"
+
+# All 14 render prompts — updated for Bag Cassette System design
 RENDERS = [
     {
         "name": "hero-park",
@@ -32,10 +35,13 @@ RENDERS = [
             "Photorealistic product photo of an autonomous quadrupedal litter-collecting "
             "robot in a clean urban park. The robot is matte charcoal gray with green LED "
             "accent lines, has four articulated legs with rubber foot pads, a front-mounted "
-            "stereo camera system, a small robotic arm with soft silicone gripper picking up "
-            "a plastic bottle, and a compact waste bin on its back. Morning golden hour "
-            "lighting, shallow depth of field, green grass and trees in background. "
-            "Professional product photography style. 8K, ultra detailed."
+            "stereo camera system, and a small robotic arm with soft silicone gripper picking "
+            "up a plastic bottle. On top of the robot, an X-shaped metal frame is raised "
+            "upward holding a standard trash bag open with a square rim — the bag is partially "
+            "filled with collected litter. The raised bag frame gives the robot a distinctive "
+            "tall silhouette. Morning golden hour lighting, shallow depth of field, green "
+            "grass and trees in background. Professional product photography style. 8K, "
+            "ultra detailed."
         ),
     },
     {
@@ -44,9 +50,11 @@ RENDERS = [
             "Photorealistic render of a sleek autonomous quadrupedal robot walking on a "
             "clean European city sidewalk. Matte dark gray body with green accent lighting, "
             "four articulated legs in walking pose, stereo camera eyes on the front, small "
-            "LiDAR sensor on top. The robot is about the size of a medium dog. Modern "
-            "architecture and cobblestone street in the background. Overcast sky, soft "
-            "diffused lighting. Professional product photography, studio quality. 8K."
+            "LiDAR sensor on top. On the robot's back, a raised X-shaped metal frame holds "
+            "a trash bag open with a square rim, giving the robot a distinctive tall "
+            "silhouette. The robot is about the size of a medium dog. Modern architecture "
+            "and cobblestone street in the background. Overcast sky, soft diffused lighting. "
+            "Professional product photography, studio quality. 8K."
         ),
     },
     {
@@ -54,10 +62,12 @@ RENDERS = [
         "prompt": (
             "Photorealistic wide-angle photo of three autonomous quadrupedal robots working "
             "in a large urban park, picking up litter. The robots are matte charcoal with "
-            "green LED strips, each about dog-sized with four legs. One robot is picking up "
-            "a can with its small robotic arm, another is walking, and the third is "
-            "depositing waste into its built-in bin. Drone perspective, morning light, "
-            "professional marketing photo. Ultra detailed, 8K."
+            "green LED strips, each about dog-sized with four legs. Each robot has a raised "
+            "X-shaped metal frame on its back holding open a trash bag with a square rim. "
+            "One robot is picking up a can with its small robotic arm, another is walking "
+            "with its bag nearly full, and the third has its frame lowered flat — dropping "
+            "a sealed full bag at the curb before reloading a fresh one. Drone perspective, "
+            "morning light, professional marketing photo. Ultra detailed, 8K."
         ),
     },
     {
@@ -66,8 +76,10 @@ RENDERS = [
             "Extreme close-up photorealistic render of a robotic soft gripper made of "
             "translucent silicone, with three fingers gently grasping a crushed aluminum "
             "can. The gripper is attached to a small 2-DOF robotic arm on a matte charcoal "
-            "quadrupedal robot. Shallow depth of field, studio lighting, product photography "
-            "style. Shows the precision and gentleness of the grip. 8K macro photography."
+            "quadrupedal robot. In the background, slightly out of focus, the robot's raised "
+            "X-shaped bag frame holds open a trash bag where collected litter is visible. "
+            "Shallow depth of field, studio lighting, product photography style. Shows the "
+            "precision and gentleness of the grip. 8K macro photography."
         ),
     },
     {
@@ -76,8 +88,9 @@ RENDERS = [
             "Front view close-up of an autonomous robot's sensor head. Two circular camera "
             "lenses (stereo depth camera) with a small IR dot projector between them, "
             "mounted on a matte charcoal body panel. A small green LED status indicator "
-            "glows. Clean industrial design, slightly rounded edges. Studio product "
-            "photography with soft rim lighting. 8K."
+            "glows. Behind and above, the raised X-shaped bag cassette frame is partially "
+            "visible, holding an open trash bag. Clean industrial design, slightly rounded "
+            "edges. Studio product photography with soft rim lighting. 8K."
         ),
     },
     {
@@ -87,8 +100,10 @@ RENDERS = [
             "a white/light gray studio background. Matte charcoal body with green accent "
             "line, four articulated legs in standing pose, visible joints with aluminum "
             "hardware, front stereo camera, top-mounted LiDAR puck, small robotic arm "
-            "folded underneath, waste bin hatch on top. Professional product photography, "
-            "even lighting, no shadows. 8K."
+            "folded underneath. On top, the X-shaped bag cassette frame is raised, holding "
+            "a standard trash bag open with a square metal rim — the robot's most distinctive "
+            "feature. The internal bag roll cassette is faintly visible through a panel. "
+            "Professional product photography, even lighting, no shadows. 8K."
         ),
     },
     {
@@ -97,8 +112,10 @@ RENDERS = [
             "Photorealistic render of an autonomous quadrupedal robot parked on a small "
             "charging dock in an urban park setting. The dock is a simple weatherproof "
             "platform with a small rain canopy. The robot has green LED strip glowing "
-            "(charging indicator). Pogo pin contacts visible at the base. Clean, modern "
-            "design. Evening golden hour lighting. 8K."
+            "(charging indicator). The X-shaped bag cassette frame is lowered flat against "
+            "the body in compact transport mode, giving the robot a low, sleek profile. "
+            "Pogo pin contacts visible at the base. Clean, modern design. Evening golden "
+            "hour lighting. 8K."
         ),
     },
     {
@@ -107,8 +124,9 @@ RENDERS = [
             "Photorealistic photo of a city parks maintenance worker in a high-vis vest "
             "standing next to an autonomous quadrupedal litter robot, checking a "
             "tablet/dashboard. The robot is matte charcoal with green accents, about "
-            "knee-height. They are in a well-maintained urban park. The worker looks "
-            "pleased. Natural daylight, editorial photography style. 8K."
+            "knee-height, with its X-shaped bag frame raised and holding an open trash bag "
+            "half-full of collected litter. They are in a well-maintained urban park. The "
+            "worker looks pleased. Natural daylight, editorial photography style. 8K."
         ),
     },
     {
@@ -117,8 +135,9 @@ RENDERS = [
             "Moody photorealistic render of an autonomous quadrupedal robot operating on a "
             "city street at night. The robot's green LED status strip illuminates the "
             "sidewalk. Its camera sensors glow faintly. Street lamps in the background. The "
-            "robot is mid-stride, carrying a plastic bag in its gripper. Cinematic lighting, "
-            "shallow depth of field. 8K."
+            "robot is mid-stride with its raised X-shaped bag frame holding an open trash "
+            "bag — the robotic arm is pressing a piece of litter down into the bag, "
+            "compacting it. Cinematic lighting, shallow depth of field. 8K."
         ),
     },
     {
@@ -126,8 +145,9 @@ RENDERS = [
         "prompt": (
             "Split image: Left side shows a park with scattered litter (bottles, cans, "
             "wrappers). Right side shows the same park pristine and clean, with a small "
-            "quadrupedal robot walking away in the distance, its waste bin full. "
-            "Before/after comparison, bright daylight, professional editorial photography. 8K."
+            "quadrupedal robot in the distance, its X-shaped bag frame lowered flat, a "
+            "sealed full bag dropped neatly at the curb behind it. Before/after comparison, "
+            "bright daylight, professional editorial photography. 8K."
         ),
     },
     {
@@ -136,18 +156,20 @@ RENDERS = [
             "Technical exploded view diagram of an autonomous quadrupedal robot on a white "
             "background. Components floating in space showing: aluminum frame chassis, 12 "
             "servo actuator modules, stereo camera system, LiDAR sensor, Jetson compute "
-            "module, 48V battery pack, soft gripper arm assembly, compacting waste bin, 4G "
-            "antenna, and weatherproof enclosure panels. Clean technical illustration style "
-            "with thin leader lines and labels. Professional, minimalist. 8K."
+            "module, 48V battery pack, soft gripper arm assembly, X-shaped bag cassette "
+            "frame with square rim, replaceable bag roll cartridge, snap-close bag seal "
+            "mechanism, 4G antenna, and weatherproof enclosure panels. Clean technical "
+            "illustration style with thin leader lines and labels. Professional, minimalist. 8K."
         ),
     },
     {
         "name": "tech-dashboard-mockup",
         "prompt": (
-            "Split composition: left side shows a real quadrupedal litter robot in a park, "
-            "right side shows a fleet management dashboard on a large monitor displaying a "
-            "map with robot positions, litter collection statistics, and battery levels. "
-            "Modern office environment. Professional product marketing photo. 8K."
+            "Split composition: left side shows a real quadrupedal litter robot in a park "
+            "with its raised X-shaped bag frame holding an open trash bag, right side shows "
+            "a fleet management dashboard on a large monitor displaying a map with robot "
+            "positions, bags collected statistics, and battery levels. Modern office "
+            "environment. Professional product marketing photo. 8K."
         ),
     },
     {
@@ -170,17 +192,10 @@ RENDERS = [
     },
 ]
 
-# Models to test
-MODELS = {
-    "seedream": "bytedance/seedream-4.5",
-    "flux": "black-forest-labs/flux-1.1-pro",
-    "imagen": "google/imagen-4-fast",
-}
 
-
-def create_prediction(model_id: str, prompt: str, aspect_ratio: str = "16:9") -> dict:
+def create_prediction(prompt: str, aspect_ratio: str = "16:9") -> dict:
     """Submit a prediction to the Replicate API."""
-    url = f"https://api.replicate.com/v1/models/{model_id}/predictions"
+    url = f"https://api.replicate.com/v1/models/{MODEL_ID}/predictions"
     payload = {
         "input": {
             "prompt": prompt,
@@ -239,10 +254,10 @@ def get_output_url(result: dict) -> str:
     return None
 
 
-def generate_single(model_id: str, prompt: str, output_path: Path) -> bool:
+def generate_single(prompt: str, output_path: Path) -> bool:
     """Generate a single image: create prediction, poll, download."""
-    print(f"  Submitting to {model_id}...")
-    prediction = create_prediction(model_id, prompt)
+    print(f"  Submitting to {MODEL_ID}...")
+    prediction = create_prediction(prompt)
     if not prediction:
         return False
 
@@ -258,47 +273,16 @@ def generate_single(model_id: str, prompt: str, output_path: Path) -> bool:
 
     image_url = get_output_url(result)
     if not image_url:
-        print(f"  ERROR: No output URL in result")
+        print("  ERROR: No output URL in result")
         return False
 
     return download_image(image_url, output_path)
 
 
-def test_models():
-    """Test all 3 models on the first prompt (hero park shot)."""
+def generate_all():
+    """Generate all 14 renders using Seedream 4.5."""
     print("=" * 60)
-    print("PHASE 1: Testing 3 models on hero park prompt")
-    print("=" * 60)
-    hero = RENDERS[0]
-    results = {}
-
-    for short_name, model_id in MODELS.items():
-        filename = f"{short_name}-hero-1.png"
-        output_path = TEST_DIR / filename
-        print(f"\n--- {short_name} ({model_id}) ---")
-        success = generate_single(model_id, hero["prompt"], output_path)
-        results[short_name] = {
-            "success": success,
-            "path": output_path,
-            "size": output_path.stat().st_size if success and output_path.exists() else 0,
-        }
-
-    print("\n" + "=" * 60)
-    print("TEST RESULTS:")
-    print("=" * 60)
-    for name, info in results.items():
-        status = "OK" if info["success"] else "FAILED"
-        size_kb = info["size"] / 1024 if info["size"] else 0
-        print(f"  {name}: {status} — {size_kb:.0f} KB")
-
-    return results
-
-
-def generate_all(model_short: str):
-    """Generate all 14 renders using the chosen model."""
-    model_id = MODELS[model_short]
-    print("\n" + "=" * 60)
-    print(f"PHASE 2: Generating all 14 renders with {model_short} ({model_id})")
+    print(f"Generating all 14 renders with {MODEL_ID}")
     print("=" * 60)
 
     success_count = 0
@@ -307,7 +291,7 @@ def generate_all(model_short: str):
     for i, render in enumerate(RENDERS, 1):
         output_path = BASE_DIR / f"{render['name']}.png"
         print(f"\n[{i}/14] {render['name']}")
-        ok = generate_single(model_id, render["prompt"], output_path)
+        ok = generate_single(render["prompt"], output_path)
         if ok:
             success_count += 1
         else:
@@ -316,26 +300,8 @@ def generate_all(model_short: str):
     print("\n" + "=" * 60)
     print(f"DONE: {success_count} succeeded, {fail_count} failed")
     print("=" * 60)
+    return success_count, fail_count
 
 
 if __name__ == "__main__":
-    import argparse
-
-    parser = argparse.ArgumentParser(description="Generate CleanWalker robot renders")
-    parser.add_argument("--test", action="store_true", help="Test 3 models on first prompt")
-    parser.add_argument("--generate-all", type=str, metavar="MODEL",
-                        choices=list(MODELS.keys()),
-                        help="Generate all 14 renders with chosen model (seedream|flux|imagen)")
-    args = parser.parse_args()
-
-    if not args.test and not args.generate_all:
-        print("Usage:")
-        print("  python generate-renders.py --test              # Test 3 models")
-        print("  python generate-renders.py --generate-all flux # Generate all 14 with chosen model")
-        sys.exit(0)
-
-    if args.test:
-        test_models()
-
-    if args.generate_all:
-        generate_all(args.generate_all)
+    generate_all()
