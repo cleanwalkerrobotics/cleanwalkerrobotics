@@ -3,7 +3,9 @@
 
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
+
+// ---- Types ----
 
 interface Detection {
 	label: string;
@@ -18,6 +20,14 @@ interface SampleScene {
 	icon: string;
 	detections: Detection[];
 }
+
+interface APIDetection {
+	name: string;
+	confidence: number;
+	box: { x1: number; y1: number; x2: number; y2: number };
+}
+
+// ---- Constants ----
 
 const DETECTION_COLORS = [
 	"#22c55e",
@@ -237,7 +247,28 @@ const sampleScenes: SampleScene[] = [
 	},
 ];
 
-const UPLOAD_LITTER_POOL: { label: string; confidence: number }[] = [
+const SAMPLE_IMAGES = [
+	{
+		label: "Beach Litter",
+		icon: "🏖️",
+		gradient: "from-cyan-800 to-blue-900",
+		url: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=640&q=80",
+	},
+	{
+		label: "Urban Trash",
+		icon: "🏙️",
+		gradient: "from-slate-700 to-gray-800",
+		url: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=640&q=80",
+	},
+	{
+		label: "Park Debris",
+		icon: "🌳",
+		gradient: "from-green-800 to-emerald-900",
+		url: "https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=640&q=80",
+	},
+];
+
+const MOCK_LITTER_POOL: { label: string; confidence: number }[] = [
 	{ label: "Plastic Bottle", confidence: 97 },
 	{ label: "Aluminum Can", confidence: 96 },
 	{ label: "Cigarette Butt", confidence: 94 },
@@ -255,9 +286,11 @@ const UPLOAD_LITTER_POOL: { label: string; confidence: number }[] = [
 	{ label: "Styrofoam Piece", confidence: 86 },
 ];
 
+// ---- Utility functions ----
+
 function generateMockDetections(): Detection[] {
 	const count = 3 + Math.floor(Math.random() * 4);
-	const shuffled = [...UPLOAD_LITTER_POOL].sort(() => Math.random() - 0.5);
+	const shuffled = [...MOCK_LITTER_POOL].sort(() => Math.random() - 0.5);
 	const selected = shuffled.slice(0, count);
 
 	return selected.map((item, i) => {
@@ -276,23 +309,140 @@ function generateMockDetections(): Detection[] {
 	});
 }
 
+function resizeImage(
+	file: File,
+	maxSize = 1024,
+): Promise<{ dataUri: string; width: number; height: number }> {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onload = () => {
+			const img = new Image();
+			img.onload = () => {
+				let { width, height } = img;
+				if (width > maxSize || height > maxSize) {
+					if (width > height) {
+						height = Math.round(height * (maxSize / width));
+						width = maxSize;
+					} else {
+						width = Math.round(width * (maxSize / height));
+						height = maxSize;
+					}
+				}
+				const canvas = document.createElement("canvas");
+				canvas.width = width;
+				canvas.height = height;
+				const ctx = canvas.getContext("2d");
+				if (!ctx) {
+					reject(new Error("Canvas not supported"));
+					return;
+				}
+				ctx.drawImage(img, 0, 0, width, height);
+				resolve({
+					dataUri: canvas.toDataURL("image/jpeg", 0.85),
+					width,
+					height,
+				});
+			};
+			img.onerror = () => reject(new Error("Failed to load image"));
+			img.src = reader.result as string;
+		};
+		reader.onerror = () => reject(new Error("Failed to read file"));
+		reader.readAsDataURL(file);
+	});
+}
+
+function loadImageDims(url: string): Promise<{ w: number; h: number }> {
+	return new Promise((resolve, reject) => {
+		const img = new Image();
+		img.onload = () =>
+			resolve({ w: img.naturalWidth, h: img.naturalHeight });
+		img.onerror = () => reject(new Error("Failed to load image"));
+		img.crossOrigin = "anonymous";
+		img.src = url;
+	});
+}
+
+async function callDetectionAPI(image: string): Promise<{
+	detections: APIDetection[];
+	annotatedImage: string | null;
+	detectionCount: number;
+}> {
+	const res = await fetch("/api/detect", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ image, confidence: 0.2 }),
+	});
+
+	if (!res.ok) {
+		const data = await res.json().catch(() => ({}));
+		throw new Error(
+			(data as { error?: string }).error || `API error ${res.status}`,
+		);
+	}
+
+	const data = await res.json();
+
+	if (data.status === "succeeded") return data;
+	if (data.status === "failed")
+		throw new Error(
+			(data as { error?: string }).error || "Detection failed",
+		);
+
+	// Poll if prediction is still processing
+	const predictionId = (data as { predictionId?: string }).predictionId;
+	if (!predictionId) throw new Error("No prediction ID returned");
+
+	for (let attempt = 0; attempt < 30; attempt++) {
+		await new Promise((r) => setTimeout(r, 2000));
+		const pollRes = await fetch(`/api/detect?id=${predictionId}`);
+		if (!pollRes.ok) continue;
+		const pollData = await pollRes.json();
+		if (pollData.status === "succeeded") return pollData;
+		if (pollData.status === "failed")
+			throw new Error(
+				(pollData as { error?: string }).error || "Detection failed",
+			);
+	}
+
+	throw new Error("Detection timed out");
+}
+
+function apiToDisplay(
+	dets: APIDetection[],
+	imgW: number,
+	imgH: number,
+): Detection[] {
+	return dets.map((det, i) => ({
+		label: det.name
+			.split(" ")
+			.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+			.join(" "),
+		confidence: Math.round(det.confidence * 100),
+		box: {
+			top: `${(det.box.y1 / imgH) * 100}%`,
+			left: `${(det.box.x1 / imgW) * 100}%`,
+			width: `${((det.box.x2 - det.box.x1) / imgW) * 100}%`,
+			height: `${((det.box.y2 - det.box.y1) / imgH) * 100}%`,
+		},
+		color: DETECTION_COLORS[i % DETECTION_COLORS.length],
+	}));
+}
+
+// ---- Components ----
+
 function DetectionCard({ scene }: { scene: SampleScene }) {
 	return (
 		<div className="group overflow-hidden rounded-2xl border border-white/10 bg-white/5 transition-all hover:border-cw-green/30 hover:bg-white/[0.07]">
-			{/* Image area with bounding boxes */}
 			<div
 				className={`relative aspect-video bg-gradient-to-br ${scene.gradient} overflow-hidden`}
 			>
-				{/* Scene label */}
 				<div className="absolute left-3 top-3 z-10 rounded-full bg-black/50 px-3 py-1 text-xs text-gray-300 backdrop-blur-sm">
 					<span className="mr-1">{scene.icon}</span>
 					{scene.title}
 				</div>
-				{/* Detection count badge */}
 				<div className="absolute right-3 top-3 z-10 rounded-full bg-cw-green/20 px-3 py-1 text-xs font-medium text-cw-green backdrop-blur-sm">
 					{scene.detections.length} detected
 				</div>
-				{/* Bounding boxes */}
 				{scene.detections.map((det) => (
 					<div
 						key={det.label}
@@ -319,7 +469,6 @@ function DetectionCard({ scene }: { scene: SampleScene }) {
 						</span>
 					</div>
 				))}
-				{/* Scan line animation */}
 				<div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100">
 					<div
 						className="absolute left-0 h-px w-full bg-cw-green/50"
@@ -330,8 +479,6 @@ function DetectionCard({ scene }: { scene: SampleScene }) {
 					/>
 				</div>
 			</div>
-
-			{/* Detection list */}
 			<div className="p-4">
 				<div className="space-y-2">
 					{scene.detections.map((det) => (
@@ -370,26 +517,98 @@ function DetectionCard({ scene }: { scene: SampleScene }) {
 }
 
 function UploadSection() {
-	const [state, setState] = useState<
-		"idle" | "processing" | "done"
-	>("idle");
-	const [results, setResults] = useState<Detection[]>([]);
+	const [state, setState] = useState<"idle" | "processing" | "done">("idle");
+	const [imageUrl, setImageUrl] = useState("");
+	const [imageDims, setImageDims] = useState({ w: 640, h: 640 });
+	const [detections, setDetections] = useState<Detection[]>([]);
 	const [fileName, setFileName] = useState("");
+	const [isMock, setIsMock] = useState(false);
+	const [statusText, setStatusText] = useState("");
+	const [urlInput, setUrlInput] = useState("");
+	const processingRef = useRef(false);
+
+	const finishDetection = useCallback(
+		async (
+			imageInput: string,
+			dims: { w: number; h: number },
+		) => {
+			setStatusText("Running YOLOv8 inference...");
+
+			try {
+				const result = await callDetectionAPI(imageInput);
+				if (result.detections.length > 0) {
+					setDetections(
+						apiToDisplay(result.detections, dims.w, dims.h),
+					);
+				} else {
+					setDetections([]);
+				}
+				setIsMock(false);
+			} catch (err) {
+				console.warn("AI detection failed, using demo mode:", err);
+				setDetections(generateMockDetections());
+				setIsMock(true);
+			}
+
+			setState("done");
+			processingRef.current = false;
+		},
+		[],
+	);
 
 	const handleFile = useCallback(
-		(file: File) => {
-			if (state === "processing") return;
-			setFileName(file.name);
+		async (file: File) => {
+			if (processingRef.current) return;
+			processingRef.current = true;
 			setState("processing");
-			setResults([]);
+			setFileName(file.name);
+			setDetections([]);
+			setIsMock(false);
+			setStatusText("Preparing image...");
 
-			// Simulate processing delay
-			setTimeout(() => {
-				setResults(generateMockDetections());
-				setState("done");
-			}, 1800 + Math.random() * 1200);
+			try {
+				const { dataUri, width, height } = await resizeImage(file);
+				setImageUrl(dataUri);
+				setImageDims({ w: width, h: height });
+				finishDetection(dataUri, { w: width, h: height });
+			} catch {
+				// Fallback: read file without resizing
+				const reader = new FileReader();
+				reader.onload = () => {
+					const uri = reader.result as string;
+					setImageUrl(uri);
+					finishDetection(uri, { w: 640, h: 640 });
+				};
+				reader.readAsDataURL(file);
+			}
 		},
-		[state],
+		[finishDetection],
+	);
+
+	const handleUrl = useCallback(
+		async (url: string) => {
+			const trimmed = url.trim();
+			if (processingRef.current || !trimmed) return;
+			processingRef.current = true;
+			setState("processing");
+			setFileName(
+				trimmed.split("/").pop()?.split("?")[0] || "Image URL",
+			);
+			setImageUrl(trimmed);
+			setDetections([]);
+			setIsMock(false);
+			setStatusText("Loading image...");
+
+			let dims = { w: 640, h: 640 };
+			try {
+				dims = await loadImageDims(trimmed);
+			} catch {
+				// Use default dimensions; onLoad handler will correct
+			}
+			setImageDims(dims);
+			finishDetection(trimmed, dims);
+		},
+		[finishDetection],
 	);
 
 	const handleDrop = useCallback(
@@ -411,84 +630,205 @@ function UploadSection() {
 
 	const reset = () => {
 		setState("idle");
-		setResults([]);
+		setDetections([]);
 		setFileName("");
+		setImageUrl("");
+		setIsMock(false);
+		setUrlInput("");
+		processingRef.current = false;
 	};
 
 	return (
 		<div className="mx-auto max-w-3xl">
+			{/* ---- Idle: upload + samples ---- */}
 			{state === "idle" && (
-				<label
-					className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-white/20 bg-white/5 px-8 py-16 transition-all hover:border-cw-green/50 hover:bg-white/[0.07]"
-					onDragOver={(e) => e.preventDefault()}
-					onDrop={handleDrop}
-				>
-					<input
-						type="file"
-						accept="image/*"
-						className="hidden"
-						onChange={handleChange}
-					/>
-					<div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-cw-green/20">
-						<svg
-							className="h-8 w-8 text-cw-green"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-							/>
-						</svg>
+				<div className="space-y-6">
+					{/* File upload area */}
+					<label
+						className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-white/20 bg-white/5 px-8 py-14 transition-all hover:border-cw-green/50 hover:bg-white/[0.07]"
+						onDragOver={(e) => e.preventDefault()}
+						onDrop={handleDrop}
+					>
+						<input
+							type="file"
+							accept="image/*"
+							className="hidden"
+							onChange={handleChange}
+						/>
+						<div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-cw-green/20">
+							<svg
+								className="h-8 w-8 text-cw-green"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+								/>
+							</svg>
+						</div>
+						<p className="text-lg font-medium text-white">
+							Drop an image here or click to upload
+						</p>
+						<p className="mt-2 text-sm text-gray-400">
+							JPG, PNG, or WebP — any scene with potential litter
+						</p>
+					</label>
+
+					{/* Divider */}
+					<div className="flex items-center gap-4">
+						<div className="h-px flex-1 bg-white/10" />
+						<span className="text-xs text-gray-500 uppercase tracking-wider">
+							or
+						</span>
+						<div className="h-px flex-1 bg-white/10" />
 					</div>
-					<p className="text-lg font-medium text-white">
-						Drop an image here or click to upload
-					</p>
-					<p className="mt-2 text-sm text-gray-400">
-						JPG, PNG, or WebP — any scene with potential litter
-					</p>
-				</label>
+
+					{/* URL input */}
+					<div className="flex gap-3">
+						<input
+							type="url"
+							placeholder="Paste an image URL..."
+							value={urlInput}
+							onChange={(e) => setUrlInput(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === "Enter") handleUrl(urlInput);
+							}}
+							className="flex-1 rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition-colors focus:border-cw-green/50 focus:bg-white/[0.07]"
+						/>
+						<button
+							onClick={() => handleUrl(urlInput)}
+							disabled={!urlInput.trim()}
+							className="rounded-xl bg-cw-green/20 px-6 py-3 text-sm font-medium text-cw-green transition-all hover:bg-cw-green/30 disabled:opacity-40 disabled:cursor-not-allowed"
+						>
+							Analyze
+						</button>
+					</div>
+
+					{/* Sample images */}
+					<div>
+						<p className="mb-3 text-center text-sm text-gray-500">
+							Or try a sample image
+						</p>
+						<div className="grid grid-cols-3 gap-3">
+							{SAMPLE_IMAGES.map((sample) => (
+								<button
+									key={sample.label}
+									onClick={() =>
+										handleUrl(sample.url)
+									}
+									className="group flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-4 transition-all hover:border-cw-green/30 hover:bg-white/[0.07]"
+								>
+									<div
+										className={`flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ${sample.gradient} text-xl`}
+									>
+										{sample.icon}
+									</div>
+									<span className="text-xs text-gray-400 group-hover:text-gray-300">
+										{sample.label}
+									</span>
+								</button>
+							))}
+						</div>
+					</div>
+				</div>
 			)}
 
+			{/* ---- Processing ---- */}
 			{state === "processing" && (
-				<div className="flex flex-col items-center rounded-2xl border border-white/10 bg-white/5 px-8 py-16">
-					<div className="relative mb-6 h-16 w-16">
-						<div className="absolute inset-0 animate-spin rounded-full border-4 border-cw-green/20 border-t-cw-green" />
-						<div className="absolute inset-2 animate-spin rounded-full border-4 border-cw-green/10 border-b-cw-green/60" style={{ animationDirection: "reverse", animationDuration: "1.5s" }} />
-					</div>
-					<p className="text-lg font-medium text-white">
-						Analyzing {fileName}...
-					</p>
-					<div className="mt-4 w-full max-w-xs">
-						<div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+				<div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+					<div className="relative aspect-video overflow-hidden">
+						{imageUrl ? (
+							<img
+								src={imageUrl}
+								alt="Processing..."
+								className="h-full w-full object-cover opacity-40 blur-sm"
+							/>
+						) : (
+							<div className="h-full w-full bg-gradient-to-br from-emerald-900/40 via-teal-900/30 to-cw-dark" />
+						)}
+
+						{/* Scanning overlay */}
+						<div className="absolute inset-0 flex flex-col items-center justify-center">
+							<div className="relative mb-6 h-16 w-16">
+								<div className="absolute inset-0 animate-spin rounded-full border-4 border-cw-green/20 border-t-cw-green" />
+								<div
+									className="absolute inset-2 animate-spin rounded-full border-4 border-cw-green/10 border-b-cw-green/60"
+									style={{
+										animationDirection: "reverse",
+										animationDuration: "1.5s",
+									}}
+								/>
+							</div>
+							<p className="text-lg font-medium text-white">
+								{statusText || "Analyzing..."}
+							</p>
+							<div className="mt-4 w-full max-w-xs px-8">
+								<div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+									<div
+										className="h-full rounded-full bg-cw-green"
+										style={{
+											animation:
+												"progressBarSlow 20s ease-out forwards",
+										}}
+									/>
+								</div>
+							</div>
+							<p className="mt-3 text-xs text-gray-500">
+								YOLOv8s-WorldV2 &middot; Open-vocabulary
+								detection
+							</p>
+						</div>
+
+						{/* Scan line */}
+						<div className="pointer-events-none absolute inset-0">
 							<div
-								className="h-full rounded-full bg-cw-green"
+								className="absolute left-0 h-0.5 w-full bg-cw-green/60"
 								style={{
-									animation: "progressBar 2s ease-in-out",
+									animation:
+										"scanline 2s ease-in-out infinite",
+									boxShadow:
+										"0 0 15px rgba(34, 197, 94, 0.5)",
 								}}
 							/>
 						</div>
 					</div>
-					<div className="mt-4 space-y-1 text-center text-sm text-gray-400">
-						<p>Running YOLO inference pipeline...</p>
-						<p className="text-xs text-gray-500">
-							Model: CleanWalker-YOLO v3.2 &middot; 640×640
+					<div className="px-6 py-4 text-center">
+						<p className="text-sm text-gray-400">
+							Analyzing{" "}
+							<span className="text-white">{fileName}</span>
 						</p>
 					</div>
 				</div>
 			)}
 
+			{/* ---- Results ---- */}
 			{state === "done" && (
 				<div className="overflow-hidden rounded-2xl border border-cw-green/30 bg-white/5">
-					{/* Result header */}
+					{/* Header */}
 					<div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
 						<div>
-							<p className="text-sm text-gray-400">{fileName}</p>
+							<div className="flex items-center gap-2">
+								<p className="text-sm text-gray-400">
+									{fileName}
+								</p>
+								{isMock && (
+									<span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-400">
+										Demo Mode
+									</span>
+								)}
+								{!isMock && detections.length > 0 && (
+									<span className="rounded-full border border-cw-green/30 bg-cw-green/10 px-2 py-0.5 text-[10px] font-medium text-cw-green">
+										AI Result
+									</span>
+								)}
+							</div>
 							<p className="text-lg font-semibold text-white">
-								{results.length} items detected
+								{detections.length} item
+								{detections.length !== 1 ? "s" : ""} detected
 							</p>
 						</div>
 						<button
@@ -499,76 +839,122 @@ function UploadSection() {
 						</button>
 					</div>
 
-					{/* Mock image with detections */}
-					<div className="relative aspect-video bg-gradient-to-br from-emerald-900/40 via-teal-900/30 to-cw-dark">
-						{results.map((det) => (
-							<div
-								key={det.label}
-								className="absolute animate-fadeIn"
-								style={{
-									top: det.box.top,
-									left: det.box.left,
-									width: det.box.width,
-									height: det.box.height,
-								}}
-							>
-								<div
-									className="h-full w-full rounded-sm"
-									style={{
-										border: `2px solid ${det.color}`,
-										backgroundColor: `${det.color}15`,
+					{/* Image with bounding boxes */}
+					<div className="bg-black/30">
+						<div
+							className="relative mx-auto w-full overflow-hidden"
+							style={{
+								aspectRatio: `${imageDims.w} / ${imageDims.h}`,
+							}}
+						>
+							{imageUrl ? (
+								<img
+									src={imageUrl}
+									alt={fileName}
+									className="h-full w-full"
+									onLoad={(e) => {
+										const img = e.currentTarget;
+										if (
+											img.naturalWidth > 0 &&
+											!isMock
+										) {
+											const w = img.naturalWidth;
+											const h = img.naturalHeight;
+											setImageDims({ w, h });
+										}
 									}}
 								/>
-								<span
-									className="absolute -top-5 left-0 whitespace-nowrap rounded px-1.5 py-0.5 text-[10px] font-medium text-white"
+							) : (
+								<div className="h-full w-full bg-gradient-to-br from-emerald-900/40 via-teal-900/30 to-cw-dark" />
+							)}
+
+							{/* Bounding boxes */}
+							{detections.map((det, i) => (
+								<div
+									key={`det-${det.label}-${i}`}
+									className="absolute animate-fadeIn"
 									style={{
-										backgroundColor: det.color,
+										top: det.box.top,
+										left: det.box.left,
+										width: det.box.width,
+										height: det.box.height,
+										animationDelay: `${i * 80}ms`,
 									}}
 								>
-									{det.label}
-								</span>
-							</div>
-						))}
-					</div>
-
-					{/* Results table */}
-					<div className="p-6">
-						<div className="space-y-3">
-							{results.map((det) => (
-								<div
-									key={det.label}
-									className="flex items-center justify-between rounded-lg bg-white/5 px-4 py-3"
-								>
-									<div className="flex items-center gap-3">
-										<span
-											className="inline-block h-3 w-3 rounded-full"
-											style={{
-												backgroundColor: det.color,
-											}}
-										/>
-										<span className="text-sm font-medium text-white">
-											{det.label}
-										</span>
-									</div>
-									<div className="flex items-center gap-4">
-										<div className="h-1.5 w-24 overflow-hidden rounded-full bg-white/10">
-											<div
-												className="h-full rounded-full"
-												style={{
-													width: `${det.confidence}%`,
-													backgroundColor: det.color,
-												}}
-											/>
-										</div>
-										<span className="w-10 text-right font-mono text-sm font-medium text-cw-green">
-											{det.confidence}%
-										</span>
-									</div>
+									<div
+										className="h-full w-full rounded-sm"
+										style={{
+											border: `2px solid ${det.color}`,
+											backgroundColor: `${det.color}15`,
+										}}
+									/>
+									<span
+										className="absolute -top-5 left-0 whitespace-nowrap rounded px-1.5 py-0.5 text-[10px] font-medium text-white shadow-lg"
+										style={{
+											backgroundColor: det.color,
+										}}
+									>
+										{det.label} {det.confidence}%
+									</span>
 								</div>
 							))}
 						</div>
+					</div>
+
+					{/* Detection results table */}
+					<div className="p-6">
+						{detections.length > 0 ? (
+							<div className="space-y-3">
+								{detections.map((det, i) => (
+									<div
+										key={`row-${det.label}-${i}`}
+										className="flex items-center justify-between rounded-lg bg-white/5 px-4 py-3"
+									>
+										<div className="flex items-center gap-3">
+											<span
+												className="inline-block h-3 w-3 rounded-full"
+												style={{
+													backgroundColor: det.color,
+												}}
+											/>
+											<span className="text-sm font-medium text-white">
+												{det.label}
+											</span>
+										</div>
+										<div className="flex items-center gap-4">
+											<div className="h-1.5 w-24 overflow-hidden rounded-full bg-white/10">
+												<div
+													className="h-full rounded-full"
+													style={{
+														width: `${det.confidence}%`,
+														backgroundColor:
+															det.color,
+													}}
+												/>
+											</div>
+											<span className="w-10 text-right font-mono text-sm font-medium text-cw-green">
+												{det.confidence}%
+											</span>
+										</div>
+									</div>
+								))}
+							</div>
+						) : (
+							<div className="rounded-lg bg-white/5 px-6 py-8 text-center">
+								<p className="text-gray-400">
+									No litter detected in this image.
+								</p>
+								<p className="mt-2 text-sm text-gray-500">
+									Try a different photo or an image with
+									visible trash items.
+								</p>
+							</div>
+						)}
+
 						<p className="mt-4 text-center text-xs text-gray-500">
-							Inference time: {(60 + Math.random() * 35).toFixed(0)}ms &middot; CleanWalker-YOLO v3.2
+							{isMock
+								? "AI service unavailable \u2014 showing simulated results for demo purposes"
+								: "Powered by YOLOv8s-WorldV2 \u00b7 Real AI inference via CleanWalker API"}
 						</p>
 					</div>
 				</div>
@@ -577,10 +963,11 @@ function UploadSection() {
 	);
 }
 
+// ---- Page ----
+
 export default function LitterDetectionDemoPage() {
 	return (
 		<div className="min-h-screen bg-cw-dark">
-			{/* Inline keyframes */}
 			<style>{`
 				@keyframes scanline {
 					0%, 100% { top: 0%; opacity: 0; }
@@ -588,12 +975,13 @@ export default function LitterDetectionDemoPage() {
 					90% { opacity: 1; }
 					50% { top: 100%; }
 				}
-				@keyframes progressBar {
+				@keyframes progressBarSlow {
 					0% { width: 0%; }
+					10% { width: 20%; }
 					30% { width: 45%; }
-					60% { width: 70%; }
-					90% { width: 90%; }
-					100% { width: 100%; }
+					60% { width: 65%; }
+					80% { width: 80%; }
+					100% { width: 95%; }
 				}
 				@keyframes fadeIn {
 					from { opacity: 0; transform: scale(0.95); }
@@ -627,15 +1015,16 @@ export default function LitterDetectionDemoPage() {
 						Back to Demos
 					</a>
 					<span className="mb-4 inline-block rounded-full border border-cw-green/30 bg-cw-green/10 px-4 py-1 text-sm text-cw-green">
-						Live Demo
+						Live AI Demo
 					</span>
 					<h1 className="mt-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
 						AI Litter Detection
 					</h1>
 					<p className="mt-6 text-lg leading-relaxed text-gray-400">
-						Our custom YOLO-based perception system identifies and classifies 50+ types of
-						litter in real-time. See how CleanWalker sees the world — detecting bottles,
-						wrappers, cigarette butts, and more across any environment.
+						Our custom YOLO-based perception system identifies and
+						classifies 50+ types of litter in real-time. Upload any
+						photo and see real AI detection in action — powered by
+						YOLOv8 with open-vocabulary recognition.
 					</p>
 				</div>
 			</section>
@@ -664,15 +1053,32 @@ export default function LitterDetectionDemoPage() {
 				</div>
 			</section>
 
+			{/* Try It Yourself — Real AI Detection */}
+			<section className="border-t border-white/10 px-6 py-24">
+				<div className="mx-auto max-w-7xl">
+					<div className="mb-10 text-center">
+						<h2 className="text-2xl font-bold text-white md:text-3xl">
+							Try It Yourself
+						</h2>
+						<p className="mt-3 text-gray-400">
+							Upload any image and our AI will detect litter in
+							real-time using YOLOv8
+						</p>
+					</div>
+					<UploadSection />
+				</div>
+			</section>
+
 			{/* Sample Analyses */}
-			<section className="px-6 pb-24">
+			<section className="border-t border-white/10 px-6 py-24">
 				<div className="mx-auto max-w-7xl">
 					<div className="mb-8 text-center">
 						<h2 className="text-2xl font-bold text-white md:text-3xl">
-							Sample Analyses
+							Detection Examples
 						</h2>
 						<p className="mt-3 text-gray-400">
-							Real detection results from different environments and lighting conditions
+							How CleanWalker sees different environments and
+							lighting conditions
 						</p>
 					</div>
 					<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -683,21 +1089,6 @@ export default function LitterDetectionDemoPage() {
 				</div>
 			</section>
 
-			{/* Upload Your Own */}
-			<section className="border-t border-white/10 px-6 py-24">
-				<div className="mx-auto max-w-7xl">
-					<div className="mb-10 text-center">
-						<h2 className="text-2xl font-bold text-white md:text-3xl">
-							Try It Yourself
-						</h2>
-						<p className="mt-3 text-gray-400">
-							Upload any image and see our AI detection in action
-						</p>
-					</div>
-					<UploadSection />
-				</div>
-			</section>
-
 			{/* CTA */}
 			<section className="border-t border-white/10 px-6 py-24">
 				<div className="mx-auto max-w-3xl text-center">
@@ -705,8 +1096,9 @@ export default function LitterDetectionDemoPage() {
 						Ready to Deploy CleanWalker?
 					</h2>
 					<p className="mt-4 text-lg text-gray-400">
-						This detection system runs on every CleanWalker robot, enabling autonomous
-						litter collection across parks, campuses, and public spaces.
+						This detection system runs on every CleanWalker robot,
+						enabling autonomous litter collection across parks,
+						campuses, and public spaces.
 					</p>
 					<a
 						href="/contact"
