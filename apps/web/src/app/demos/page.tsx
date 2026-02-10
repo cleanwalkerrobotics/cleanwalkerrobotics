@@ -12,6 +12,15 @@ export const metadata: Metadata = {
 
 const demos = [
 	{
+		title: "3D Robot Viewer",
+		status: "live",
+		slug: "3d-robot-viewer",
+		description:
+			"Explore the CleanWalker CW-1 quadruped in interactive 3D. Spin, zoom, and inspect the 12-DOF robot model built from our engineering URDF — 23 links, 22 joints, accurate dimensions and materials.",
+		placeholder: "Interactive 3D model — rotate and zoom to explore",
+		tags: ["Three.js", "URDF", "3D Model"],
+	},
+	{
 		title: "AI Litter Detection",
 		status: "live",
 		slug: "litter-detection",
