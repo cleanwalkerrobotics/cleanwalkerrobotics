@@ -27,7 +27,7 @@
 - **Configuration:** Four legs, one at each corner of the body. Mammalian stance (knees forward on front legs, knees backward on rear legs).
 - **Joints per leg:** 3 visible joints (hip, knee, ankle/foot). Each joint has a visible cylindrical actuator housing.
 - **Color:** Same dark matte olive-green as body, with dark grey/black joint housings.
-- **LED strips:** Bright green (#22c55e) LED light strips running vertically along the UPPER portion of each leg (thigh/shoulder segments). NOT ring accents on the joints — the strips run along the flat panel surface of the upper leg segment. Always illuminated when operating.
+- **LED strips:** Bright green (#22c55e) LED light strips running vertically along the OUTWARD-FACING SIDES of the UPPER portion of each leg (thigh/shoulder segments). NOT ring accents on the joints — the strips run along the outer flat panel surface of the upper leg segment, facing away from the body. Always illuminated when operating.
 - **Feet:** Rounded rubber tread foot pads, dark black rubber. Textured for grip. No claws or toes.
 - **Proportions:** Legs are roughly the same height as the body depth — robot stands with body at about 60% of total height.
 
@@ -56,33 +56,44 @@ The bag system replaces the previous V1 X-shaped scissor frame design with a sim
 
 ### 5.2 Bag Roll Dispenser
 
-- **Position:** Mounted horizontally on the flat top of the robot body, between the arm mount (front) and the bag frame (rear).
+- **Position:** Mounted horizontally on the flat top of the robot body, between the arm mount (front) and the bag frame hinge (rear). Sits LOW and CLOSE to the body surface.
 - **Form:** A compact black cylindrical tube/spindle housing, oriented perpendicular to the robot's length (left-to-right across the back).
-- **Diameter:** ~8-10cm cylinder, ~25cm wide.
-- **Function:** Holds a standard roll of heavy-duty trash bags. Bags feed out from the roll toward the rear frame.
-- **Appearance:** Black anodized aluminum housing with a visible roll of black bag material. Simple, mechanical.
+- **Diameter:** ~8-10cm cylinder, same width as the robot body (~30cm).
+- **Function:** Holds a standard roll of heavy-duty trash bags. Bags feed out from the roll toward the rear frame. One edge of each bag's opening attaches at a clipping line near the roll.
+- **Appearance:** Black anodized aluminum housing with a visible roll of black bag material. Simple, mechanical. Sits flush and low on the robot's back.
 
 ### 5.3 Folding Bag Frame
 
-- **Type:** A rectangular metal rim/frame (~30cm x 30cm) attached to the rear of the robot body via a single hinge axis (like a tailgate hinge).
+- **Type:** A rectangular metal rim/frame attached to the rear of the robot body via a single hinge axis.
+- **Frame dimensions:** Width = same as the robot body width (~30cm). Depth (front-to-back) = approximately HALF the robot body length (~20cm, given ~40cm body length).
 - **Material:** Dark grey/black metal tubing, matching the arm's joint color.
-- **Hinge point:** At the rear edge of the robot body's top surface. The frame folds inward (toward the roll) and outward (away from the body).
-- **Actuator:** The frame is motor-actuated (small servo at the hinge) — it folds in and out under electronic control.
+- **Hinge point:** At the REAR EDGE of the robot body's top surface. This is the only pivot point — the frame swings outward/backward and inward/forward around this single axis.
+- **Actuator:** The frame is motor-actuated (small servo at the hinge) — it folds in and out under electronic control. This is the ONLY moving part in the bag system.
+
+#### Bag Opening Geometry
+
+The trash bag opening spans between TWO attachment lines:
+1. **Inner edge:** The bag's inner/front edge clips to a clipping line near the bag roll dispenser (close to the body center).
+2. **Outer edge:** The bag's outer/rear edge clips to the OUTER RIM of the folding frame (the far end of the frame).
+
+This means the bag opening stretches across the full depth of the frame — from the roll area to the frame's outer rim. The frame holds the bag open by pulling the outer edge away from the inner edge.
 
 #### Operating Positions:
 
 **OPEN position (during collection):**
-- Frame is folded outward and angled slightly downward from the rear of the body.
-- The rectangular rim holds the current trash bag open, with the bag hanging freely below/behind the robot.
-- The bag drapes down from the frame — NO basket, NO cage, NO mesh around it. Just the bag hanging from the rim by its edges.
+- Frame is folded outward and upward, making a **135-degree angle** with the flat back surface of the robot (i.e., 45 degrees above horizontal, angled upward and backward from the rear edge).
+- The frame extends BEHIND the robot's rear, past the rear legs.
+- The outer rim of the frame pulls the bag's outer edge up and back, while the inner edge stays clipped near the roll.
+- The bag hangs freely downward between these two edges, creating an open receptacle behind/below the frame.
+- NO basket, NO cage, NO mesh around the bag — just the bag hanging from its two clipped edges.
 - The bag is visible hanging loosely, partially filled with collected litter.
-- Total height with frame open: ~100cm.
 
 **CLOSED/FOLD-IN position (during bag swap):**
-- Frame folds inward and upward, rotating toward the bag roll dispenser.
-- This motion causes the full bag to detach from the frame clips.
-- While folded in near the roll, the frame clips onto the edge of the next bag from the roll.
-- Frame then folds back out to OPEN position, pulling the new bag open and ready for collection.
+- Frame folds inward and downward, rotating toward the bag roll dispenser (closing like a book toward the body).
+- As the frame folds in, the distance between the two clipping edges shrinks, the bag goes slack.
+- The full bag's weight causes it to detach from the frame clips.
+- While folded in near the roll, the frame clips onto the outer edge of the next bag from the roll.
+- Frame then folds back out to OPEN position, pulling the new bag open and taut, ready for collection.
 
 ### 5.4 Bag Swap Cycle (3 steps)
 
@@ -162,7 +173,7 @@ This is a key innovation:
 When generating renders, ALWAYS include this core robot description. NEVER reference any competitor brand.
 
 ```
-A custom-designed quadrupedal robot with a matte dark olive-green body. The head is a compact rectangular box shape with two square bright green LED panels as eyes on the front face — purely mechanical and boxy, not organic or dog-like. Bright green LED light strips running vertically along the upper portion of each leg. Four articulated legs with rubber tread foot pads. A single articulated robotic arm with a mechanical gripper mounted on the front top of the body. On the rear of the robot, a hinged folding metal frame holds open a heavy-duty black drawstring trash bag that hangs freely below the frame — no basket, no cage, no mesh. On the flat back between the arm mount and the bag frame sits a compact cylindrical bag roll dispenser. The robot is about medium-dog sized, 60cm at the body. Industrial boxy utility design with chunky weatherproof panels and visible bolts. No text, no logos, no branding, no watermarks on the robot. Clean unmarked matte surfaces.
+A custom-designed quadrupedal robot with a matte dark olive-green body. The head is a compact rectangular box with two square bright green LED panels as eyes on the front face — purely mechanical and boxy, not organic or dog-like. Bright green LED light strips on the outward-facing sides of the upper legs. Four articulated legs with rubber tread foot pads. A tall multi-joint industrial robotic arm with a mechanical gripper mounted on the front top of the body, rising significantly above the body with visible shoulder, elbow and wrist joints. On the center of the robots flat back, a black cylindrical bag roll dispenser is mounted horizontally, sitting low and close to the body surface. At the very rear edge of the body, a rectangular metal frame is hinged — in the open position it extends backward and upward at a 135-degree angle from the back surface. A heavy-duty black drawstring trash bag hangs freely between two clipping points: the inner edge clips near the bag roll and the outer edge clips to the far rim of the frame. The bag hangs down openly behind the robot with no basket, no cage, no mesh. The frame is the same width as the body and about half the body length in depth. Medium-dog sized, 60cm body. Industrial boxy design, chunky weatherproof panels, visible bolts. No text, no logos, no branding, no watermarks on the robot. Clean unmarked matte surfaces.
 ```
 
 Then add scene-specific details after this base description.
