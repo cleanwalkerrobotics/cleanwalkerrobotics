@@ -21,15 +21,17 @@ Last updated: 2026-02-10
 | 3 | **EIC Physical AI Challenge** | EU | 6/10 | €300K (Stage 1) | Best thematic fit, lower TRL bar (TRL 4), but need lab prototype |
 | 4 | **MIT Haalbaarheid** | NL | 7/10 | Up to €20K (35% of costs) | Small but easy — fund a feasibility study |
 | 5 | **MBRIF Accelerator** | UAE | 7/10 | Mentorship + market access (equity-free) | BEEAH/Dubai alignment, no funding but high strategic value |
-| 6 | **Innovatiekrediet** | NL | 5/10 | €150K–€10M loan | Good fit at later stage, requires proof-of-concept + financing plan |
-| 7 | **Catalyst (Masdar)** | UAE | 6/10 | Seed funding + workspace | Cleantech-focused, Abu Dhabi base |
-| 8 | **RoboNexus** | SG | 5/10 | Accelerator (non-cash) | Robotics-specific, requires SG entity |
-| 9 | **DOT SMART Grant** | US | 4/10 | Up to $2M (Stage 1) | Requires US municipal partner, good for Austin pilot |
-| 10 | **Hub71** | UAE | 5/10 | Incentives + ecosystem | Abu Dhabi tech hub, good for MENA expansion |
-| 11 | **Startup SG Tech** | SG | 4/10 | Up to SGD 500K | Requires SG entity, good when entering SG market |
-| 12 | **MIA/Vamil** | NL | 6/10 | Tax deduction 27-45% | Only relevant when making physical hardware investments |
-| 13 | **Horizon Europe** | EU | 2/10 | Varies (€1-5M typical) | Needs consortium, heavy bureaucracy, no direct litter-robot calls |
-| 14 | **SBIR/STTR** | US | 1/10 | $100K-$400K | BLOCKED: Programs expired Sep 2025, requires 51% US ownership |
+| 6 | **Dubai Future Accelerators** | UAE | 7/10 | Gov partnership (no equity) | Pairs you with Dubai Municipality; waste mgmt in past cohorts |
+| 7 | **ADIO Innovation Programme** | UAE | 7/10 | Up to AED 10M (~$2.7M) | Abu Dhabi, welcomes foreign entrepreneurs, milestone-based |
+| 8 | **Innovatiekrediet** | NL | 5/10 | €150K–€10M loan | Good fit at later stage, requires proof-of-concept + financing plan |
+| 9 | **Catalyst (Masdar)** | UAE | 7/10 | USD 50-150K seed + workspace | Cleantech-focused, Abu Dhabi base |
+| 10 | **Hub71+ ClimateTech** | UAE | 7/10 | AED 500K+ (for equity via SAFE) | Climate/sustainability, ADNOC pilot budgets, Feb deadline likely passed |
+| 11 | **RoboNexus** | SG | 5/10 | Accelerator (non-cash) | Robotics-specific, requires SG entity |
+| 12 | **DOT SMART Grant** | US | 2/10 | Up to $2M (Stage 1) | Stage 1 permanently closed; requires US municipal partner |
+| 13 | **Startup SG Tech** | SG | 4/10 | Up to SGD 500K | Requires SG entity, good when entering SG market |
+| 14 | **MIA/Vamil** | NL | 6/10 | Tax deduction 27-45% | Only relevant when making physical hardware investments |
+| 15 | **Horizon Europe** | EU | 2/10 | Varies (€1-5M typical) | Needs consortium, heavy bureaucracy, no direct litter-robot calls |
+| 16 | **SBIR/STTR** | US | 1/10 | $100K-$400K | BLOCKED: Programs expired Sep 2025, requires 51% US ownership |
 
 ---
 
@@ -355,9 +357,12 @@ This is a government-procurement model — a ministry identifies a problem (e.g.
 | **Eligible applicants** | Public sector agencies only (state/local governments, transit agencies, tribal governments) |
 | **Eight technology domains** | Connected vehicles, coordinated automation, commerce/delivery logistics, innovative aviation, intelligent sensor-based infrastructure, smart grids, systems integration, smart traffic signals |
 
-**Our fit: 4/10**
+**Our fit: 2/10**
 
-**Critical issue:** Only public sector agencies can apply. We would need a US city (e.g., Austin) to apply on our behalf, with us as a technology partner/subcontractor.
+**Critical issues:**
+1. Only public sector agencies can apply — we'd need a US city partner
+2. **Stage 1 is permanently closed** — no additional Stage 1 opportunities will be released
+3. Stage 2 requires prior Stage 1 award — since we have no Stage 1, Stage 2 is inaccessible
 
 **Relevant domains:**
 - "Coordinated automation" — autonomous robot operation
@@ -500,9 +505,127 @@ More suited to larger companies with existing SG R&D operations. EDB primarily t
 
 ---
 
+### 4.5 NEA Environmental Robotics Programme
+
+| Field | Details |
+|-------|---------|
+| **Full name** | NEA Environmental Robotics Programme |
+| **Administering body** | National Environment Agency (NEA), part of National Robotics Programme |
+| **Total fund** | S$10.8M |
+| **Focus** | Robotic solutions for environmental services |
+| **Status** | **CLOSED** — no announced 2026 reopening |
+| **Eligibility** | Singapore-based entities or partnerships with local institutions |
+
+**Our fit: 8/10 (thematic) / 0/10 (currently closed)**
+
+This is the single best thematic match in all of Asia-Pacific — a government program specifically for environmental robotics. It covers productivity gains, sustainable workforce, and new capabilities for environmental services. If it reopens, it should be a top priority.
+
+**Recommendation:** Monitor NEA announcements closely. If a new call opens, it justifies fast-tracking a Singapore entity setup.
+
+---
+
 ## REGION 5: UAE / GULF
 
-### 5.1 MBRIF Innovation Accelerator
+### 5.1 Dubai Future Accelerators (DFA)
+
+| Field | Details |
+|-------|---------|
+| **Full name** | Dubai Future Accelerators |
+| **Administering body** | Dubai Future Foundation |
+| **Type** | 9-week intensive program pairing tech companies with Dubai government orgs |
+| **Funding** | No equity taken; value is direct government partnership |
+| **Focus** | AI, robotics, genomics, 3D printing, biomimicry |
+| **Eligibility** | Open to international companies |
+| **Previous themes** | "75% reduction in Dubai's general waste" appeared in past cohorts |
+
+**Our fit: 7/10**
+
+**What we meet:**
+- Open to international companies — no UAE entity required
+- Robotics and waste management themes have appeared in past cohorts
+- Direct pairing with Dubai Municipality and government organizations
+- No equity taken
+
+**What we don't meet:**
+- Must be present in Dubai during the 9-week program
+- Cohort-based — must wait for relevant challenge to open
+
+**Application effort:** 10-20 hours
+
+**Strategic value:** Extremely high. Being paired directly with Dubai Municipality gives us a potential first customer, pilot site, and reference case. The DFA brand is globally recognized.
+
+**Recommendation:** Monitor dubaifuture.ae for next cohort. When a waste management or smart city challenge appears, apply immediately.
+
+---
+
+### 5.2 ADIO Innovation Programme
+
+| Field | Details |
+|-------|---------|
+| **Full name** | Abu Dhabi Investment Office — Innovation Programme |
+| **Administering body** | ADIO |
+| **Funding** | Up to AED 10M (~$2.7M) in grants |
+| **Total fund** | AED 2 billion (~$545M) |
+| **Sectors** | Agritech, financial services, ICT, health, biopharma, tourism, **sustainability** |
+| **Eligibility** | Both local and foreign entrepreneurs; must operate in Abu Dhabi |
+| **Disbursement** | Milestone-based |
+| **Application** | Rolling |
+
+**Our fit: 7/10**
+
+**What we meet:**
+- Explicitly welcomes foreign entrepreneurs
+- Sustainability is a listed sector
+- Generous funding ceiling (AED 10M would fund multiple prototypes + pilot)
+- Milestone-based disbursement aligns with our staged development
+
+**What we don't meet:**
+- Must operate in Abu Dhabi (would need a UAE entity + local presence)
+- May prefer companies further along than pre-revenue
+- Likely targets companies making significant Abu Dhabi investment commitments
+
+**Application effort:** 30-60 hours (business plan, milestone framework, Abu Dhabi investment plan)
+
+**Strategic value:** AED 10M ceiling is the largest single grant opportunity in this research. Abu Dhabi presence would also unlock Masdar City ecosystem and BEEAH proximity (Sharjah is next door).
+
+**Recommendation:** Target for H2 2026 once we have a basic prototype and can present a credible Abu Dhabi deployment plan. Combine with Catalyst/Hub71 applications for a full Abu Dhabi strategy.
+
+---
+
+### 5.3 Hub71+ ClimateTech
+
+| Field | Details |
+|-------|---------|
+| **Full name** | Hub71+ ClimateTech (operated by Plug and Play) |
+| **Location** | Abu Dhabi |
+| **Type** | 3-month specialist track + 12-month program |
+| **Funding** | AED 500K+ in incentives and funding (via equity/SAFE note) |
+| **Partners** | ADNOC, Tabreed, TAQA, Siemens Energy (25+ partners) |
+| **ADNOC pilot budget** | AED 2.5M committed for pilots with eligible startups |
+| **Eligibility** | Open to international startups; must commit to Abu Dhabi presence |
+| **Last deadline** | Feb 1-15, 2026 (likely closed) |
+| **Program start** | September 2026 |
+
+**Our fit: 7/10**
+
+**What we meet:**
+- Climate/sustainability focus
+- International startups welcome
+- Access to major UAE corporates for pilot budgets
+- ADNOC's AED 2.5M pilot commitment is significant
+
+**What we don't meet:**
+- Equity component (SAFE note) — involves dilution
+- Feb 2026 deadline likely already passed for current cycle
+- Need to commit to Abu Dhabi presence
+
+**Strategic value:** The corporate partner network (Siemens Energy, ADNOC) provides credibility beyond the direct funding. The pilot budget access is transformative.
+
+**Recommendation:** Monitor hub71.com for next application cycle. If Feb 2026 window is closed, target next cohort.
+
+---
+
+### 5.4 MBRIF Innovation Accelerator
 
 | Field | Details |
 |-------|---------|
@@ -536,7 +659,7 @@ More suited to larger companies with existing SG R&D operations. EDB primarily t
 
 ---
 
-### 5.2 Catalyst Accelerator (Masdar City)
+### 5.5 Catalyst Accelerator (Masdar City)
 
 | Field | Details |
 |-------|---------|
@@ -566,7 +689,7 @@ More suited to larger companies with existing SG R&D operations. EDB primarily t
 
 ---
 
-### 5.3 Hub71 (Abu Dhabi)
+### 5.6 Hub71 Access Programme (Abu Dhabi)
 
 | Field | Details |
 |-------|---------|
@@ -583,7 +706,7 @@ Hub71 is more of an ecosystem than a grant — they offer incentive packages to 
 
 ---
 
-### 5.4 Dubai Robotics and Automation Program (DRAP)
+### 5.7 Dubai Robotics and Automation Program (DRAP)
 
 | Field | Details |
 |-------|---------|
@@ -611,23 +734,25 @@ This is a government strategy program, not a direct grant. However, it creates t
 ### Immediate (Next 30 days)
 1. **WBSO application** — Apply for next period. Lowest barrier, immediate R&D tax benefit
 2. **MBRIF Cohort 11** — Check deadline and apply. Equity-free, high strategic value for UAE market
-3. **Legal structure review** — Consult Dutch tax advisor on LLC vs BV conversion. Converting to BV removes all ambiguity for EU/NL grants
+3. **Hub71+ ClimateTech** — Check if Feb 2026 window is still open. If closed, target next cycle
+4. **Legal structure review** — Consult Dutch tax advisor on LLC vs BV conversion. Converting to BV removes all ambiguity for EU/NL grants
 
 ### Short-term (30-90 days)
-4. **MIT Haalbaarheid** — Prepare application, submit on April 8, 2026 opening day
-5. **Municipal outreach** — Approach Amsterdam "Clean & Waste Free" program and Rotterdam circular economy team as pilot partners (not grants, but customer relationships)
-6. **Catalyst (Masdar)** — Monitor for next cohort
+5. **MIT Haalbaarheid** — Prepare application, submit on April 8, 2026 opening day
+6. **Dubai Future Accelerators** — Monitor for next cohort with waste/smart city challenge
+7. **Municipal outreach** — Approach Amsterdam "Clean & Waste Free" program and Rotterdam circular economy team as pilot partners (not grants, but customer relationships)
+8. **Catalyst (Masdar)** — Monitor for next cohort
 
 ### Medium-term (3-12 months)
-7. **Innovatiekrediet** — Build toward application with proof-of-concept and co-financing plan
-8. **EIC Physical AI** — Build basic prototype and secure end-user letter of intent
-9. **Austin DOT SMART** — Begin relationship with Austin Resource Recovery for future municipal application
-10. **MIA/Vamil** — Apply when making first hardware purchases
+9. **ADIO Innovation Programme** — Apply once we have a prototype and Abu Dhabi deployment plan (up to AED 10M)
+10. **Innovatiekrediet** — Build toward application with proof-of-concept and co-financing plan
+11. **EIC Physical AI** — Build basic prototype and secure end-user letter of intent
+12. **MIA/Vamil** — Apply when making first hardware purchases
 
 ### Long-term (12+ months)
-11. **EIC Accelerator Open** — Target when at TRL 6+ with revenue/traction
-12. **Singapore entity + Startup SG Tech / RoboNexus** — When entering APAC market
-13. **SBIR/STTR** — Only if establishing US subsidiary with majority US ownership
+13. **EIC Accelerator Open** — Target when at TRL 6+ with revenue/traction
+14. **Singapore entity + NEA/RoboNexus/Startup SG Tech** — When entering APAC market (monitor NEA Environmental Robotics for reopening)
+15. **SBIR/STTR** — Only if establishing US subsidiary with majority US ownership
 
 ---
 
