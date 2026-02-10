@@ -40,6 +40,7 @@
 | 2026-02-10 | cw-software | Soften landing page + product page copy: remove all pricing/savings/$, replace RaaS with vision-focused language, benefit metrics instead of dollar stats | f5058c5 |
 
 | 2026-02-10 | cw-renders | Regenerated all 14 robot renders with Seedream 4.5 using canonical design spec — all prompts start with exact core description, all images 1.2-2.0MB at 4K 16:9 | 20cb846 |
+| 2026-02-10 | cw-bizdev | Pitch deck overhaul: bag cassette system refs, enriched competitive landscape (scoring matrix, 4 moats), removed all pricing/RaaS, rewritten Ask slide for pilot partner conviction | 5c4dee5 |
 
 ---
 *All sessions terminated after completion.*
