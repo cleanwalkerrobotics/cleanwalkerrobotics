@@ -1,22 +1,33 @@
 // Copyright (c) MB Software Studio LLC. All rights reserved.
 // Licensed under the AGPL-3.0 License. See LICENSE in the project root.
 
+import Image from "next/image";
+
 export default function Home() {
 	return (
 		<div>
-			{/* Hero Section */}
-			<section className="relative bg-cw-dark px-6 py-24 md:py-32">
-				<div className="mx-auto max-w-7xl">
-					<div className="grid items-center gap-12 md:grid-cols-2">
-						<div>
-							<div className="mb-6 inline-block rounded-full border border-cw-green/30 bg-cw-green/10 px-4 py-1.5 text-sm font-medium text-cw-green">
+			{/* Hero Section — Full-bleed with robot image */}
+			<section className="relative min-h-[90vh] bg-cw-dark">
+				<Image
+					src="/renders/hero-park.png"
+					alt="CleanWalker autonomous robot picking up a plastic bottle in a sunlit park"
+					fill
+					className="object-cover"
+					priority
+					sizes="100vw"
+				/>
+				<div className="absolute inset-0 bg-gradient-to-r from-cw-dark via-cw-dark/80 to-cw-dark/30" />
+				<div className="relative z-10 flex min-h-[90vh] items-center px-6">
+					<div className="mx-auto w-full max-w-7xl">
+						<div className="max-w-2xl">
+							<div className="mb-6 inline-block rounded-full border border-cw-green/30 bg-cw-green/10 px-4 py-1.5 text-sm font-medium text-cw-green backdrop-blur-sm">
 								Robot-as-a-Service
 							</div>
 							<h1 className="text-4xl font-bold leading-tight tracking-tight text-white md:text-6xl">
 								Autonomous Litter Collection for{" "}
 								<span className="text-cw-green">Cleaner Spaces</span>
 							</h1>
-							<p className="mt-6 max-w-lg text-lg leading-relaxed text-gray-400">
+							<p className="mt-6 max-w-lg text-lg leading-relaxed text-gray-300">
 								CleanWalker deploys intelligent, autonomous robots that keep parks,
 								campuses, and public spaces clean — 24/7, rain or shine. No upfront
 								capital. No maintenance headaches. Just cleaner spaces.
@@ -30,52 +41,26 @@ export default function Home() {
 								</a>
 								<a
 									href="/product"
-									className="rounded-lg border border-white/20 px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:border-white/40 hover:bg-white/5"
+									className="rounded-lg border border-white/20 bg-white/5 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-white/10"
 								>
 									See How It Works
 								</a>
 							</div>
-							<div className="mt-10 flex items-center gap-8 text-sm text-gray-400">
+							<div className="mt-10 flex items-center gap-8 rounded-xl border border-white/10 bg-black/30 px-6 py-4 text-sm text-gray-400 backdrop-blur-sm">
 								<div>
 									<span className="block text-2xl font-bold text-white">24/7</span>
 									Autonomous operation
 								</div>
-								<div className="h-10 w-px bg-white/10" />
+								<div className="h-10 w-px bg-white/20" />
 								<div>
 									<span className="block text-2xl font-bold text-white">48%</span>
 									Cost reduction
 								</div>
-								<div className="h-10 w-px bg-white/10" />
+								<div className="h-10 w-px bg-white/20" />
 								<div>
 									<span className="block text-2xl font-bold text-white">5-10</span>
 									Acres per day
 								</div>
-							</div>
-						</div>
-						{/* Hero Image Placeholder */}
-						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-cw-charcoal to-cw-gray">
-							<div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
-								<div className="mb-4 rounded-full bg-cw-green/20 p-4">
-									<svg
-										className="h-8 w-8 text-cw-green"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										strokeWidth={1.5}
-									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"
-										/>
-									</svg>
-								</div>
-								<p className="text-lg font-medium text-gray-300">
-									Robot Render Coming Soon
-								</p>
-								<p className="mt-2 text-sm text-gray-500">
-									CleanWalker robot in park setting — golden hour lighting
-								</p>
 							</div>
 						</div>
 					</div>
@@ -229,39 +214,81 @@ export default function Home() {
 				</div>
 			</section>
 
-			{/* Fleet Image Placeholder */}
+			{/* Fleet Image — Real render */}
 			<section className="bg-cw-dark px-6 py-24">
 				<div className="mx-auto max-w-7xl">
-					<div className="relative aspect-[21/9] overflow-hidden rounded-2xl bg-gradient-to-br from-cw-charcoal to-cw-gray">
-						<div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
-							<div className="mb-4 rounded-full bg-cw-green/20 p-4">
-								<svg
-									className="h-8 w-8 text-cw-green"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									strokeWidth={1.5}
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"
-									/>
-								</svg>
-							</div>
-							<p className="text-lg font-medium text-gray-300">
-								Fleet of CleanWalker Robots Working in Urban Park
+					<div className="relative aspect-[21/9] overflow-hidden rounded-2xl">
+						<Image
+							src="/renders/hero-fleet.png"
+							alt="Three CleanWalker robots working together in an urban park, aerial drone perspective"
+							fill
+							className="object-cover"
+							sizes="(max-width: 1280px) 100vw, 1280px"
+						/>
+						<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
+						<div className="absolute bottom-0 left-0 right-0 p-8">
+							<p className="text-xl font-semibold text-white">
+								Fleet Deployment
 							</p>
-							<p className="mt-2 text-sm text-gray-500">
-								Three robots collecting litter — drone perspective, morning light
+							<p className="mt-1 max-w-lg text-sm text-gray-300">
+								Multiple robots coordinate across your site for maximum coverage —
+								managed from a single dashboard
 							</p>
 						</div>
 					</div>
 				</div>
 			</section>
 
-			{/* Social Proof */}
+			{/* Capabilities Visual — Night ops + Before/After */}
 			<section className="bg-cw-light px-6 py-24">
+				<div className="mx-auto max-w-7xl">
+					<div className="text-center">
+						<h2 className="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
+							Always On, Always Working
+						</h2>
+						<p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
+							Rain or shine, day or night — CleanWalker robots keep your spaces pristine.
+						</p>
+					</div>
+					<div className="mt-12 grid gap-6 md:grid-cols-2">
+						<div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
+							<Image
+								src="/renders/lifestyle-night-ops.png"
+								alt="CleanWalker robot operating at night with LED illumination on a city sidewalk"
+								fill
+								className="object-cover"
+								sizes="(max-width: 768px) 100vw, 50vw"
+							/>
+							<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+							<div className="absolute bottom-0 left-0 right-0 p-6">
+								<p className="text-lg font-semibold text-white">Night Operations</p>
+								<p className="mt-1 text-sm text-gray-300">
+									IR perception and LED lighting enable round-the-clock cleaning
+								</p>
+							</div>
+						</div>
+						<div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
+							<Image
+								src="/renders/lifestyle-before-after.png"
+								alt="Before and after comparison showing a littered park transformed to a clean space by CleanWalker robots"
+								fill
+								className="object-cover"
+								sizes="(max-width: 768px) 100vw, 50vw"
+							/>
+							<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+							<div className="absolute bottom-0 left-0 right-0 p-6">
+								<p className="text-lg font-semibold text-white">Visible Results</p>
+								<p className="mt-1 text-sm text-gray-300">
+									Measurable impact on cleanliness from day one
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{/* Social Proof */}
+			<section className="bg-white px-6 py-24">
 				<div className="mx-auto max-w-7xl">
 					<p className="text-center text-sm font-medium uppercase tracking-wider text-gray-500">
 						Designed for
@@ -276,7 +303,7 @@ export default function Home() {
 						].map((name) => (
 							<div
 								key={name}
-								className="flex h-16 items-center justify-center rounded-xl border border-gray-200 bg-white px-6"
+								className="flex h-16 items-center justify-center rounded-xl border border-gray-200 bg-cw-light px-6"
 							>
 								<span className="text-sm font-medium text-gray-400">{name}</span>
 							</div>
@@ -286,7 +313,7 @@ export default function Home() {
 			</section>
 
 			{/* ROI Section */}
-			<section className="bg-white px-6 py-24">
+			<section className="bg-cw-light px-6 py-24">
 				<div className="mx-auto max-w-7xl">
 					<div className="grid items-center gap-12 md:grid-cols-2">
 						<div>
@@ -314,7 +341,7 @@ export default function Home() {
 							].map((stat) => (
 								<div
 									key={stat.label}
-									className="rounded-xl border border-gray-200 bg-cw-light p-6"
+									className="rounded-xl border border-gray-200 bg-white p-6"
 								>
 									<div className="text-2xl font-bold text-cw-green">{stat.value}</div>
 									<div className="mt-1 text-sm text-gray-600">{stat.label}</div>
@@ -325,9 +352,17 @@ export default function Home() {
 				</div>
 			</section>
 
-			{/* CTA Section */}
-			<section className="bg-cw-dark px-6 py-24">
-				<div className="mx-auto max-w-3xl text-center">
+			{/* CTA Section with background image */}
+			<section className="relative bg-cw-dark px-6 py-24">
+				<Image
+					src="/renders/hero-sidewalk.png"
+					alt="CleanWalker robot on a European city sidewalk"
+					fill
+					className="object-cover opacity-30"
+					sizes="100vw"
+				/>
+				<div className="absolute inset-0 bg-cw-dark/60" />
+				<div className="relative z-10 mx-auto max-w-3xl text-center">
 					<h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
 						Ready for cleaner public spaces?
 					</h2>
@@ -344,7 +379,7 @@ export default function Home() {
 						</a>
 						<a
 							href="/contact"
-							className="rounded-lg border border-white/20 px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:border-white/40 hover:bg-white/5"
+							className="rounded-lg border border-white/20 bg-white/5 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-white/10"
 						>
 							Contact Sales
 						</a>

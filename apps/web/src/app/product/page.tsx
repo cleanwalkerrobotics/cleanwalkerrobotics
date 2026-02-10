@@ -2,49 +2,13 @@
 // Licensed under the AGPL-3.0 License. See LICENSE in the project root.
 
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
 	title: "Product — CleanWalker Robotics",
 	description:
 		"Discover the CleanWalker autonomous litter-collecting robot. Quadrupedal, weatherproof, AI-powered, and built for 24/7 outdoor operation.",
 };
-
-function ImagePlaceholder({
-	label,
-	description,
-	aspect = "4/3",
-}: {
-	label: string;
-	description: string;
-	aspect?: string;
-}) {
-	return (
-		<div
-			className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cw-charcoal to-cw-gray"
-			style={{ aspectRatio: aspect }}
-		>
-			<div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-				<div className="mb-3 rounded-full bg-cw-green/20 p-3">
-					<svg
-						className="h-6 w-6 text-cw-green"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						strokeWidth={1.5}
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"
-						/>
-					</svg>
-				</div>
-				<p className="text-sm font-medium text-gray-300">[{label}]</p>
-				<p className="mt-1 text-xs text-gray-500">{description}</p>
-			</div>
-		</div>
-	);
-}
 
 export default function ProductPage() {
 	return (
@@ -63,10 +27,16 @@ export default function ProductPage() {
 								zero human intervention required.
 							</p>
 						</div>
-						<ImagePlaceholder
-							label="Front 3/4 view of CleanWalker robot"
-							description="Matte charcoal body, green LED accents, four articulated legs, stereo camera system"
-						/>
+						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
+							<Image
+								src="/renders/detail-side-profile.png"
+								alt="CleanWalker robot side profile showing quadrupedal design, articulated legs, and sensor array"
+								fill
+								className="object-cover"
+								priority
+								sizes="(max-width: 768px) 100vw, 50vw"
+							/>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -128,22 +98,88 @@ export default function ProductPage() {
 							))}
 						</div>
 						<div className="space-y-6">
-							<ImagePlaceholder
-								label="Close-up of gripper picking up aluminum can"
-								description="Soft silicone 3-finger gripper, macro photography, studio lighting"
+							<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
+								<Image
+									src="/renders/detail-gripper.png"
+									alt="Close-up of CleanWalker's robotic gripper picking up an aluminum can with soft silicone fingers"
+									fill
+									className="object-cover"
+									sizes="(max-width: 768px) 100vw, 50vw"
+								/>
+							</div>
+							<div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-cw-charcoal">
+								<Image
+									src="/renders/detail-charging-dock.png"
+									alt="CleanWalker robot docked at its weatherproof charging station in a park setting"
+									fill
+									className="object-cover"
+									sizes="(max-width: 768px) 100vw, 50vw"
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{/* Exploded View — Technology Deep Dive */}
+			<section className="bg-white px-6 py-24">
+				<div className="mx-auto max-w-7xl">
+					<div className="grid items-center gap-12 md:grid-cols-2">
+						<div className="relative aspect-square overflow-hidden rounded-2xl bg-cw-light">
+							<Image
+								src="/renders/tech-exploded-view.png"
+								alt="Exploded view of CleanWalker robot showing internal components — motors, sensors, compute module, battery, gripper mechanism"
+								fill
+								className="object-contain"
+								sizes="(max-width: 768px) 100vw, 50vw"
 							/>
-							<ImagePlaceholder
-								label="Robot at charging dock in park setting"
-								description="Weatherproof dock with rain canopy, green LED charging indicator"
-								aspect="16/9"
-							/>
+						</div>
+						<div>
+							<div className="mb-4 text-sm font-semibold uppercase tracking-wider text-cw-green">
+								Engineering
+							</div>
+							<h2 className="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
+								Purpose-Built for Outdoor Autonomy
+							</h2>
+							<p className="mt-6 leading-relaxed text-gray-600">
+								Every component is selected for reliability, performance, and
+								serviceability in real-world outdoor environments. From the NVIDIA
+								Jetson Orin Nano compute module to the 48V Li-ion battery pack — no
+								compromises.
+							</p>
+							<div className="mt-8 space-y-4">
+								{[
+									"12 servo actuators for adaptive quadrupedal locomotion",
+									"OAK-D Pro stereo depth + 2D RPLiDAR sensor fusion",
+									"2-DOF gripper arm with 5g–500g pickup range",
+									"20L compacting waste bin with auto-eject",
+									"IP54+ weatherproof enclosure for year-round operation",
+								].map((feature) => (
+									<div key={feature} className="flex items-start gap-3">
+										<svg
+											className="mt-0.5 h-5 w-5 shrink-0 text-cw-green"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+											strokeWidth={2}
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												d="M4.5 12.75l6 6 9-13.5"
+											/>
+										</svg>
+										<span className="text-sm text-gray-700">{feature}</span>
+									</div>
+								))}
+							</div>
 						</div>
 					</div>
 				</div>
 			</section>
 
 			{/* Specs */}
-			<section id="specs" className="bg-white px-6 py-24">
+			<section id="specs" className="bg-cw-light px-6 py-24">
 				<div className="mx-auto max-w-7xl">
 					<div className="text-center">
 						<h2 className="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
@@ -151,7 +187,7 @@ export default function ProductPage() {
 						</h2>
 					</div>
 					<div className="mt-16 grid gap-8 md:grid-cols-2">
-						<div className="rounded-2xl border border-gray-200 p-8">
+						<div className="rounded-2xl border border-gray-200 bg-white p-8">
 							<h3 className="text-lg font-semibold text-gray-900">Physical</h3>
 							<dl className="mt-6 space-y-4">
 								{[
@@ -172,7 +208,7 @@ export default function ProductPage() {
 								))}
 							</dl>
 						</div>
-						<div className="rounded-2xl border border-gray-200 p-8">
+						<div className="rounded-2xl border border-gray-200 bg-white p-8">
 							<h3 className="text-lg font-semibold text-gray-900">Intelligence</h3>
 							<dl className="mt-6 space-y-4">
 								{[
@@ -193,7 +229,7 @@ export default function ProductPage() {
 								))}
 							</dl>
 						</div>
-						<div className="rounded-2xl border border-gray-200 p-8">
+						<div className="rounded-2xl border border-gray-200 bg-white p-8">
 							<h3 className="text-lg font-semibold text-gray-900">Performance</h3>
 							<dl className="mt-6 space-y-4">
 								{[
@@ -214,7 +250,7 @@ export default function ProductPage() {
 								))}
 							</dl>
 						</div>
-						<div className="rounded-2xl border border-gray-200 p-8">
+						<div className="rounded-2xl border border-gray-200 bg-white p-8">
 							<h3 className="text-lg font-semibold text-gray-900">Safety</h3>
 							<dl className="mt-6 space-y-4">
 								{[
@@ -239,7 +275,38 @@ export default function ProductPage() {
 				</div>
 			</section>
 
-			{/* Features Grid */}
+			{/* Sensor Detail */}
+			<section className="bg-white px-6 py-24">
+				<div className="mx-auto max-w-7xl">
+					<div className="grid items-center gap-12 md:grid-cols-2">
+						<div>
+							<div className="mb-4 text-sm font-semibold uppercase tracking-wider text-cw-green">
+								Perception System
+							</div>
+							<h2 className="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
+								See Everything, Miss Nothing
+							</h2>
+							<p className="mt-6 leading-relaxed text-gray-600">
+								CleanWalker&apos;s multi-sensor perception system combines stereo depth
+								cameras, LiDAR, and AI-powered detection to understand its
+								environment in full 3D — identifying litter, avoiding obstacles, and
+								navigating complex terrain with centimeter-level precision.
+							</p>
+						</div>
+						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
+							<Image
+								src="/renders/detail-sensors.png"
+								alt="Close-up of CleanWalker sensor array showing stereo camera lenses, IR projector, and LiDAR puck"
+								fill
+								className="object-cover"
+								sizes="(max-width: 768px) 100vw, 50vw"
+							/>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{/* Fleet Management Software */}
 			<section className="bg-cw-light px-6 py-24">
 				<div className="mx-auto max-w-7xl">
 					<div className="text-center">
@@ -250,7 +317,18 @@ export default function ProductPage() {
 							Every subscription includes our real-time fleet dashboard.
 						</p>
 					</div>
-					<div className="mt-16 grid gap-6 md:grid-cols-3">
+					<div className="mt-12">
+						<div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg">
+							<Image
+								src="/renders/tech-dashboard-mockup.png"
+								alt="CleanWalker fleet management dashboard showing real-time robot locations, analytics, and route planning on screen"
+								fill
+								className="object-cover"
+								sizes="(max-width: 1280px) 100vw, 1280px"
+							/>
+						</div>
+					</div>
+					<div className="mt-12 grid gap-6 md:grid-cols-3">
 						{[
 							{
 								title: "Real-Time Map",
@@ -291,7 +369,7 @@ export default function ProductPage() {
 				</div>
 			</section>
 
-			{/* Product Images Gallery */}
+			{/* Product Gallery */}
 			<section className="bg-white px-6 py-24">
 				<div className="mx-auto max-w-7xl">
 					<div className="text-center">
@@ -300,18 +378,33 @@ export default function ProductPage() {
 						</h2>
 					</div>
 					<div className="mt-12 grid gap-6 md:grid-cols-3">
-						<ImagePlaceholder
-							label="Side profile — full robot on white background"
-							description="Standing pose, visible joints, folded gripper arm, LiDAR puck"
-						/>
-						<ImagePlaceholder
-							label="Sensor array close-up — front face"
-							description="Stereo camera lenses, IR dot projector, green LED status indicator"
-						/>
-						<ImagePlaceholder
-							label="Night operations — robot on city street"
-							description="Green LED strip illuminating sidewalk, cinematic lighting"
-						/>
+						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
+							<Image
+								src="/renders/detail-side-profile.png"
+								alt="CleanWalker robot clean side profile showing four articulated legs, folded gripper arm, and LiDAR sensor"
+								fill
+								className="object-cover"
+								sizes="(max-width: 768px) 100vw, 33vw"
+							/>
+						</div>
+						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
+							<Image
+								src="/renders/detail-sensors.png"
+								alt="CleanWalker front-face sensor array with stereo camera lenses and green LED status indicator"
+								fill
+								className="object-cover"
+								sizes="(max-width: 768px) 100vw, 33vw"
+							/>
+						</div>
+						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
+							<Image
+								src="/renders/lifestyle-night-ops.png"
+								alt="CleanWalker robot operating at night on a city street with green LED strip illumination"
+								fill
+								className="object-cover"
+								sizes="(max-width: 768px) 100vw, 33vw"
+							/>
+						</div>
 					</div>
 				</div>
 			</section>

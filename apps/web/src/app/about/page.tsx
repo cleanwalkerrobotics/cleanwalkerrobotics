@@ -2,6 +2,7 @@
 // Licensed under the AGPL-3.0 License. See LICENSE in the project root.
 
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
 	title: "About — CleanWalker Robotics",
@@ -36,14 +37,23 @@ function TeamPlaceholder({ name, role }: { name: string; role: string }) {
 export default function AboutPage() {
 	return (
 		<div>
-			{/* Hero */}
-			<section className="bg-cw-dark px-6 py-24 md:py-32">
-				<div className="mx-auto max-w-4xl text-center">
+			{/* Hero — Full-bleed with sidewalk image */}
+			<section className="relative bg-cw-dark px-6 py-24 md:py-32">
+				<Image
+					src="/renders/hero-sidewalk.png"
+					alt="CleanWalker robot navigating a European city sidewalk alongside pedestrians"
+					fill
+					className="object-cover opacity-40"
+					priority
+					sizes="100vw"
+				/>
+				<div className="absolute inset-0 bg-gradient-to-b from-cw-dark/60 to-cw-dark/80" />
+				<div className="relative z-10 mx-auto max-w-4xl text-center">
 					<h1 className="text-4xl font-bold tracking-tight text-white md:text-5xl">
 						Making Public Spaces <span className="text-cw-green">Cleaner</span>,
 						Autonomously
 					</h1>
-					<p className="mx-auto mt-6 max-w-2xl text-lg text-gray-400">
+					<p className="mx-auto mt-6 max-w-2xl text-lg text-gray-300">
 						We&apos;re building the next generation of autonomous robots to solve one
 						of the most persistent challenges facing cities, parks, and communities:
 						litter.
@@ -80,31 +90,14 @@ export default function AboutPage() {
 								to communities of all sizes.
 							</p>
 						</div>
-						{/* Placeholder */}
-						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-cw-charcoal to-cw-gray">
-							<div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
-								<div className="mb-4 rounded-full bg-cw-green/20 p-4">
-									<svg
-										className="h-8 w-8 text-cw-green"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										strokeWidth={1.5}
-									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"
-										/>
-									</svg>
-								</div>
-								<p className="text-lg font-medium text-gray-300">
-									[Before/After — Park Clean-up]
-								</p>
-								<p className="mt-2 text-sm text-gray-500">
-									Split image showing littered park transformed to pristine condition
-								</p>
-							</div>
+						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+							<Image
+								src="/renders/lifestyle-city-worker.png"
+								alt="CleanWalker robot working alongside a city maintenance worker in an urban park"
+								fill
+								className="object-cover"
+								sizes="(max-width: 768px) 100vw, 50vw"
+							/>
 						</div>
 					</div>
 				</div>
@@ -264,9 +257,17 @@ export default function AboutPage() {
 				</div>
 			</section>
 
-			{/* CTA */}
-			<section className="bg-cw-dark px-6 py-24">
-				<div className="mx-auto max-w-3xl text-center">
+			{/* CTA with hero-sidewalk background */}
+			<section className="relative bg-cw-dark px-6 py-24">
+				<Image
+					src="/renders/hero-sidewalk.png"
+					alt="CleanWalker robot on a European sidewalk"
+					fill
+					className="object-cover opacity-20"
+					sizes="100vw"
+				/>
+				<div className="absolute inset-0 bg-cw-dark/60" />
+				<div className="relative z-10 mx-auto max-w-3xl text-center">
 					<h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
 						Join us in making public spaces cleaner
 					</h2>

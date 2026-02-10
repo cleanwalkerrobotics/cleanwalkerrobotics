@@ -2,6 +2,7 @@
 // Licensed under the AGPL-3.0 License. See LICENSE in the project root.
 
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
 	title: "Demos — CleanWalker Robotics",
@@ -65,10 +66,19 @@ const demos = [
 export default function DemosPage() {
 	return (
 		<div className="min-h-screen bg-cw-dark">
-			{/* Hero */}
-			<section className="px-6 py-24 text-center">
-				<div className="mx-auto max-w-4xl">
-					<span className="mb-4 inline-block rounded-full border border-cw-green/30 bg-cw-green/10 px-4 py-1 text-sm text-cw-green">
+			{/* Hero — Subtle background image */}
+			<section className="relative px-6 py-24 text-center">
+				<Image
+					src="/renders/hero-park.png"
+					alt="CleanWalker robot in a park setting"
+					fill
+					className="object-cover opacity-15"
+					priority
+					sizes="100vw"
+				/>
+				<div className="absolute inset-0 bg-gradient-to-b from-cw-dark/40 to-cw-dark" />
+				<div className="relative z-10 mx-auto max-w-4xl">
+					<span className="mb-4 inline-block rounded-full border border-cw-green/30 bg-cw-green/10 px-4 py-1 text-sm text-cw-green backdrop-blur-sm">
 						Technology Demos
 					</span>
 					<h1 className="mt-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
