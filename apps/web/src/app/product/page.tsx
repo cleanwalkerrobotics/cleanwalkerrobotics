@@ -70,7 +70,7 @@ export default function ProductPage() {
 								},
 								{
 									title: "Precision Collection",
-									desc: "A 2-DOF robotic arm with a 2-3 finger mechanical gripper precisely picks up litter items from 5g to 500g. The gripper handles everything from cigarette butts to water bottles.",
+									desc: "A 2-DOF robotic arm with a mechanical gripper with silicone-tipped fingers precisely picks up litter items from 5g to 500g. The gripper handles everything from cigarette butts to water bottles.",
 								},
 								{
 									title: "Self-Charging",
@@ -106,7 +106,7 @@ export default function ProductPage() {
 							<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
 								<Image
 									src="/renders/detail-gripper.webp"
-									alt="Close-up of CleanWalker's mechanical gripper picking up an aluminum can with rigid fingers"
+									alt="Close-up of CleanWalker's mechanical gripper picking up an aluminum can with silicone-tipped rigid fingers"
 									fill
 									className="object-cover"
 									sizes="(max-width: 768px) 100vw, 50vw"

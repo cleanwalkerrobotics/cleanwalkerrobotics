@@ -138,8 +138,8 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 
 			// Scene
 			const scene = new THREE.Scene();
-			scene.background = new THREE.Color(0x0a0f15);
-			scene.fog = new THREE.FogExp2(0x0a0f15, 0.25);
+			scene.background = new THREE.Color(0xd4d4d4);
+			scene.fog = new THREE.FogExp2(0xd4d4d4, 0.15);
 
 			// Camera
 			const camera = new THREE.PerspectiveCamera(
@@ -157,7 +157,7 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 			renderer.shadowMap.enabled = true;
 			renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 			renderer.toneMapping = THREE.ACESFilmicToneMapping;
-			renderer.toneMappingExposure = 1.2;
+			renderer.toneMappingExposure = 1.6;
 			container.appendChild(renderer.domElement);
 
 			// Controls
@@ -173,9 +173,9 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 			controls.update();
 
 			// Lighting
-			scene.add(new THREE.HemisphereLight(0x1a2030, 0x080c08, 0.7));
+			scene.add(new THREE.HemisphereLight(0xffffff, 0x8899aa, 1.5));
 
-			const dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
+			const dirLight = new THREE.DirectionalLight(0xffffff, 2.0);
 			dirLight.position.set(3, 5, 2);
 			dirLight.castShadow = true;
 			dirLight.shadow.mapSize.width = 1024;
@@ -188,20 +188,24 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 			dirLight.shadow.camera.bottom = -2;
 			scene.add(dirLight);
 
-			const fillLight = new THREE.DirectionalLight(0x4488ff, 0.3);
+			const fillLight = new THREE.DirectionalLight(0xddeeff, 0.8);
 			fillLight.position.set(-3, 2, -3);
 			scene.add(fillLight);
 
-			const rimLight = new THREE.PointLight(0x22c55e, 0.5, 4);
+			const rimLight = new THREE.PointLight(0x22c55e, 0.6, 4);
 			rimLight.position.set(0, 0.6, -1.2);
 			scene.add(rimLight);
+
+			const bottomFill = new THREE.DirectionalLight(0xffffff, 0.4);
+			bottomFill.position.set(0, -1, 2);
+			scene.add(bottomFill);
 
 			// Ground
 			const ground = new THREE.Mesh(
 				new THREE.PlaneGeometry(12, 12),
 				new THREE.MeshStandardMaterial({
-					color: 0x0d1117,
-					roughness: 0.95,
+					color: 0xbcbcbc,
+					roughness: 0.9,
 					metalness: 0.05,
 				}),
 			);
@@ -209,7 +213,7 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 			ground.receiveShadow = true;
 			scene.add(ground);
 
-			const grid = new THREE.GridHelper(5, 30, 0x1a2a1a, 0x111a11);
+			const grid = new THREE.GridHelper(5, 30, 0x999999, 0xaaaaaa);
 			grid.position.y = 0.001;
 			scene.add(grid);
 

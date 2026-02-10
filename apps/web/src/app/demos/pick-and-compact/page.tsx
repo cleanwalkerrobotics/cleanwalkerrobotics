@@ -33,7 +33,7 @@ const PHASES: Phase[] = [
 		id: "grip",
 		label: "Grip",
 		description:
-			"3-finger mechanical gripper descends and closes adaptively. Force sensors detect contact at 2.1N per finger — gentle enough for thin cans, firm enough for wet bottles.",
+			"Mechanical gripper with silicone-tipped fingers descends and closes adaptively. Force sensors detect contact at 2.1N per finger — gentle enough for thin cans, firm enough for wet bottles.",
 		durationMs: 2500,
 	},
 	{
@@ -450,11 +450,12 @@ export default function PickAndCompactPage() {
 								3-Finger Mechanical Gripper
 							</h3>
 							<p className="text-sm leading-relaxed text-gray-400">
-								Three rigid mechanical fingers with embedded strain gauges provide
-								precise grasping across irregular shapes. The 120-degree
-								symmetric layout ensures stable tri-point contact on bottles,
-								cans, wrappers, and organic debris. Servo-driven finger force
-								is tuned for grip without crushing thin aluminum.
+								Three steel fingers with silicone grip pads and embedded strain
+								gauges provide precise yet gentle grasping across irregular
+								shapes. The 120-degree symmetric layout ensures stable
+								tri-point contact on bottles, cans, wrappers, and organic
+								debris. The silicone-tipped fingers grip firmly without
+								crushing thin aluminum.
 							</p>
 						</div>
 
@@ -514,7 +515,7 @@ export default function PickAndCompactPage() {
 							<tbody className="divide-y divide-white/5">
 								{[
 									["Gripper type", "2-3 finger adaptive mechanical"],
-									["Finger material", "Rigid mechanical fingers w/ strain gauges"],
+									["Finger material", "Steel fingers with silicone grip pads and strain gauges"],
 									["Max grip force", "12N per finger (36N total)"],
 									["Grip response time", "< 200ms close, < 50ms re-grip"],
 									["Compression", "Gripper arm press-down into bag"],
