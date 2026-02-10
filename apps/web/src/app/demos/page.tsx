@@ -22,7 +22,8 @@ const demos = [
 	},
 	{
 		title: "Autonomous Navigation",
-		status: "coming",
+		status: "live",
+		slug: "autonomous-navigation",
 		description:
 			"Watch CleanWalker navigate complex park environments — avoiding pedestrians, handling terrain changes, and optimizing coverage routes. LiDAR + visual SLAM fusion.",
 		placeholder: "Simulation demo — autonomous park navigation with obstacle avoidance",
