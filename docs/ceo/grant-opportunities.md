@@ -16,14 +16,15 @@ Last updated: 2026-02-10
 
 | Rank | Grant | Region | Fit | Amount | Why |
 |------|-------|--------|-----|--------|-----|
-| 1 | **WBSO** | NL | 7/10 | Tax credit ~32% of R&D wages | Lowest barrier, immediate benefit, no physical prototype needed |
+| 1 | **WBSO** | NL | 7/10 | Tax credit — starters get **50%** on first €380K R&D wages | Lowest barrier, immediate benefit, no physical prototype needed |
 | 2 | **EIC Accelerator — Open** | EU | 5/10 | Up to €2.5M grant + €10M equity | Huge upside, but requires TRL 6+ (we're TRL 2-3) |
 | 3 | **EIC Physical AI Challenge** | EU | 6/10 | €300K (Stage 1) | Best thematic fit, lower TRL bar (TRL 4), but need lab prototype |
 | 4 | **MIT Haalbaarheid** | NL | 7/10 | Up to €20K (35% of costs) | Small but easy — fund a feasibility study |
 | 5 | **MBRIF Accelerator** | UAE | 7/10 | Mentorship + market access (equity-free) | BEEAH/Dubai alignment, no funding but high strategic value |
 | 6 | **Dubai Future Accelerators** | UAE | 7/10 | Gov partnership (no equity) | Pairs you with Dubai Municipality; waste mgmt in past cohorts |
 | 7 | **ADIO Innovation Programme** | UAE | 7/10 | Up to AED 10M (~$2.7M) | Abu Dhabi, welcomes foreign entrepreneurs, milestone-based |
-| 8 | **Innovatiekrediet** | NL | 5/10 | €150K–€10M loan | Good fit at later stage, requires proof-of-concept + financing plan |
+| 8 | **VFF Proof-of-Concept** | NL | 5→8/10 | Up to €450K loan | Perfect stage fit, but needs matching investor LOI |
+| 9 | **Innovatiekrediet** | NL | 5/10 | €150K–€10M loan | Good fit at later stage, requires proof-of-concept + financing plan |
 | 9 | **Catalyst (Masdar)** | UAE | 7/10 | USD 50-150K seed + workspace | Cleantech-focused, Abu Dhabi base |
 | 10 | **Hub71+ ClimateTech** | UAE | 7/10 | AED 500K+ (for equity via SAFE) | Climate/sustainability, ADNOC pilot budgets, Feb deadline likely passed |
 | 11 | **RoboNexus** | SG | 5/10 | Accelerator (non-cash) | Robotics-specific, requires SG entity |
@@ -167,7 +168,7 @@ Litter-collecting robots, waste management, and urban cleaning are **NOT within 
 | **Full name** | Act for the Promotion of Research and Development Work |
 | **Administering body** | RVO (Netherlands Enterprise Agency) |
 | **Type** | R&D tax credit (payroll tax reduction) |
-| **Benefit** | 32% reduction on first €350K of R&D wages; 16% above that |
+| **Benefit** | **Starters: 50%** on first €380K of R&D wages; Regular: 36% on first €380K; 16% above. Self-employed: €15,979 deduction + €7,996 starter supplement |
 | **Who can apply** | Companies subject to Dutch payroll tax (inhoudingsplichtige) OR self-employed persons (zelfstandigen) performing R&D |
 | **Deadlines** | Three application periods per year; must apply before R&D work starts for each period |
 | **Legal entity** | BV, NV, eenmanszaak, VOF all eligible. LLC treated as BV equivalent since Jan 2025 |
@@ -322,7 +323,90 @@ This is a government-procurement model — a ministry identifies a problem (e.g.
 
 ---
 
-### 2.6 Other NL Opportunities
+### 2.6 VFF / Proof-of-Concept Funding
+
+| Field | Details |
+|-------|---------|
+| **Full name** | Vroegefasefinanciering (VFF) / Proof-of-Concept Fund |
+| **Administering body** | RVO |
+| **Type** | Government loan for concept-to-prototype development |
+| **Funding** | Up to €450,000 |
+| **2026 budget** | €2.25M (national) + €4.95M (academic track) |
+| **Application** | January 1 – December 31, 2026 (or until budget depleted) |
+| **Requirement** | Must have a matching investor letter of intent for at least the same amount |
+| **Eligibility** | SME, innovative startup (max 5 years old) |
+
+**Our fit: 5/10 (currently) → 8/10 (with angel investor LOI)**
+
+**What we meet:**
+- Perfect stage fit — designed for developing a concept into a working prototype
+- Up to €450K covers our entire pilot budget
+- Innovative startup < 5 years old
+
+**What we don't meet (yet):**
+- Requires a **matching investor declaration of intent** — need an investor willing to commit at least as much as the government loan
+- Very small national budget (€2.25M total across all applicants)
+- LLC entity uncertainty
+
+**Strategic value:** This could be transformative — €450K government + €450K investor = €900K, enough for multiple prototype iterations and a pilot. The government backing also de-risks the deal for the investor.
+
+**Recommendation:** Start investor conversations now. Once you have an angel/VC LOI, apply immediately — budget is limited.
+
+---
+
+### 2.7 Eurostars (International R&D Collaboration)
+
+| Field | Details |
+|-------|---------|
+| **Full name** | Eurostars 3 |
+| **Administering body** | Eureka network, NL contribution via RVO |
+| **Type** | International collaborative R&D funding |
+| **NL funding** | Up to €500,000 per project (NL share) |
+| **Partners** | Need at least 1 partner from another Eurostars country |
+| **Duration** | Max 36 months |
+| **Deadline** | **March 19, 2026 at 14:00 CET** |
+
+**Our fit: 4/10**
+
+**What we meet:**
+- Robotics/AI is in scope
+- SME-led projects (SMEs must account for 50%+ of budget)
+
+**What we don't meet:**
+- Need an international partner (another SME or research org from a different country)
+- Application is complex for a solo founder
+- LLC entity uncertainty for NL national co-funding
+
+**Recommendation:** If you have contacts at a European robotics company or university, this is worth considering. The March 19 deadline is tight but feasible.
+
+**URGENT: Deadline March 19, 2026 — within 90 days**
+
+---
+
+### 2.8 Regional Development Agencies (ROMs)
+
+| Field | Details |
+|-------|---------|
+| **Type** | Equity investments (not grants) |
+| **Funding** | Typically €100K–€500K |
+| **Total assets** | €2.3 billion combined across all ROMs |
+| **2023 investments** | €219M in 372 companies |
+
+**Key ROMs by province:**
+- Noord-Holland: **ROM InWest** (SME Fund, Transition Fund)
+- Zuid-Holland: **InnovationQuarter** (deep tech, cleantech)
+- Noord-Brabant: **BOM** (high tech, smart industry)
+- Overijssel/Gelderland: **Oost NL** (high tech)
+
+**Our fit: 5/10**
+
+ROMs provide equity investments, usually co-investing alongside private investors. Robotics + cleantech is in scope. They actively seek innovative companies.
+
+**Recommendation:** Identify your province, contact the relevant ROM for an introductory conversation. They can also help connect you to other funding and ecosystem partners.
+
+---
+
+### 2.9 Other NL Opportunities
 
 **Techleap (Rise / Pole Position programs)**
 - Non-profit subsidized by Ministry of Economic Affairs
@@ -739,15 +823,18 @@ This is a government strategy program, not a direct grant. However, it creates t
 
 ### Short-term (30-90 days)
 5. **MIT Haalbaarheid** — Prepare application, submit on April 8, 2026 opening day
-6. **Dubai Future Accelerators** — Monitor for next cohort with waste/smart city challenge
-7. **Municipal outreach** — Approach Amsterdam "Clean & Waste Free" program and Rotterdam circular economy team as pilot partners (not grants, but customer relationships)
-8. **Catalyst (Masdar)** — Monitor for next cohort
+6. **Eurostars** — If you have an international R&D partner, deadline is March 19, 2026 (up to €500K)
+7. **Dubai Future Accelerators** — Monitor for next cohort with waste/smart city challenge
+8. **ROM introductory meeting** — Contact your provincial ROM (InnovationQuarter, ROM InWest, etc.)
+9. **Municipal outreach** — Approach Amsterdam "Clean & Waste Free" program and Rotterdam circular economy team
+10. **Catalyst (Masdar)** — Monitor for next cohort
 
 ### Medium-term (3-12 months)
-9. **ADIO Innovation Programme** — Apply once we have a prototype and Abu Dhabi deployment plan (up to AED 10M)
-10. **Innovatiekrediet** — Build toward application with proof-of-concept and co-financing plan
-11. **EIC Physical AI** — Build basic prototype and secure end-user letter of intent
-12. **MIA/Vamil** — Apply when making first hardware purchases
+11. **VFF Proof-of-Concept** — Apply once you have an angel investor LOI (up to €450K, doubles your investor capital)
+12. **ADIO Innovation Programme** — Apply with prototype and Abu Dhabi deployment plan (up to AED 10M)
+13. **Innovatiekrediet** — Build toward application with proof-of-concept and co-financing plan
+14. **EIC Physical AI** — Build basic prototype and secure end-user letter of intent
+15. **MIA/Vamil** — Apply when making first hardware purchases
 
 ### Long-term (12+ months)
 13. **EIC Accelerator Open** — Target when at TRL 6+ with revenue/traction
