@@ -21,7 +21,7 @@ export default function Home() {
 					<div className="mx-auto w-full max-w-7xl">
 						<div className="max-w-2xl">
 							<div className="mb-6 inline-block rounded-full border border-cw-green/30 bg-cw-green/10 px-4 py-1.5 text-sm font-medium text-cw-green backdrop-blur-sm">
-								Robot-as-a-Service
+								Smart City Infrastructure
 							</div>
 							<h1 className="text-4xl font-bold leading-tight tracking-tight text-white md:text-6xl">
 								Autonomous Litter Collection for{" "}
@@ -29,8 +29,8 @@ export default function Home() {
 							</h1>
 							<p className="mt-6 max-w-lg text-lg leading-relaxed text-gray-300">
 								CleanWalker deploys intelligent, autonomous robots that keep parks,
-								campuses, and public spaces clean — 24/7, rain or shine. No upfront
-								capital. No maintenance headaches. Just cleaner spaces.
+								campuses, and public spaces clean — 24/7, rain or shine. No staffing
+								challenges. No coverage gaps. Just cleaner spaces.
 							</p>
 							<div className="mt-10 flex flex-wrap gap-4">
 								<a
@@ -53,8 +53,8 @@ export default function Home() {
 								</div>
 								<div className="h-10 w-px bg-white/20" />
 								<div>
-									<span className="block text-2xl font-bold text-white">48%</span>
-									Cost reduction
+									<span className="block text-2xl font-bold text-white">50+</span>
+									Litter types detected
 								</div>
 								<div className="h-10 w-px bg-white/20" />
 								<div>
@@ -75,8 +75,8 @@ export default function Home() {
 							Why CleanWalker?
 						</h2>
 						<p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
-							Replace costly manual litter collection with autonomous robots that work
-							harder, longer, and smarter.
+							Intelligent robots that work around the clock, delivering consistent
+							coverage and data-driven insights for cleaner spaces.
 						</p>
 					</div>
 					<div className="mt-16 grid gap-8 md:grid-cols-3">
@@ -134,7 +134,7 @@ export default function Home() {
 							</p>
 						</div>
 
-						{/* Cost Savings */}
+						{/* Operational Simplicity */}
 						<div className="rounded-2xl border border-gray-200 bg-white p-8">
 							<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-cw-green/10">
 								<svg
@@ -147,17 +147,17 @@ export default function Home() {
 									<path
 										strokeLinecap="round"
 										strokeLinejoin="round"
-										d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"
+										d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
 									/>
 								</svg>
 							</div>
 							<h3 className="mt-6 text-xl font-semibold text-gray-900">
-								25-48% Cost Savings
+								Operational Simplicity
 							</h3>
 							<p className="mt-3 leading-relaxed text-gray-600">
-								Save $52,000 to $100,000 per site annually compared to manual litter
-								collection. No labor overhead, no benefits costs, no sick days. Simple
-								flexible service agreements.
+								No staffing challenges, no scheduling headaches, no coverage gaps.
+								CleanWalker runs continuously with minimal oversight — giving your
+								team time back for higher-value work.
 							</p>
 						</div>
 					</div>
@@ -312,32 +312,32 @@ export default function Home() {
 				</div>
 			</section>
 
-			{/* ROI Section */}
+			{/* Benefits Section */}
 			<section className="bg-cw-light px-6 py-24">
 				<div className="mx-auto max-w-7xl">
 					<div className="grid items-center gap-12 md:grid-cols-2">
 						<div>
 							<h2 className="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
-								Save up to $100,000 per site, per year
+								Transform How You Manage Public Spaces
 							</h2>
 							<p className="mt-4 text-lg leading-relaxed text-gray-600">
-								Manual litter collection costs $9,300-$13,400/month for a two-worker
-								crew. CleanWalker delivers equivalent coverage for $7,000/month — with
-								better data, more hours, and zero sick days.
+								CleanWalker eliminates the challenges of manual litter collection —
+								delivering consistent, round-the-clock coverage with real-time data
+								and zero staffing complexity.
 							</p>
 							<a
 								href="/contact"
 								className="mt-8 inline-block rounded-lg bg-cw-green px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-cw-green-dark"
 							>
-								Contact Sales
+								Schedule a Consultation
 							</a>
 						</div>
 						<div className="grid grid-cols-2 gap-6">
 							{[
-								{ value: "$7,000", label: "Monthly cost for 2 robots" },
+								{ value: "24/7", label: "Continuous autonomous operation" },
 								{ value: "20+", label: "Hours of daily coverage" },
-								{ value: "$52K-$100K", label: "Annual savings per site" },
-								{ value: "$0", label: "Setup fees" },
+								{ value: "50+", label: "Litter types detected" },
+								{ value: "4+", label: "Terrain types traversed" },
 							].map((stat) => (
 								<div
 									key={stat.label}

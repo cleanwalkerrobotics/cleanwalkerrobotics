@@ -62,3 +62,32 @@
 **Context:** IFAT Munich (May 4-7, 2026) is the world's largest environmental technology trade show — 3,000+ exhibitors, 140,000+ attendees from 60+ countries. Every major waste company, municipal buyer, and equipment manufacturer attends. Has a startup exhibit area.
 **Decision:** Register for IFAT 2026 startup exhibit area immediately. This is CleanWalker's global launch event. Budget EUR 5,000-15,000 for small booth.
 **Consequence:** 3 months away — requires immediate action. Need simulation demo, AI demo, and marketing materials ready by April 2026. Contact application@ifat.de for startup area.
+
+## ADR-009: Bag Cassette Waste Collection System
+**Date:** 2026-02-10
+**Status:** Accepted
+**Decision:** Replace built-in 20L compacting bin with a bag cassette system.
+
+**Design:**
+- X-frame mounted on robot body, motorized raise/lower
+- Square rim frame holds standard trash bag open during collection
+- Internal bag roll (cassette) — replaceable cartridge, ~20-30 bags
+- Gripper arm doubles as compressor (presses into bag at ~80% capacity)
+- Snap-close mechanism seals bag when full
+- Robot walks to nearest curb, drops sealed bag, deploys fresh bag
+- Frame lowers for transport mode, raises for collection mode
+
+**Rationale:**
+- Integrates with existing municipal waste collection (bags at curb)
+- Eliminates powered compaction bin (simpler, lighter, cheaper)
+- Multi-purpose gripper reduces mechanical complexity
+- Dramatically increases effective capacity (many bags per charge vs one 20L bin)
+- Distinctive robot silhouette (raised frame = brand recognition)
+
+**Impact:**
+- Website, renders, specs, financial model all need updating
+- BOM changes: remove compacting bin, add frame actuator + bag cassette + seal mechanism
+- New consumable revenue line: proprietary bag cassettes
+- Pitch story improves: "integrates with your existing waste infrastructure"
+
+**Decided by:** Maurits (product concept) + Walker (formalized)

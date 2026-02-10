@@ -260,7 +260,7 @@ export default function ProductPage() {
 									["Pedestrian Detection", "Real-time AI detection"],
 									["Weather Safety", "Auto-dock in severe weather"],
 									["Liability", "Comprehensive commercial insurance"],
-									["Replacement", "48hr replacement SLA (24hr Fleet)"],
+									["Replacement", "48hr replacement SLA"],
 								].map(([label, value]) => (
 									<div
 										key={label}
@@ -315,7 +315,7 @@ export default function ProductPage() {
 							Fleet Management Software
 						</h2>
 						<p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
-							Every subscription includes our real-time fleet dashboard.
+							Every deployment includes our real-time fleet dashboard.
 						</p>
 					</div>
 					<div className="mt-12">
@@ -353,7 +353,7 @@ export default function ProductPage() {
 							},
 							{
 								title: "API Access",
-								desc: "Integrate robot data with your existing systems via REST API (Fleet tier).",
+								desc: "Integrate robot data with your existing systems via REST API.",
 							},
 						].map((feature) => (
 							<div
