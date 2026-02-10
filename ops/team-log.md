@@ -62,5 +62,7 @@
 | 2026-02-10 09:10 | cw-bizdev | Outreach tracker (13 targets) + contacts database — 3 draft-ready + 10 researched expansion targets with budget estimates | a3de77a |
 | 2026-02-10 | cw-research | Comprehensive autonomy stack architecture — 10-section R&D document covering perception, SLAM, nav, grasping, locomotion, behavior trees, integration, compute budget, 25+ repo links, phased roadmap | fc50dcd |
 
+| 2026-02-10 | cw-software | Perception demo options research + Replicate API PoC — 4 options analyzed, working litter detection via YOLOv8s-WorldV2 | 2fd4fe8 |
+
 ---
 *cw-software complete. cw-bizdev complete. cw-hardware killed (URDF done, Gazebo N/A).*
