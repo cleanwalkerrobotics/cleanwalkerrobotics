@@ -43,7 +43,7 @@
 | 2026-02-10 | cw-bizdev | Pitch deck overhaul: bag cassette system refs, enriched competitive landscape (scoring matrix, 4 moats), removed all pricing/RaaS, rewritten Ask slide for pilot partner conviction | 5c4dee5 |
 
 | 2026-02-10 06:46 | cw-ops (Walker) | Strategy.md IFAT cleanup: marked IFAT as SCRATCHED in priority stack, decisions table, trade shows, closing requirements | 9e2fc30 |
-| 2026-02-10 06:46 | cw-hardware | URDF robot model v1 — 12-DOF quadruped from design spec | IN PROGRESS |
+| 2026-02-10 06:46 | cw-hardware | URDF robot model v1 — 12-DOF quadruped from design spec | c134b39 |
 
 ---
 *cw-hardware active. All other sessions terminated.*
