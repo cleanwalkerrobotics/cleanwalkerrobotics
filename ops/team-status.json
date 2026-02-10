@@ -1,11 +1,11 @@
 {
-  "lastUpdated": "2026-02-10T00:46:00Z",
+  "lastUpdated": "2026-02-10T02:46:00Z",
   "teams": {
     "cw-software": {
       "status": "idle",
-      "lastTask": "Web demos (litter detection + fleet dashboard) + contact page",
+      "lastTask": "Bag Cassette copy refactor + copy softening + 3 new demos + render integration",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-09T23:58:00Z"
+      "lastActive": "2026-02-10T02:03:00Z"
     },
     "cw-hardware": {
       "status": "idle",
@@ -15,15 +15,21 @@
     },
     "cw-bizdev": {
       "status": "idle",
-      "lastTask": "Revised financial model + pricing sheet + pitch deck",
+      "lastTask": "Pitch deck overhaul — bag cassette, competitive data, no pricing",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-09"
+      "lastActive": "2026-02-10T02:46:00Z"
     },
     "cw-research": {
       "status": "idle",
-      "lastTask": null,
-      "lastTaskResult": null,
-      "lastActive": null
+      "lastTask": "Comprehensive competitive landscape analysis",
+      "lastTaskResult": "completed",
+      "lastActive": "2026-02-10T02:02:00Z"
+    },
+    "cw-renders": {
+      "status": "idle",
+      "lastTask": "Regenerated all 14 renders with Seedream 4.5 at 4K 16:9 using canonical design spec",
+      "lastTaskResult": "completed",
+      "lastActive": "2026-02-10T02:44:00Z"
     },
     "cw-ops": {
       "status": "idle",
@@ -33,5 +39,6 @@
     }
   },
   "activeSessions": 0,
-  "notes": "All sessions terminated. Website fully deployed with 3 interactive demos, contact page, and 5 core pages. VPS constraint: max 1 concurrent Claude Code session (OOM at 2)."
+  "vpsSpec": "30GB RAM (upgraded from 7.6GB)",
+  "notes": "All sessions terminated. VPS upgraded to 30GB RAM — multi-session constraint LIFTED. 15 commits landed this cycle. All 14 robot renders generated via Replicate API (no longer blocked on Maurits). Website fully live with real renders, 6 interactive demos, softened copy, no public pricing. Pitch deck overhauled."
 }
