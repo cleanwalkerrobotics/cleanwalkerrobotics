@@ -1,7 +1,7 @@
 # CleanWalker — Outreach Email Drafts
 
 **Status:** DRAFTS for Maurits to review and personalize before sending.
-**Last updated:** 2026-02-10
+**Last updated:** 2026-02-10 (Tier 2 added)
 
 ---
 
@@ -123,10 +123,190 @@ MB Software Studio LLC
 
 ---
 
-## Notes for Maurits
+## Notes for Maurits (Tier 1)
 
 - **LinkedIn first:** Before sending any of these, connect with the target contact on LinkedIn with a brief note. Warm intros convert 5-10x better than cold email.
 - **Veolia is highest priority.** They've already validated the concept. This is a warm lead disguised as a cold one.
 - **Amsterdam email uses Dutch subject line deliberately** -- it signals you're local/Dutch, which immediately differentiates from the flood of English-only cold emails they receive.
 - **Don't attach the pitch deck on first email.** Keep it lightweight. Send the deck after they agree to a call.
 - **Track all outreach in `docs/ceo/outreach-tracker.md`** once you send.
+
+---
+
+# Tier 2 — European Cities & Premium Property
+
+---
+
+## Email 4: City of Copenhagen — Solutions Lab Smart City Testing
+
+**To:** Copenhagen Solutions Lab — Smart City or Urban Innovation lead (research on LinkedIn; look for the team managing the Solutions Lab testing program)
+
+**Subject:** Quadrupedal litter robot for Copenhagen -- built for your Solutions Lab testing program
+
+**Body:**
+
+Hi [Name],
+
+I'm Maurits Bos, founder of CleanWalker Robotics. Copenhagen's Solutions Lab has built one of Europe's best frameworks for testing smart city technology in real urban environments. We'd like to bring our robot through it.
+
+CleanWalker is the world's first commercial quadrupedal litter-collecting robot. AI-powered detection, all-terrain locomotion (grass, cobblestones, park paths, stairs), and a bag cassette system that integrates with existing waste collection. Fully autonomous, 20+ hours per day.
+
+Copenhagen is a natural fit: your Solutions Lab provides the structured testing environment we need, your cycling infrastructure means pedestrian areas need cleaner alternatives to heavy vehicles, and Denmark's progressive stance on urban innovation attracts global attention.
+
+A pilot in Copenhagen wouldn't just test our technology -- it would position the city as the first in Scandinavia to deploy an autonomous litter-collecting quadruped.
+
+**Would you have 20 minutes for a call about a pilot through Solutions Lab?** Happy to share our technical specs and a Copenhagen-specific proposal.
+
+Website: https://cleanwalkerrobotics.com
+
+Best regards,
+Maurits Bos
+Founder, CleanWalker Robotics
+MB Software Studio LLC
+
+*(~165 words)*
+
+---
+
+## Email 5: City of Helsinki — Forum Virium & Trombia Follow-Up
+
+**To:** City of Helsinki — Smart City or Environment & Urban Development lead (research on LinkedIn; also check Forum Virium Helsinki for innovation contacts)
+
+**Subject:** Autonomous litter robot for Helsinki -- you already piloted Trombia, here's the next step
+
+**Body:**
+
+Hi [Name],
+
+I'm Maurits Bos, founder of CleanWalker Robotics. Helsinki's pilot of the Trombia autonomous sweeper proved the city is ready for robotic street cleaning. We've built the technology that goes where Trombia can't -- off the road.
+
+CleanWalker is the world's first commercial quadrupedal litter-collecting robot. AI vision detects litter, four-legged locomotion handles parks, plazas, grass, gravel, and stairs, and waste is bagged for existing collection routes. Fully autonomous, 20+ hours per day.
+
+Helsinki is ideal: Forum Virium's smart city testbed culture, Finland's permissive robotics regulations, and the city's track record with autonomous outdoor vehicles. Trombia handles roads -- CleanWalker handles everything roads can't reach.
+
+Together, Helsinki could become the first city with a complete autonomous cleaning ecosystem: vehicles for streets, quadrupeds for green spaces.
+
+**Would you be open to a 20-minute call to discuss a pilot?** I can share our technical specs and a Helsinki-specific deployment plan.
+
+Website: https://cleanwalkerrobotics.com
+
+Best regards,
+Maurits Bos
+Founder, CleanWalker Robotics
+MB Software Studio LLC
+
+*(~170 words)*
+
+---
+
+## Email 6: City of Barcelona — Cuidem Barcelona Cleaning Contract
+
+**To:** Ajuntament de Barcelona — Ecologia Urbana or Smart City lead (research on LinkedIn; look for contacts involved in the Cuidem Barcelona cleaning contract or Smart City Expo coordination)
+
+**Subject:** Robot cuadrúpedo autónomo para Barcelona -- encaja en el contrato Cuidem Barcelona
+
+*(Translation: Autonomous quadruped robot for Barcelona -- fits the Cuidem Barcelona contract)*
+
+**Body:**
+
+Hi [Name],
+
+I'm Maurits Bos, founder of CleanWalker Robotics. Barcelona's EUR 2.3 billion Cuidem Barcelona cleaning contract specifically mentions service robots as part of the city's future cleaning strategy. We've built exactly that.
+
+CleanWalker is the world's first commercial quadrupedal litter-collecting robot. AI-powered detection, all-terrain locomotion (parks, plazas, beaches, cobblestones, stairs), and a bag cassette system that integrates with existing waste collection. Fully autonomous, 20+ hours per day.
+
+Barcelona is a perfect pilot city: the Cuidem Barcelona contract creates a procurement pathway for our technology, the city hosts Smart City Expo World Congress giving global visibility to any pilot, and Barcelona's parks and beachfront are exactly the terrain our quadruped is designed for.
+
+We're seeking one Mediterranean city for a 2027 pilot. Barcelona is our first choice.
+
+**Would you have 20 minutes for a call about integrating CleanWalker into the Cuidem Barcelona program?** Happy to share our full technical specs.
+
+Website: https://cleanwalkerrobotics.com
+
+Best regards,
+Maurits Bos
+Founder, CleanWalker Robotics
+MB Software Studio LLC
+
+*(~165 words)*
+
+---
+
+## Email 7: City of Vienna — ICRA 2026 & MA48 Partnership
+
+**To:** City of Vienna — MA48 (Waste Management) leadership or Smart City Wien team (research on LinkedIn; look for innovation or operations leads at MA48)
+
+**Subject:** Autonomous litter robot live demo at ICRA 2026 Vienna -- partnership with MA48?
+
+**Body:**
+
+Hi [Name],
+
+I'm Maurits Bos, founder of CleanWalker Robotics. Vienna is hosting ICRA 2026 (June 1--5) -- the world's largest robotics conference. We're building the world's first commercial quadrupedal litter robot, and we'd like to demo it in Vienna in partnership with MA48.
+
+CleanWalker uses AI vision to detect litter, walks any terrain (parks, cobblestones, paths, stairs), and collects waste autonomously 20+ hours per day. Waste is bagged for existing collection routes -- no new infrastructure.
+
+MA48 swept 10,291 tons of street waste in 2023. Our robot is designed to augment that workforce, handling green spaces and pedestrian areas where heavy vehicles can't operate.
+
+The timing is perfect: a live pilot during ICRA 2026 would put Vienna and MA48 at the centre of the global robotics conversation. Every major robotics researcher and company will be in your city that week.
+
+**Would you have 20 minutes to discuss a pilot timed around ICRA?** Happy to present to the MA48 team.
+
+Website: https://cleanwalkerrobotics.com
+
+Best regards,
+Maurits Bos
+Founder, CleanWalker Robotics
+MB Software Studio LLC
+
+*(~170 words)*
+
+---
+
+## Email 8: Emaar Properties Dubai — Downtown Dubai Premium Spaces
+
+**To:** Emaar Properties — Innovation, Facilities Management, or Community Management lead (research on LinkedIn; look for someone overseeing Downtown Dubai or Emaar's smart community initiatives)
+
+**Subject:** Autonomous litter robot for Downtown Dubai -- premium tech for premium spaces
+
+**Body:**
+
+Hi [Name],
+
+I'm Maurits Bos, founder of CleanWalker Robotics. Emaar's properties -- Downtown Dubai, Dubai Marina, the Burj Khalifa promenades -- represent some of the world's most visible outdoor spaces. We've built a robot designed specifically for environments where appearance matters.
+
+CleanWalker is the world's first commercial quadrupedal litter-collecting robot. AI-powered detection, four-legged locomotion across any surface (pavement, grass, landscaped areas, stairs), and autonomous operation 20+ hours per day. Silent, sleek, and designed to impress rather than intrude.
+
+For Emaar, CleanWalker isn't just a cleaning tool -- it's a story. A quadruped robot patrolling the Burj Khalifa boulevard is the kind of premium, forward-thinking image that reinforces Emaar's brand. It's PR that generates itself.
+
+We're seeking one premium property partner in the Gulf region for a 2027 pilot. Emaar is the obvious choice.
+
+**Would you have 20 minutes for a call about a pilot at one of your properties?** I can share a site-specific proposal.
+
+Website: https://cleanwalkerrobotics.com
+
+Best regards,
+Maurits Bos
+Founder, CleanWalker Robotics
+MB Software Studio LLC
+
+*(~170 words)*
+
+---
+
+## Timing (Tier 2)
+
+- **Copenhagen:** Send Tuesday-Wednesday, 9-10 AM CET. Avoid Danish holidays and summer (late June-August).
+- **Helsinki:** Send Tuesday-Wednesday, 10-11 AM EET. Avoid Finnish holidays and midsummer (late June).
+- **Barcelona:** Send Tuesday-Wednesday, 9-10 AM CET. Avoid August (city largely on holiday) and around Smart City Expo (November -- save for in-person follow-up).
+- **Vienna:** Send Tuesday-Wednesday, 9-10 AM CET. Time around ICRA 2026 announcement cycle (send March-April for June conference relevance).
+- **Emaar Dubai:** Send Sunday-Tuesday, 9-10 AM GST (UAE work week). Avoid Ramadan and Friday/Saturday (weekend).
+
+## Notes for Maurits (Tier 2)
+
+- **Vienna is time-sensitive.** ICRA 2026 is June 1-5 -- if you want a pilot timed around the conference, outreach needs to happen by March-April at the latest.
+- **Barcelona's Spanish subject line** signals effort and respect. The body stays in English since most city officials at this level are comfortable with it.
+- **Helsinki is a strong follow-on to Trombia.** Position CleanWalker as complementary, not competitive -- Trombia does roads, we do everything else.
+- **Emaar is the only private-sector target here.** The pitch angle is different: it's about brand, PR, and premium image, not municipal efficiency. Lean into that.
+- **Copenhagen Solutions Lab has a formal application process.** Research whether they have an open call for proposals and align your outreach with their intake cycle.
+- **Same rules as Tier 1:** LinkedIn first, no attachments on first email, track in `docs/ceo/outreach-tracker.md`.
