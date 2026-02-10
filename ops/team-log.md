@@ -49,5 +49,7 @@
 | 2026-02-10 08:50 | cw-software | Three.js 3D robot viewer page — interactive URDF visualization on website demos | e0525d3 |
 | 2026-02-10 08:50 | cw-bizdev | Outreach email drafts — Veolia ANZ, BEEAH Group, Amsterdam municipality | 8db4ddd |
 
+| 2026-02-10 09:10 | cw-bizdev | Outreach tracker (13 targets) + contacts database — 3 draft-ready + 10 researched expansion targets with budget estimates | a3de77a |
+
 ---
 *cw-software complete. cw-bizdev complete. cw-hardware killed (URDF done, Gazebo N/A).*
