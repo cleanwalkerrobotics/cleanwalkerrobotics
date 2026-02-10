@@ -33,6 +33,8 @@ Last updated: 2026-02-10
 | 14 | **MIA/Vamil** | NL | 6/10 | Tax deduction 27-45% | Only relevant when making physical hardware investments |
 | 15 | **Horizon Europe** | EU | 2/10 | Varies (€1-5M typical) | Needs consortium, heavy bureaucracy, no direct litter-robot calls |
 | 16 | **SBIR/STTR** | US | 1/10 | $100K-$400K | BLOCKED: Programs expired Sep 2025, requires 51% US ownership |
+| 17 | **IDB Lab** | LAC | 4/10 | $300K–$2M | Best multilateral option; needs Colombia pilot plan + matching funds; 12-18 mo |
+| — | **USAID/WorldBank/ADB/GEF** | Global | 0-3/10 | Varies | Not actionable — fund governments not companies; USAID frozen (see Region 6) |
 
 ---
 
@@ -840,6 +842,445 @@ This is a government strategy program, not a direct grant. However, it creates t
 13. **EIC Accelerator Open** — Target when at TRL 6+ with revenue/traction
 14. **Singapore entity + NEA/RoboNexus/Startup SG Tech** — When entering APAC market (monitor NEA Environmental Robotics for reopening)
 15. **SBIR/STTR** — Only if establishing US subsidiary with majority US ownership
+16. **IDB Lab (Colombia)** — Start relationship with IDB Lab Colombia country office; apply with prototype + Colombia pilot plan ($300K–$2M)
+17. **DIV Fund** — Monitor independent nonprofit for launch and application process (formerly USAID DIV)
+
+---
+
+## REGION 6: INTERNATIONAL DEVELOPMENT BANKS & MULTILATERAL FUNDS
+
+*Research completed 2026-02-10. This section covers USAID, World Bank/IFC, GEF, IDB, and ADB programs.*
+
+### Critical Context: USAID Status (February 2026)
+
+**USAID has been effectively dismantled.** The Trump administration issued a stop-work order on January 24, 2025, followed by cancellation of 80% of foreign aid projects, layoffs of 4,200+ staff, and firing of 1,600+. The 2026 budget proposal requests an ~85% cut to US foreign aid. USAID programs referenced below are either frozen, cancelled, or transferred to the State Department.
+
+**Implication for CleanWalker:** Do not invest time pursuing USAID-administered programs. The one exception is the independently-launched DIV Fund (see below).
+
+---
+
+### 6.1 USAID Clean Cities, Blue Ocean (CCBO)
+
+| Field | Details |
+|-------|---------|
+| **Full name** | USAID Clean Cities, Blue Ocean |
+| **Administering body** | USAID (implemented by Tetra Tech) |
+| **Type** | Global flagship program for combating ocean plastics |
+| **Grant range** | $50,000–$250,000 per sub-grant |
+| **Focus** | Solid waste management, recycling, ocean plastic reduction |
+| **Countries** | Indonesia, Philippines, Vietnam, Sri Lanka, Maldives, Dominican Republic, and others |
+| **Eligible applicants** | NGOs, CSOs, CBOs, private foundations, universities, research institutions, business associations, private companies (profit/fees may not be charged to a grant) |
+| **Private sector** | 74+ private sector partners; facilitates private capital investment in recycling value chains |
+
+**Our fit: 2/10**
+
+**What works:**
+- Private companies can receive sub-grants ($50K–$250K)
+- Technology innovation for waste management is in scope
+- Supports "locally appropriate recycled/upcycled plastic products or technologies"
+
+**What doesn't work:**
+- **STATUS: EFFECTIVELY FROZEN** — USAID dismantling means no new awards expected
+- Focus is on ocean plastics in specific developing countries, not autonomous litter collection generally
+- Sub-grant amounts ($50K–$250K) are modest
+- Profit/fees cannot be charged to grants — limits commercial viability
+- Program is implemented through Tetra Tech, not direct USAID grants to companies
+
+**Recommendation:** Do not pursue. Program is frozen/cancelled due to USAID shutdown. Even if restored, thematic fit is marginal — the program targets ocean plastics in developing countries, not autonomous cleaning technology.
+
+---
+
+### 6.2 USAID Development Innovation Ventures (DIV) → DIV Fund
+
+| Field | Details |
+|-------|---------|
+| **Full name** | Development Innovation Ventures (formerly USAID; now independent nonprofit) |
+| **Administering body** | DIV Fund (independent nonprofit, launched February 2026) |
+| **Former USAID program** | Stage 1: up to $200K (proof of concept); Stage 2: up to $1.5M (testing/scaling); Stage 3: up to $15M (scaling) |
+| **Leadership** | Jeff Brown (cofounder/CIO) and Sasha Gallant (former USAID DIV head, now CEO) |
+| **Status** | Newly launched — funding model and application process TBD |
+
+**Our fit: 3/10 (speculative)**
+
+**What works:**
+- The original DIV was known as USAID's "discovery engine" — funded innovative solutions to development challenges
+- Stage 1 ($200K) was designed for proof-of-concept with rigorous evidence requirements
+- Technology innovation was explicitly in scope
+
+**What doesn't work:**
+- **Brand new organization** — no track record, unclear funding sources, unknown application timeline
+- USAID's $32B foreign aid budget (down from $68B) is not available to this independent entity
+- Eligibility criteria for private companies not yet established
+- Focus remains on development outcomes in low/middle-income countries
+
+**Recommendation:** Monitor the DIV Fund (divfund.org or similar) for launch announcements. If they establish a clean application process with Stage 1 grants for private companies, worth exploring. Do not invest time until the organization is operational.
+
+---
+
+### 6.3 World Bank / IFC — Direct Private Sector Investment
+
+| Field | Details |
+|-------|---------|
+| **Full name** | International Finance Corporation (IFC) — Private Sector Arm of World Bank Group |
+| **Type** | Equity investments, loans, and advisory services to private companies in developing countries |
+| **Waste management commitment** | $1.5B+ in waste management projects globally |
+| **Circular economy commitment** | $1B+ in circular economy projects in emerging markets |
+| **Venture capital** | $2.7B+ committed across 165 tech companies and 122 VC funds |
+| **Startup Catalyst** | Invests $4M–$6M into early-stage seed fund managers in emerging markets |
+| **Geographic focus** | Emerging markets only (not EU or US) |
+
+**Our fit: 3/10**
+
+**What works:**
+- IFC actively invests in waste management and circular economy companies
+- Venture Capital Group focuses on disruptive technology in emerging markets
+- Startup Catalyst seeds local early-stage funds (which could then invest in us)
+- Climate tech is a stated priority
+
+**What doesn't work:**
+- **IFC does not fund early-stage startups directly** — they invest in later-stage companies or fund managers
+- Minimum deal sizes are typically $1M+ for direct investments (we need $363K)
+- Primary focus is companies already operating in emerging markets, not pre-revenue EU/US startups
+- IFC invests in companies deploying in developing countries — we're targeting Netherlands, UAE, Singapore first
+- Application is not a "grant application" — it's an investment pitch to IFC's sector teams
+
+**Recommendation:** Not relevant at current stage. Revisit when deploying in developing countries (e.g., Colombia, India) with revenue and proven technology. IFC could be relevant for Series A/B financing for emerging market expansion.
+
+---
+
+### 6.4 World Bank — City Climate Finance Gap Fund
+
+| Field | Details |
+|-------|---------|
+| **Full name** | City Climate Finance Gap Fund |
+| **Administering body** | World Bank and European Investment Bank |
+| **Type** | Early-stage technical assistance for cities |
+| **Eligible applicants** | Cities/local governments OR private sector providers submitting on behalf of a city |
+| **Eligible sectors** | Solid waste management, circular economy, energy efficiency, water management, green infrastructure |
+| **Eligible countries** | All countries on OECD DAC list of ODA recipients |
+| **Application** | Rolling (no deadlines) |
+| **Private sector path** | "Applications may be made by private sector providers of urban services" and "public or private developers with clear linkages to sub-national governments" |
+
+**Our fit: 4/10**
+
+**What works:**
+- Solid waste management and circular economy are explicitly eligible sectors
+- Private sector providers of urban services can apply
+- Rolling applications with no deadlines
+- No development stage requirements mentioned
+
+**What doesn't work:**
+- Requires a city/local government partnership — we need a municipal partner in a developing country
+- Provides technical assistance, not equipment/product funding — they help cities plan, not buy robots
+- Netherlands is NOT on the OECD DAC list (it's a donor country, not recipient)
+- Would need to partner with a city in Colombia, India, or another developing country
+- Primarily funds feasibility studies and project preparation, not technology procurement
+
+**Recommendation:** Potentially useful if/when piloting in Colombia. Would need to partner with a Colombian city (Bogota, Medellin) that wants to explore autonomous cleaning technology. The city would be the applicant; we would be the technology partner. Very early to pursue this.
+
+---
+
+### 6.5 World Bank — PROBLUE (Blue Economy Program)
+
+| Field | Details |
+|-------|---------|
+| **Full name** | PROBLUE — Global Program for the Blue Economy |
+| **Administering body** | World Bank (multi-donor trust fund) |
+| **Focus** | Ocean health: fisheries, ocean pollution, circular economy for plastics |
+| **Waste commitment** | $50M committed to 100+ activities |
+| **Pillar 2** | "Marine Pollution" — includes solid waste management to prevent ocean leakage |
+| **Private sector** | Indirectly — funds government capacity to mobilize private sector finance |
+
+**Our fit: 2/10**
+
+**What works:**
+- Solid waste management is in scope (preventing ocean-bound waste)
+- Circular economy transition is a stated goal
+
+**What doesn't work:**
+- **Does not fund private companies directly** — funds World Bank project teams and government programs
+- Focus is specifically on marine/ocean pollution, not urban litter generally
+- Private sector is engaged indirectly through capacity building, not grants
+- No application process for companies — PROBLUE supports World Bank operations internally
+
+**Recommendation:** Not applicable. PROBLUE is an internal World Bank funding mechanism, not a grant program for companies.
+
+---
+
+### 6.6 World Bank — Global Partnership for Results-Based Approaches (GPRBA)
+
+| Field | Details |
+|-------|---------|
+| **Full name** | Global Partnership for Results-Based Approaches |
+| **Administering body** | World Bank Group |
+| **Type** | Results-based grants to World Bank projects |
+| **Grant range** | $3M–$6M per project |
+| **Sectors** | Education, energy, health, solid waste management, water & sanitation |
+| **Reach** | 58 projects in 33 countries, 13M+ beneficiaries |
+
+**Our fit: 1/10**
+
+**What works:**
+- Solid waste management is a listed sector
+
+**What doesn't work:**
+- **Not a grant program for companies** — provides results-based financing to World Bank-administered projects
+- Grants go to government programs, not private companies
+- Companies can only participate as contractors/suppliers within funded projects
+- Application is through World Bank project preparation, not direct company application
+
+**Recommendation:** Not applicable for direct funding. However, if a World Bank waste management project in Colombia or elsewhere seeks autonomous cleaning technology, we could be a technology supplier within that project. This is a very indirect path.
+
+---
+
+### 6.7 GEF — Global Environment Facility (GEF-8 Cycle)
+
+| Field | Details |
+|-------|---------|
+| **Full name** | Global Environment Facility — 8th Replenishment (GEF-8) |
+| **Budget** | $5.3B for grants and blended finance (through June 2026) |
+| **Next cycle** | GEF-9: July 2026 – June 2030 |
+| **Focus areas** | Biodiversity, climate change, chemicals & waste, international waters, land degradation |
+| **Waste programs** | $700M approved for chemicals/waste management, water resilience, biodiversity |
+| **Plastics program** | $107M — Circular Solutions to Plastic Pollution (15 countries) |
+| **Implementing agencies** | World Bank, UNDP, UNEP, UNIDO, regional development banks |
+
+**Our fit: 1/10 (direct) / 4/10 (as technology partner within GEF project)**
+
+**What works:**
+- Chemicals and waste management is a major GEF focus area
+- Circular economy is a stated priority
+- Private sector engagement is increasingly emphasized
+- $107M plastics program covers 15 countries with circular economy solutions
+
+**What doesn't work:**
+- **GEF does NOT fund private companies directly** — funds flow through implementing agencies (UNDP, World Bank, UNEP) to governments
+- Companies can only participate as contractors/suppliers within GEF-funded projects
+- No direct application process for companies — countries request GEF funding through their GEF Focal Points
+- Focus is on policy reform and behavior change, not technology procurement
+- Litter-collecting robots are not a GEF priority technology
+
+**Recommendation:** Not applicable for direct funding. GEF funds countries, not companies. However, if a GEF-funded waste management project in a target country needs autonomous cleaning technology, we could be a supplier. This requires networking with GEF implementing agencies (UNIDO, UNDP) and positioning as a technology solution provider.
+
+---
+
+### 6.8 GEF Small Grants Programme (SGP)
+
+| Field | Details |
+|-------|---------|
+| **Full name** | GEF Small Grants Programme |
+| **Administering body** | UNDP (on behalf of GEF) |
+| **Grant range** | Up to $50,000 per project (up to $150K in exceptional cases) |
+| **Target** | Civil society organizations (CSOs) and community-based organizations (CBOs) |
+| **Focus** | Indigenous peoples, women, youth; community-based environmental initiatives |
+| **Waste focus** | "Local to global coalitions for chemicals and waste management" |
+
+**Our fit: 0/10**
+
+**Disqualifying:** Private sector technology companies are not eligible. SGP exclusively funds civil society and community-based organizations. A US LLC cannot apply.
+
+**Recommendation:** Not applicable.
+
+---
+
+### 6.9 UNIDO Global Cleantech Innovation Programme (GCIP)
+
+| Field | Details |
+|-------|---------|
+| **Full name** | UNIDO Global Cleantech Innovation Programme |
+| **Administering body** | UNIDO (funded by GEF) |
+| **Type** | Cleantech accelerator program for startups and MSMEs |
+| **Countries** | 15+ countries: Cambodia, Indonesia, Kazakhstan, Moldova, Mongolia, Morocco, Namibia, Nigeria, Senegal, South Africa, Turkey, Ukraine, Uruguay, Vietnam |
+| **Target** | Early-stage cleantech startups and MSMEs |
+| **Services** | Structured acceleration, mentorship, investor connections, market entry support |
+| **Goal** | Support 1,250+ SMEs; 35-40% women-led |
+| **Status** | Applications for 2025 cycle were open; 2026 cycle status TBD |
+
+**Our fit: 3/10**
+
+**What works:**
+- Explicitly targets cleantech startups and MSMEs
+- Acceleration support (mentorship, investor access) aligns with our needs
+- Uruguay is a participant country — connection to Latin America
+- Turkey is a participant — connection to MENA market
+
+**What doesn't work:**
+- **Must operate in a GCIP partner country** — Netherlands, US, UAE, Singapore, Colombia are NOT on the list
+- The program is designed for startups in developing/emerging economies
+- A US LLC with operations in Netherlands does not fit the geographic criteria
+- We would need to establish operations in a partner country (e.g., Turkey, Morocco, or Uruguay)
+- Colombia is NOT a GCIP partner country
+
+**Recommendation:** Not applicable at current stage. If we establish operations in Turkey or Morocco as part of MENA market entry, revisit. Otherwise, skip.
+
+---
+
+### 6.10 Inter-American Development Bank — IDB Lab
+
+| Field | Details |
+|-------|---------|
+| **Full name** | IDB Lab (Innovation Laboratory of the IDB Group) |
+| **Type** | Innovation/venture arm — grants, equity, and loans for innovative solutions in LAC |
+| **Grant range** | $300K–$750K (non-reimbursable, requires 50% counterpart) |
+| **Loan range** | $500K–$2M (reimbursable) |
+| **Equity** | Venture debt for high-impact tech startups |
+| **Geographic scope** | 26 countries in Latin America and the Caribbean (includes Colombia) |
+| **Impact requirement** | Solution must benefit vulnerable populations in LAC |
+| **Revenue requirement** | Revenue >$1M and EBITDA positive (for equity/debt products) |
+| **Waste management** | Invested $1M in Sugo Company (Peru waste-tech startup); BlueTech for Waste challenge |
+
+**Our fit: 4/10 (current) / 6/10 (with Colombia operations)**
+
+**What works:**
+- Colombia is a target country — founder is in Colombia
+- Waste management innovation is explicitly funded (Sugo investment is a precedent)
+- Grants of $300K–$750K would cover our pilot needs
+- US LLC can likely apply if the project impacts a LAC country
+- IDB Lab has demonstrated appetite for waste-tech startups
+
+**What doesn't work:**
+- **Revenue requirement** — for equity/debt products, need >$1M revenue and profitability (we are pre-revenue)
+- Grants require 50% counterpart funding (half in cash, half in kind) — at $300K grant, need $150K+ match
+- Must demonstrate impact on vulnerable populations in LAC
+- Autonomous litter robots are more urban/municipal than poverty-focused
+- Application is competitive and complex
+- Our NL/UAE/SG first-market strategy doesn't align with LAC-first requirements
+
+**Strategic note:** The BlueTech for Waste Challenge was specifically for Caribbean countries (not Colombia). However, IDB Lab's broader portfolio includes Colombia. The Sugo Company investment ($1M in a Peruvian waste-tech startup) shows they fund this space.
+
+**Application path:** Contact IDB Lab's Colombia country office. Frame the pitch as "autonomous cleaning technology for Colombian cities to improve urban sanitation for underserved communities." Would need to demonstrate how the technology benefits low-income urban areas in Colombia.
+
+**Recommendation:** Worth exploring in 12-18 months when we have a prototype and can credibly plan a Colombia pilot. The grant product ($300K–$750K) is attractive but requires matching funds. Start relationship-building with IDB Lab's Colombia team now. Not actionable for immediate funding.
+
+---
+
+### 6.11 IDB Invest — Private Sector Arm
+
+| Field | Details |
+|-------|---------|
+| **Full name** | IDB Invest (private sector arm of IDB Group) |
+| **Type** | Loans, equity, guarantees for private companies in LAC |
+| **Waste management** | Funds circular economy and waste management companies |
+| **Example** | First sustainability-linked loan for waste sector to Orizon VR (Brazil) |
+| **Minimum deal size** | Typically $5M+ |
+| **Target** | Established companies with revenue and profitability |
+
+**Our fit: 1/10**
+
+**Disqualifying:** IDB Invest targets established companies with significant revenue. Minimum deal sizes ($5M+) far exceed our needs. We are pre-revenue with no operations in LAC.
+
+**Recommendation:** Not relevant until we are a revenue-generating company with LAC operations seeking growth capital.
+
+---
+
+### 6.12 Asian Development Bank — Waste Management Programs
+
+| Field | Details |
+|-------|---------|
+| **Full name** | Asian Development Bank — Urban Development and Waste Management |
+| **Type** | Sovereign loans to member governments; technical assistance grants |
+| **Waste management** | Major portfolio — $200M loan to India for solid waste management in 100 cities |
+| **Smart cities** | Future Cities Program promoting smart infrastructure |
+| **Geographic focus** | Asia-Pacific developing member countries |
+
+**Our fit: 1/10**
+
+**What works:**
+- Waste management and smart city technology are ADB priorities
+- ADB promotes digital solutions and new technologies in waste management
+
+**What doesn't work:**
+- **ADB does NOT fund private companies directly** through its waste management programs — these are sovereign loans to governments
+- Technical assistance goes to government agencies, not private companies
+- We are not based in an ADB developing member country
+- No application process for technology companies — ADB procurement follows government-led processes
+
+**Recommendation:** Not applicable for direct funding. If ADB-funded waste management projects in India, Vietnam, or Indonesia seek autonomous cleaning technology vendors, we could participate as a procurement supplier. This is a long-term, indirect opportunity.
+
+---
+
+### 6.13 ADB — ASEAN Australia Smart Cities Trust Fund (AASCTF)
+
+| Field | Details |
+|-------|---------|
+| **Full name** | ASEAN Australia Smart Cities Trust Fund |
+| **Administering body** | ADB (funded by Government of Australia) |
+| **Budget** | AUD 20M (~$13M) over 5 years |
+| **Focus** | Digital urban solutions in ASEAN member states |
+| **Countries** | ASEAN members: Brunei, Cambodia, Indonesia, Laos, Malaysia, Myanmar, Philippines, Singapore, Thailand, Vietnam |
+
+**Our fit: 2/10**
+
+**What works:**
+- Smart city technology for urban service delivery is explicitly in scope
+- ASEAN includes Singapore (our APAC target market)
+
+**What doesn't work:**
+- Funds are administered through ADB to government agencies, not directly to companies
+- Private companies participate as technology vendors/contractors within funded projects
+- Fund is relatively small (AUD 20M total across all ASEAN countries)
+- No direct application path for technology companies
+
+**Recommendation:** Not applicable for direct funding. If an ASEAN city's smart city project (funded through AASCTF) seeks autonomous cleaning technology, we could bid as a vendor. Very indirect.
+
+---
+
+### 6.14 ADB — Urban Climate Change Resilience Trust Fund
+
+| Field | Details |
+|-------|---------|
+| **Full name** | Urban Climate Change Resilience Trust Fund (UCCRTF) |
+| **Administering body** | ADB |
+| **Budget** | $150M multi-donor trust fund (2013-2021, now succeeded by Urban Resilience Trust Fund) |
+| **Focus** | Climate-resilient urban infrastructure in Asia |
+| **Waste management** | Included as part of climate-resilient solid waste infrastructure |
+
+**Our fit: 1/10**
+
+**Disqualifying:** Same structural issue as other ADB programs — funds flow to governments, not companies. The original UCCRTF period (2013-2021) has ended; successor fund (URTF) continues but with same government-to-government model.
+
+**Recommendation:** Not applicable.
+
+---
+
+### Summary: International Development Banks Assessment
+
+| Program | Fit | Amount | Can US LLC Apply? | Actionable? |
+|---------|-----|--------|-------------------|-------------|
+| USAID CCBO | 2/10 | $50K–$250K | In theory, yes | **No** — program frozen/cancelled |
+| DIV Fund | 3/10 | TBD | TBD | **Monitor** — just launched Feb 2026 |
+| IFC Direct | 3/10 | $1M+ | Yes (in theory) | **No** — too early stage |
+| City Climate Gap Fund | 4/10 | TA only | Via city partner | **Not yet** — need municipal partner in developing country |
+| PROBLUE | 2/10 | N/A | No (internal WB) | **No** — not a grant program |
+| GPRBA | 1/10 | $3M–$6M | No (WB projects) | **No** — not a grant program for companies |
+| GEF (direct) | 1/10 | N/A | No (funds governments) | **No** |
+| GEF SGP | 0/10 | $50K | No (CSOs only) | **No** |
+| GCIP (UNIDO) | 3/10 | Accelerator | No (wrong countries) | **No** — Colombia not in GCIP |
+| IDB Lab | 4→6/10 | $300K–$2M | Likely yes (with LAC impact) | **12-18 months** — most promising in this category |
+| IDB Invest | 1/10 | $5M+ | Yes | **No** — too early |
+| ADB Waste | 1/10 | N/A | No (sovereign loans) | **No** |
+| AASCTF | 2/10 | N/A | No (gov-to-gov) | **No** |
+| ADB UCCRTF | 1/10 | N/A | No (gov-to-gov) | **No** |
+
+### Key Takeaway for International Development Banks
+
+**Almost none of these are directly actionable for CleanWalker at this stage.** The fundamental structural issue is:
+
+1. **Multilateral development banks (World Bank, ADB) fund governments, not companies.** Their waste management programs are sovereign loans and technical assistance to national/municipal governments. Private companies participate only as contractors/suppliers within those projects.
+
+2. **USAID is effectively shut down** as of early 2025. Its programs are frozen or cancelled.
+
+3. **GEF funds flow through implementing agencies to governments.** No direct company application path.
+
+4. **The one exception is IDB Lab** — the IDB Group's innovation/venture arm can fund private companies directly, requires LAC impact, and has demonstrated appetite for waste-tech startups. This is worth pursuing in 12-18 months with a Colombia pilot plan.
+
+5. **IFC could be relevant at Series A/B stage** for emerging market expansion, but not at pre-revenue.
+
+**Best use of these organizations at our stage:**
+- **Network and position** — attend World Bank/IDB waste management events, join working groups
+- **IDB Lab Colombia** — start building relationships now for a future application
+- **City Climate Gap Fund** — could work if we partner with a Colombian city
+- **Technology supplier** — when World Bank/ADB/GEF-funded projects seek waste management technology, position CleanWalker as a vendor option
 
 ---
 
@@ -864,4 +1305,4 @@ MB Software Studio LLC is a US-type LLC. Since January 1, 2025, Dutch tax law tr
 
 ---
 
-*Research compiled by cw-research team, 2026-02-10. Sources include official program websites (EIC, RVO, SBIR.gov, Enterprise SG, MBRIF), grant advisory firms (Rasph, Hezelburcht, Zabala), and Dutch tax advisories (Broadstreet, Stibbe, Loyens & Loeff). Verify all deadlines directly with administering bodies before applying.*
+*Research compiled by cw-research team, 2026-02-10. Sources include official program websites (EIC, RVO, SBIR.gov, Enterprise SG, MBRIF, IDB Lab, World Bank, IFC, GEF, ADB, USAID), grant advisory firms (Rasph, Hezelburcht, Zabala), Dutch tax advisories (Broadstreet, Stibbe, Loyens & Loeff), and development news sources (Devex, KFF, CGDev). Verify all deadlines directly with administering bodies before applying.*
