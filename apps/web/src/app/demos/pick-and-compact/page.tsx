@@ -33,7 +33,7 @@ const PHASES: Phase[] = [
 		id: "grip",
 		label: "Grip",
 		description:
-			"3-finger silicone gripper descends and closes adaptively. Force sensors detect contact at 2.1N per finger — gentle enough for thin cans, firm enough for wet bottles.",
+			"3-finger mechanical gripper descends and closes adaptively. Force sensors detect contact at 2.1N per finger — gentle enough for thin cans, firm enough for wet bottles.",
 		durationMs: 2500,
 	},
 	{
@@ -437,7 +437,7 @@ export default function PickAndCompactPage() {
 						Gripper System
 					</h2>
 					<div className="grid gap-6 md:grid-cols-3">
-						{/* 3-Finger Silicone Gripper */}
+						{/* 3-Finger Mechanical Gripper */}
 						<div className="rounded-xl border border-white/10 bg-white/[0.03] p-6">
 							<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-cw-green/10">
 								<svg className="h-6 w-6 text-cw-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
@@ -447,13 +447,13 @@ export default function PickAndCompactPage() {
 								</svg>
 							</div>
 							<h3 className="mb-2 text-lg font-semibold text-white">
-								3-Finger Silicone Gripper
+								3-Finger Mechanical Gripper
 							</h3>
 							<p className="text-sm leading-relaxed text-gray-400">
-								Three soft silicone fingers with embedded strain gauges provide
-								compliant grasping across irregular shapes. The 120-degree
+								Three rigid mechanical fingers with embedded strain gauges provide
+								precise grasping across irregular shapes. The 120-degree
 								symmetric layout ensures stable tri-point contact on bottles,
-								cans, wrappers, and organic debris. Silicone durometer (Shore 30A)
+								cans, wrappers, and organic debris. Servo-driven finger force
 								is tuned for grip without crushing thin aluminum.
 							</p>
 						</div>
@@ -513,8 +513,8 @@ export default function PickAndCompactPage() {
 							</thead>
 							<tbody className="divide-y divide-white/5">
 								{[
-									["Gripper type", "3-finger adaptive silicone"],
-									["Finger material", "Shore 30A silicone w/ strain gauges"],
+									["Gripper type", "2-3 finger adaptive mechanical"],
+									["Finger material", "Rigid mechanical fingers w/ strain gauges"],
 									["Max grip force", "12N per finger (36N total)"],
 									["Grip response time", "< 200ms close, < 50ms re-grip"],
 									["Compression", "Gripper arm press-down into bag"],
