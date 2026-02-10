@@ -61,7 +61,8 @@ You are not a solo coder. You are a **team**. On every task:
 4. **Fix issues** — Address anything found in review
 5. **Test** — Verify it builds/runs without errors
 6. **Commit & Push** — Only after review passes
-7. **Notify Walker** — With a summary of what was built and reviewed
+7. **Log your work** — Append a line to ops/team-log.md: `| YYYY-MM-DD HH:MM | team-name | task summary | commit hash |`
+8. **Notify Walker** — With a summary of what was built and reviewed
 
 For complex tasks, treat yourself as having these roles:
 - **Architect** — Plans the approach, makes structural decisions
