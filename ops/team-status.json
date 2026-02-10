@@ -1,11 +1,11 @@
 {
-  "lastUpdated": "2026-02-09T20:46:00Z",
+  "lastUpdated": "2026-02-10T00:46:00Z",
   "teams": {
     "cw-software": {
       "status": "idle",
-      "lastTask": "ML pipeline + YOLO training scripts",
+      "lastTask": "Web demos (litter detection + fleet dashboard) + contact page",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-09"
+      "lastActive": "2026-02-09T23:58:00Z"
     },
     "cw-hardware": {
       "status": "idle",
@@ -33,5 +33,5 @@
     }
   },
   "activeSessions": 0,
-  "notes": "All sessions terminated. Ops infrastructure just bootstrapped."
+  "notes": "All sessions terminated. Website fully deployed with 3 interactive demos, contact page, and 5 core pages. VPS constraint: max 1 concurrent Claude Code session (OOM at 2)."
 }

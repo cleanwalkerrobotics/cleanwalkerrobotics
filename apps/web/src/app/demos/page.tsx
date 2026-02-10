@@ -39,7 +39,8 @@ const demos = [
 	},
 	{
 		title: "Pick & Compact",
-		status: "coming",
+		status: "live",
+		slug: "pick-and-compact",
 		description:
 			"The full litter collection cycle: detect, approach, pick up with articulated gripper, compact, and continue. 200+ items per charge cycle.",
 		placeholder: "Simulation demo — full litter collection pipeline",

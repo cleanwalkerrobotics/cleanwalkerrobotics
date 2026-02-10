@@ -19,5 +19,16 @@
 - **Assigned:** Investor/customer pitch deck
 - **Result:** ✅ Complete. Committed 9c5f3c3.
 
+### Demos & Contact Page (cw-software → session unknown)
+- **Time:** ~23:46–23:58 UTC
+- **Tasks completed:**
+  - Replaced pricing page with demos showcase (cc9fbac)
+  - Interactive AI litter detection demo with mock YOLO inference, 6 sample scenes, drag-and-drop upload (017636a)
+  - Interactive fleet management dashboard demo with live clock, animated map, 12 robot dots, activity feed (724d021)
+  - Contact Sales page with form, FAQ, and consultation flow (190c94e)
+  - CLAUDE.md updates: team review process (51adb3a), VERCEL_TOKEN note (776568c)
+- **Result:** ✅ All complete and deployed to Vercel production
+- **Note:** This batch was NOT tracked in team-log or team-status at time of completion. Caught in Assessment #3.
+
 ---
 *All sessions terminated after completion.*
