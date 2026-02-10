@@ -1,6 +1,6 @@
 # CleanWalker — Strategic Direction
 
-Last updated: 2026-02-09
+Last updated: 2026-02-10
 
 ## Current Phase: Pre-Revenue Digital Prototyping
 
@@ -9,22 +9,24 @@ Zero physical spend until a deal is signed and money is in the bank. Everything 
 
 ### Priority Stack
 
-**Tier 1 — Now:**
-1. Website live (DONE — cleanwalkerrobotics.vercel.app)
-2. Full cost model (DONE — see Research Reports below)
-3. Global market research (DONE — 5 regional reports complete)
-4. Perception model v1 (YOLO trained on TACO/TrashNet — provable AI demo)
-5. Hardware architecture decisions (documented in ADRs)
+**Tier 1 — Now (OUTREACH IS THE BOTTLENECK):**
+1. Website live (DONE — cleanwalkerrobotics.com, 12 pages, 7 demos, AI detection)
+2. Full cost model (DONE — revised financial model + pricing sheet)
+3. Global market research (DONE — 5 regional reports + competitive landscape)
+4. Perception model v1 (DONE — YOLO pipeline + live Replicate demo on website)
+5. Pitch deck + financial model (DONE — 15 slides, 5-year projections)
+6. Outreach emails + proposals (DONE — 3 drafts + 3 proposals + 13-target pipeline)
+7. Robot design spec V2.3 (DONE — full ratios, bag system, render prompts)
+8. **SEND OUTREACH EMAILS** ← CURRENT PRIORITY
+9. 3D model update to V2.3 spec (in progress)
+10. Render accuracy improvement via 3D pipeline (text-to-image hit its limits)
 
 **Tier 2 — This month:**
-6. Robot CAD model + URDF for simulation
-7. Simulation demo video (Gazebo/Isaac Sim)
-8. Pitch deck + financial model (incorporate global market data)
-9. ~~IFAT Munich 2026~~ — SCRATCHED per Maurits (2026-02-09). Not pursuing.
-10. Veolia ANZ outreach (Bondi Beach quadruped trial team)
-11. BEEAH Group outreach (MENA gateway)
-12. Grant applications (EIC Accelerator "Physical AI", DOT SMART, SBIR)
-13. Austin TX municipal outreach (FY2027 planning window opens mid-2026)
+11. Email webhook (Vercel serverless for inbound)
+12. Grant applications (NL: WBSO/MIT/VFF, UAE: MBRIF/DFA — US LLC blocks most others)
+13. Robot CAD model + URDF for simulation
+14. Simulation demo video
+15. ~~IFAT Munich 2026~~ — SCRATCHED per Maurits. Not pursuing.
 
 **Tier 3 — After signed deal:**
 14. Physical prototype build (~3 iterations to pilot-ready)
