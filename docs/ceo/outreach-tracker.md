@@ -88,3 +88,13 @@
 | — | — | — | — | — |
 
 *Log every touchpoint here after outreach begins.*
+
+## Follow-Up Log Entry
+
+| Date | Company | Action | Result | Next |
+|------|---------|--------|--------|------|
+| 2026-02-11 | Veolia ANZ | Attempted email send to Kate Slattery (kate.slattery@veolia.com.au) | BLOCKED — RESEND_API_KEY not in environment | Need Maurits to add API key |
+| 2026-02-11 | Veolia ANZ | 2nd attempt (cron 22:00 UTC) — Kate Slattery | BLOCKED — RESEND_API_KEY still not in env | Waiting on Maurits |
+| 2026-02-11 | Veolia ANZ | 3rd attempt (cron 22:01 UTC) — Kate Slattery | BLOCKED — RESEND_API_KEY still not in env | **3 failed attempts.** Need Maurits to add key to gateway env. |
+| 2026-02-11 | Veolia ANZ | 4th attempt (cron 22:01 UTC, veolia-outreach-send) — Kate Slattery | BLOCKED — RESEND_API_KEY still not in env | **4 failed attempts.** Cron keeps firing but key is missing. |
+| 2026-02-11 | Veolia ANZ | 5th attempt (cron 22:02 UTC, veolia-outreach-send) — Kate Slattery | BLOCKED — RESEND_API_KEY still not in env | **5 failed attempts.** Disabling cron until key is added. |

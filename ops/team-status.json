@@ -1,25 +1,24 @@
 {
-  "lastUpdated": "2026-02-10T18:46:00Z",
+  "lastUpdated": "2026-02-10T20:46:00Z",
   "teams": {
     "cw-software": {
-      "status": "active",
-      "lastTask": "Full website QA — screenshot all pages, verify renders, 3D viewer, deploy to Vercel",
-      "lastTaskResult": "in_progress",
-      "lastActive": "2026-02-10T18:46:00Z",
-      "spawnedAt": "2026-02-10T18:46:00Z",
-      "notes": "Phase 1 final QA before outreach"
+      "status": "idle",
+      "lastTask": "Inbound email webhook: Resend → Vercel → OpenClaw gateway",
+      "lastTaskResult": "completed_with_blocker",
+      "lastActive": "2026-02-10T20:30:00Z",
+      "notes": "BLOCKER: gateway needs public URL for webhook forwarding. Traefik route needed."
     },
     "cw-hardware": {
       "status": "idle",
-      "lastTask": "URDF robot model v1 — 12-DOF quadruped (COMPLETED)",
+      "lastTask": "URDF robot model v1",
       "lastTaskResult": "completed",
       "lastActive": "2026-02-10T08:00:00Z"
     },
     "cw-bizdev": {
       "status": "idle",
-      "lastTask": "Municipality deployment proposals — Amsterdam, Dubai/Sharjah, Veolia ANZ (COMPLETED)",
+      "lastTask": "Research Tier 1 contacts: Veolia ANZ, BEEAH, Amsterdam",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-10T15:00:00Z"
+      "lastActive": "2026-02-10T19:42:00Z"
     },
     "cw-research": {
       "status": "idle",
@@ -29,21 +28,22 @@
     },
     "cw-renders": {
       "status": "idle",
-      "lastTask": "V2.2 full render regeneration — all 14 renders with 3-role QA",
-      "lastTaskResult": "completed",
-      "lastActive": "2026-02-10T17:55:00Z"
+      "lastTask": "Merciless QA render attempt — 0/14 pass, bag roll axis limitation",
+      "lastTaskResult": "blocked",
+      "lastActive": "2026-02-10T19:42:00Z",
+      "notes": "Text-to-image models cannot control cylinder orientation. Ship existing renders."
     },
     "cw-ops": {
       "status": "idle",
-      "lastTask": null,
-      "lastTaskResult": null,
-      "lastActive": null
+      "lastTask": "Design spec V2.3 update",
+      "lastTaskResult": "completed",
+      "lastActive": "2026-02-10T20:00:00Z"
     }
   },
   "activeSessions": 0,
   "vpsSpec": "30GB RAM",
-  "notes": "All Phase 1 parallel tasks complete. Renders done (14/14 QA'd), 3D viewer updated, gripper text fixed. Next: full website QA then outreach.",
+  "notes": "Phase 1 COMPLETE. All website QA passed, deployed. Phase 2: outreach emails next. Email webhook has blocker (needs Traefik route to gateway).",
   "researchMoratorium": true,
   "autonomousOutreachApproved": true,
-  "keyDirective": "GO AUTONOMOUS — Maurits approved autonomous execution of roadmap including outreach"
+  "keyDirective": "GO AUTONOMOUS — Phase 2 outreach execution"
 }
