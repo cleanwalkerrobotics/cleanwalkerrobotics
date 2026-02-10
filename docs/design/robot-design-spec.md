@@ -1,6 +1,6 @@
 # CleanWalker Robot — Definitive Visual Design Specification
 
-**Version:** 2.2
+**Version:** 2.3
 **Date:** 2026-02-10
 **Purpose:** Single source of truth for all renders, 3D models, and technical descriptions. Every visual asset MUST conform to this spec.
 
@@ -25,9 +25,9 @@
 | **Arm height (extended)** | ~40cm above body top | ~0.9× body length |
 | **Arm reach (forward)** | ~50cm from shoulder to gripper tip | ~1.1× body length |
 | **Frame depth** | ~22cm (front-to-back) | 0.5× body length |
-| **Frame width** | ~30cm (same as body width) | 1.0× body width |
+| **Frame width** | ~15cm (same as body width) | 1.0× body width |
 | **Ground clearance** | ~35cm (bottom of body to ground) | ~0.78× body length |
-| **Overall footprint** | ~45cm L × 35cm W (legs spread slightly wider than body) | — |
+| **Overall footprint** | ~60cm L × 20cm W (legs spread slightly wider than body) | — |
 
 ### Key Proportions (visual guide)
 - The body is a long, narrow, flat slab — roughly **4:1** width-to-length ratio (L:W:H ≈ 60:15:12cm)
@@ -58,7 +58,7 @@
 - **Color:** Same dark matte olive-green as body, with dark grey/black actuator housings at joints.
 - **LED strips:** Bright green (#22c55e) LED light strips running vertically along the **OUTWARD-FACING flat panel surface** of each UPPER leg segment (thigh/shoulder). One strip per upper leg, ~15cm long, ~1cm wide. NOT ring accents on joints. NOT on lower legs. Always illuminated when operating.
 - **Feet:** Rounded black rubber foot pads with textured grip surface. ~5cm diameter. No claws or toes.
-- **Stance:** Legs spread slightly wider than the body (~35cm track width vs 30cm body width). This gives a stable, planted stance.
+- **Stance:** Legs spread slightly wider than the body (~20cm track width vs 15cm body width). This gives a stable, planted stance.
 
 ## 5. ARM (×1)
 
@@ -92,7 +92,7 @@ The entire mechanism has only ONE moving part: the folding frame.
 
 - **Position:** Center of the robot's flat back, between the arm mount (front) and the frame hinge (rear).
 - **Orientation:** Cylinder axis runs **LEFT-TO-RIGHT** (perpendicular to the robot's front-to-back axis), **parallel to the frame hinge line**.
-- **Size:** ~8cm diameter × ~28cm wide (slightly narrower than body width).
+- **Size:** ~8cm diameter × ~13cm wide (slightly narrower than body width).
 - **Mounting:** Sits LOW and CLOSE to the body surface, in a shallow cradle or recess. Not elevated on a tall mount.
 - **Appearance:** Black anodized aluminum cylindrical housing with visible roll of black bag material.
 - **The front edge of the roll area** serves as the **inner clipping line** where one edge of the bag opening attaches.
@@ -100,7 +100,7 @@ The entire mechanism has only ONE moving part: the folding frame.
 ### 6.3 Folding Bag Frame
 
 - **Type:** Rectangular rim frame made of dark grey/black metal tubing (~1cm diameter tube).
-- **Dimensions:** Width = body width (~30cm). Depth (front-to-back) = half body length (~22cm).
+- **Dimensions:** Width = body width (~15cm). Depth (front-to-back) = half body length (~22cm).
 - **Hinge point:** Single-axis hinge at the **REAR EDGE** of the robot body's top surface. Two metal support bars connect the frame to the hinge.
 - **Actuator:** Small servo motor at the hinge. This is the ONLY moving part in the entire bag system.
 
@@ -197,6 +197,7 @@ The robotic arm doubles as the compressor:
 | V2.0 | 2026-02-10 | Folding frame + roll dispenser + gravity seal. Boxy head. LED strips on upper legs. |
 | V2.1 | 2026-02-10 | Precise frame geometry: 135° angle, frame depth = half body, bag spans roll-to-rim |
 | V2.2 | 2026-02-10 | Full dimensional ratios. Smooth modern panel aesthetic. Head clarified as sensor module (Spot-like). Roll axis perpendicular. Comprehensive proportions table. |
+| V2.3 | 2026-02-10 | Fix body dimensions consistency: 60×15×12cm body, 15cm frame width, 20cm track width. Fix render prompt to match spec. |
 
 ---
 
@@ -205,7 +206,7 @@ The robotic arm doubles as the compressor:
 When generating renders, ALWAYS start with this core description. NEVER reference competitor brands.
 
 ```
-A custom-designed quadrupedal robot with a smooth matte dark olive-green body with softly rounded panel edges. The body is a flat horizontal rectangular enclosure, roughly 45cm long, 30cm wide, and 15cm tall. The head is a compact sensor housing module at the front with a flat face featuring two square bright green LED eye panels — not an organic dog head but a sleek sensor module with gentle contouring. Bright green LED light strips on the outward-facing sides of the upper leg segments only. Four articulated legs roughly the same length as the body, mammalian stance, with rubber foot pads. A tall multi-joint robotic arm with mechanical gripper rises from the front top of the body, extending about 40cm above the body with visible shoulder, elbow, and wrist joints. On the center of the flat back, a black cylindrical bag roll dispenser mounted horizontally with its axis running left-to-right across the body width. At the rear edge of the body, a rectangular dark metal tube frame is hinged open at 135 degrees from the back surface, extending backward and upward — it is the same width as the body and about half the body length deep. A heavy-duty black trash bag hangs freely from this frame, draping down behind the robot — no basket, no cage, no mesh. Smooth clean modern surfaces throughout. No text, no logos, no branding, no watermarks.
+A custom-designed quadrupedal robot with a smooth matte dark olive-green body with softly rounded panel edges. The body is a flat horizontal rectangular enclosure, roughly 60cm long, 15cm wide, and 12cm tall. The head is a compact sensor housing module at the front with a flat face featuring two square bright green LED eye panels — not an organic dog head but a sleek sensor module with gentle contouring. Bright green LED light strips on the outward-facing sides of the upper leg segments only. Four articulated legs roughly the same length as the body, mammalian stance, with rubber foot pads. A tall multi-joint robotic arm with mechanical gripper rises from the front top of the body, extending about 40cm above the body with visible shoulder, elbow, and wrist joints. On the center of the flat back, a black cylindrical bag roll dispenser mounted horizontally with its axis running left-to-right across the body width. At the rear edge of the body, a rectangular dark metal tube frame is hinged open at 135 degrees from the back surface, extending backward and upward — it is the same width as the body and about half the body length deep. A heavy-duty black trash bag hangs freely from this frame, draping down behind the robot — no basket, no cage, no mesh. Smooth clean modern surfaces throughout. No text, no logos, no branding, no watermarks.
 ```
 
 Then append scene-specific details (lighting, environment, pose, camera angle).
