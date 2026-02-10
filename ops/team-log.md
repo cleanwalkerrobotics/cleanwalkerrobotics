@@ -35,6 +35,7 @@
 | Date | Team | Task | Commit |
 |------|------|------|--------|
 | 2026-02-10 13:15 | cw-software | Bag Cassette System design refactor: rewrote all 14 render prompts + regenerated all renders with Seedream 4.5 | c7b04b0 |
+| 2026-02-10 | cw-software | Bag Cassette System copy refactor: updated all website pages (product, demos, pick-and-compact, autonomous-ops) to replace waste bin references | 352e1c9 |
 
 ---
 *All sessions terminated after completion.*
