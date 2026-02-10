@@ -82,7 +82,7 @@ We handle hardware, maintenance, software updates, and real-time monitoring. Cle
 | **Weight** | ~30 kg |
 | **Perception** | OAK-D Pro stereo depth camera + RPLidar A1 (360-degree safety) |
 | **AI compute** | NVIDIA Jetson Orin Nano (67 TOPS) -- real-time YOLO litter detection |
-| **Manipulation** | 2-DOF robotic arm with soft silicone gripper (conforms to irregular shapes) |
+| **Manipulation** | 2-DOF robotic arm with mechanical gripper with silicone-tipped fingers (handles irregular shapes) |
 | **Waste collection** | Bag Cassette System -- motorized X-frame holds standard trash bag open; gripper arm compresses at ~80% capacity; snap-close seals full bag; robot drops sealed bag at curb and deploys fresh bag automatically |
 | **Bag capacity** | Replaceable cassette holds ~20-30 bags per cartridge; dramatically increases effective capacity vs. fixed bins |
 | **Detectable items** | Bottles, cans, wrappers, cups, cigarette butts, paper (5g-500g) |
@@ -253,7 +253,7 @@ The Bag Cassette System means CleanWalker integrates directly with existing muni
 
 **Manipulation (Pick)**
 - 2-DOF robotic arm with 30-40 cm reach
-- Soft silicone gripper (Shore A 20-30) conforms to irregular shapes
+- Mechanical gripper with silicone-tipped fingers — rigid steel fingers with silicone grip pads on fingertips
 - Handles items from 5g (cigarette butts) to 500g (full bottles)
 - Replaceable gripper fingers for low maintenance cost
 

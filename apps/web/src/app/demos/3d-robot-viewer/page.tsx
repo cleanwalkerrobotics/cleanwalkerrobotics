@@ -138,8 +138,8 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 
 			// Scene
 			const scene = new THREE.Scene();
-			scene.background = new THREE.Color(0xd4d4d4);
-			scene.fog = new THREE.FogExp2(0xd4d4d4, 0.15);
+			scene.background = new THREE.Color(0xf0f0f0);
+			scene.fog = new THREE.FogExp2(0xf0f0f0, 0.15);
 
 			// Camera
 			const camera = new THREE.PerspectiveCamera(
@@ -148,7 +148,7 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 				0.01,
 				50,
 			);
-			camera.position.set(1.2, 0.8, 1.2);
+			camera.position.set(1.4, 0.9, 1.4);
 
 			// Renderer
 			renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -168,7 +168,7 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 			controls.autoRotateSpeed = 0.5;
 			controls.minDistance = 0.5;
 			controls.maxDistance = 4;
-			controls.target.set(0, 0.35, 0);
+			controls.target.set(0, 0.38, 0);
 			controls.maxPolarAngle = Math.PI * 0.85;
 			controls.update();
 
@@ -204,7 +204,7 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 			const ground = new THREE.Mesh(
 				new THREE.PlaneGeometry(12, 12),
 				new THREE.MeshStandardMaterial({
-					color: 0xbcbcbc,
+					color: 0xd4d4d4,
 					roughness: 0.9,
 					metalness: 0.05,
 				}),
@@ -229,7 +229,7 @@ function RobotViewer({ viewMode }: { viewMode: ViewMode }) {
 
 			// Z-up to Y-up
 			robot.rotation.x = -Math.PI / 2;
-			const baseY = 0.48;
+			const baseY = 0.46;
 			robot.position.y = baseY;
 			scene.add(robot);
 
@@ -363,7 +363,7 @@ function RobotSpecs({ viewMode }: { viewMode: ViewMode }) {
 				<>
 					<SpecList
 						items={[
-							{ label: "Body (L×W×H)", value: "450 × 300 × 150 mm" },
+							{ label: "Body (L×W×H)", value: "600 × 150 × 120 mm" },
 							{ label: "Standing Height", value: "~550-600 mm" },
 							{ label: "Upper Leg", value: "200 mm" },
 							{ label: "Lower Leg", value: "200 mm" },
@@ -401,9 +401,9 @@ function RobotSpecs({ viewMode }: { viewMode: ViewMode }) {
 					<SpecList
 						items={[
 							{ label: "Bag Capacity", value: "30-50 L" },
-							{ label: "Roll Width", value: "280 mm" },
+							{ label: "Roll Width", value: "140 mm" },
 							{ label: "Roll Diameter", value: "80 mm" },
-							{ label: "Frame Width", value: "300 mm" },
+							{ label: "Frame Width", value: "150 mm" },
 							{ label: "Frame Depth", value: "220 mm" },
 							{ label: "Frame Angle", value: "135° open" },
 							{ label: "Moving Parts", value: "1 (frame servo)" },

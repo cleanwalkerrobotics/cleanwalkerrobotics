@@ -1,7 +1,7 @@
 import type { BodyResult, LegRef, ArmRef } from "./types";
 
 export function buildRobotBody(THREE: typeof import("three")): BodyResult {
-	// -- Materials (V2.2 spec) --
+	// -- Materials (V2.3 spec) --
 	const oliveGreen = new THREE.MeshStandardMaterial({
 		color: 0x3b4a3f,
 		roughness: 0.75,
@@ -28,9 +28,9 @@ export function buildRobotBody(THREE: typeof import("three")): BodyResult {
 	const group = new THREE.Group();
 	const legs: LegRef[] = [];
 
-	// ---------- Body (V2.2: 450×300×150mm, 3:2:1 ratio) ----------
+	// ---------- Body (V2.3: 600×150×120mm, 4:1 L:W ratio) ----------
 	const bodyMesh = new THREE.Mesh(
-		new THREE.BoxGeometry(0.45, 0.30, 0.15),
+		new THREE.BoxGeometry(0.60, 0.15, 0.12),
 		oliveGreen,
 	);
 	bodyMesh.castShadow = true;
@@ -38,41 +38,43 @@ export function buildRobotBody(THREE: typeof import("three")): BodyResult {
 
 	// Raised top panel for visual depth
 	const bodyTop = new THREE.Mesh(
-		new THREE.BoxGeometry(0.40, 0.26, 0.02),
+		new THREE.BoxGeometry(0.55, 0.13, 0.02),
 		oliveGreen,
 	);
-	bodyTop.position.set(0, 0, 0.085);
+	bodyTop.position.set(0, 0, 0.07);
 	bodyTop.castShadow = true;
 	group.add(bodyTop);
 
-	// LiDAR puck on top
+	// LiDAR puck on top (between arm mount and bag roll)
 	const lidar = new THREE.Mesh(
 		new THREE.CylinderGeometry(0.02, 0.02, 0.015, 16),
 		darkGrey,
 	);
 	lidar.rotation.x = Math.PI / 2;
-	lidar.position.set(0.02, 0, 0.10);
+	lidar.position.set(0.05, 0, 0.085);
 	group.add(lidar);
 
-	// ---------- Head module (flat-face sensor housing) ----------
+	// ---------- Head (flush integrated sensor housing) ----------
+	// Same width as body, barely extends beyond front edge
 	const head = new THREE.Mesh(
-		new THREE.BoxGeometry(0.10, 0.12, 0.10),
+		new THREE.BoxGeometry(0.08, 0.15, 0.08),
 		oliveGreen,
 	);
-	head.position.set(0.275, 0, 0.03);
+	// Centered at body front edge — back half overlaps body, front half protrudes ~4cm
+	head.position.set(0.30, 0, 0.0);
 	head.castShadow = true;
 	group.add(head);
 
 	// Eyes — two square green LED panels on flat front face
 	const eyeGeom = new THREE.BoxGeometry(0.012, 0.038, 0.038);
 	const eyeL = new THREE.Mesh(eyeGeom, ledGreen);
-	eyeL.position.set(0.331, 0.03, 0.04);
+	eyeL.position.set(0.346, 0.03, 0.01);
 	group.add(eyeL);
 	const eyeR = new THREE.Mesh(eyeGeom, ledGreen);
-	eyeR.position.set(0.331, -0.03, 0.04);
+	eyeR.position.set(0.346, -0.03, 0.01);
 	group.add(eyeR);
 
-	// ---------- Arm (multi-joint, front-center) ----------
+	// ---------- Arm (multi-joint with turret base, front-center) ----------
 	const arm = buildArm(THREE, oliveGreen, darkGrey, ledGreen, group);
 
 	// ---------- Legs (×4, mammalian stance) ----------
@@ -84,29 +86,29 @@ export function buildRobotBody(THREE: typeof import("three")): BodyResult {
 		outwardY: number;
 	}[] = [
 		{
-			origin: [0.17, 0.16, -0.075],
-			pitchOffset: [0, 0.03, 0],
+			origin: [0.24, 0.12, -0.06],
+			pitchOffset: [0, 0.04, 0],
 			isRear: false,
 			phase: 0,
 			outwardY: 1,
 		},
 		{
-			origin: [0.17, -0.16, -0.075],
-			pitchOffset: [0, -0.03, 0],
+			origin: [0.24, -0.12, -0.06],
+			pitchOffset: [0, -0.04, 0],
 			isRear: false,
 			phase: Math.PI / 2,
 			outwardY: -1,
 		},
 		{
-			origin: [-0.17, 0.16, -0.075],
-			pitchOffset: [0, 0.03, 0],
+			origin: [-0.24, 0.12, -0.06],
+			pitchOffset: [0, 0.04, 0],
 			isRear: true,
 			phase: Math.PI,
 			outwardY: 1,
 		},
 		{
-			origin: [-0.17, -0.16, -0.075],
-			pitchOffset: [0, -0.03, 0],
+			origin: [-0.24, -0.12, -0.06],
+			pitchOffset: [0, -0.04, 0],
 			isRear: true,
 			phase: Math.PI * 1.5,
 			outwardY: -1,
@@ -207,9 +209,19 @@ function buildArm(
 	ledGreen: import("three").MeshStandardMaterial,
 	parentGroup: import("three").Group,
 ): ArmRef {
-	// Shoulder mount on body top, front-center, behind head
+	// Cylindrical turret base on body top, front-center, behind head (~8cm dia, ~5cm tall)
+	const turretBase = new THREE.Mesh(
+		new THREE.CylinderGeometry(0.04, 0.04, 0.05, 16),
+		darkGrey,
+	);
+	turretBase.rotation.x = Math.PI / 2;
+	turretBase.position.set(0.18, 0, 0.085);
+	turretBase.castShadow = true;
+	parentGroup.add(turretBase);
+
+	// Shoulder mount on top of turret
 	const shoulderBase = new THREE.Group();
-	shoulderBase.position.set(0.12, 0, 0.095);
+	shoulderBase.position.set(0.18, 0, 0.11);
 
 	// Shoulder joint housing
 	const shoulderJoint = new THREE.Mesh(
@@ -278,7 +290,7 @@ function buildArm(
 	wristCam.position.set(0.02, 0, 0);
 	wristGroup.add(wristCam);
 
-	// Gripper — two mechanical fingers
+	// Gripper — two mechanical fingers with silicone-tipped pads
 	const fingerGeom = new THREE.BoxGeometry(0.008, 0.015, 0.06);
 	const fingerL = new THREE.Mesh(fingerGeom, darkGrey);
 	fingerL.position.set(0, 0.015, 0.035);

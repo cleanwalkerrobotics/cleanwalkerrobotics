@@ -116,7 +116,7 @@ A quadruped requires a minimum of 12 degrees of freedom (3 DOF per leg: hip abdu
 |-----------|--------------|-------|--------|
 | 2x Dynamixel XM430-W350-T (arm joints) | 4.1 Nm stall torque | $270 each | [ROBOTIS US](https://robotis.us/xm/) |
 | Aluminum arm linkages (custom CNC) | 6061-T6 aluminum | $80--150 | [Xometry](https://www.xometry.com/capabilities/cnc-machining-service/) |
-| Soft silicone gripper fingers | Custom molded | $40--80 | Custom silicone mold + Smooth-On material |
+| Mechanical gripper with silicone-tipped fingers | Custom CNC + silicone tips | $40--80 | Steel fingers + silicone grip pads (Smooth-On) |
 | Gripper servo (1x MG996R or Dynamixel XL430) | Gripper open/close | $45 (XL430) | [ROBOTIS US](https://robotis.us/) |
 
 **Total per unit (prototype):** ~$705

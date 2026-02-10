@@ -25,49 +25,51 @@ export function buildBagSystem(
 	});
 
 	// ---------- Bag Roll Dispenser ----------
-	// Cylinder axis left-to-right (Y), center of back
+	// Cylinder axis left-to-right (Y), center of back between arm mount and hinge
+	// Body top at z=0.06, roll sits low/close to surface
 	const roll = new THREE.Mesh(
-		new THREE.CylinderGeometry(0.04, 0.04, 0.28, 16),
+		new THREE.CylinderGeometry(0.04, 0.04, 0.14, 16),
 		rollMat,
 	);
 	// CylinderGeometry is Y-aligned, which matches our left-right Y axis
-	roll.position.set(-0.08, 0, 0.115);
+	roll.position.set(-0.06, 0, 0.10);
 	roll.castShadow = true;
 	group.add(roll);
 
 	// Roll cradle mount
 	const cradle = new THREE.Mesh(
-		new THREE.BoxGeometry(0.10, 0.30, 0.015),
+		new THREE.BoxGeometry(0.10, 0.16, 0.015),
 		frameMat,
 	);
-	cradle.position.set(-0.08, 0, 0.082);
+	cradle.position.set(-0.06, 0, 0.065);
 	group.add(cradle);
 
 	// Visible bag material on roll
 	const rollBag = new THREE.Mesh(
-		new THREE.CylinderGeometry(0.035, 0.035, 0.26, 16),
+		new THREE.CylinderGeometry(0.035, 0.035, 0.12, 16),
 		bagMat,
 	);
-	rollBag.position.set(-0.08, 0, 0.115);
+	rollBag.position.set(-0.06, 0, 0.10);
 	group.add(rollBag);
 
 	// ---------- Hinge servo at rear edge ----------
+	// Body rear edge at x=-0.30, body top at z=0.06
 	const servo = new THREE.Mesh(
 		new THREE.BoxGeometry(0.03, 0.04, 0.03),
 		frameMat,
 	);
-	servo.position.set(-0.225, 0, 0.08);
+	servo.position.set(-0.30, 0, 0.065);
 	servo.castShadow = true;
 	group.add(servo);
 
 	// ---------- Folding Bag Frame ----------
 	const hingeGroup = new THREE.Group();
-	hingeGroup.position.set(-0.225, 0, 0.08);
+	hingeGroup.position.set(-0.30, 0, 0.065);
 	// 135° open: extends backward and upward, 45° past vertical
 	hingeGroup.rotation.y = -(3 * Math.PI) / 4;
 
 	const tubeR = 0.005;
-	const frameW = 0.30;
+	const frameW = 0.15;
 	const frameD = 0.22;
 
 	// Far edge (rim) — runs along Y
@@ -114,16 +116,17 @@ function createBagMesh(
 	THREE: typeof import("three"),
 	material: import("three").Material,
 ): import("three").Mesh {
-	const hw = 0.13;
+	const hw = 0.065;
 
 	// Side profile points (X, Z) in URDF coords
 	// Inner clip at roll → sag bottom → outer clip at frame rim
+	// Hinge at (-0.30, 0.065), frame rim at ~(-0.455, 0.22)
 	const profile: [number, number][] = [
-		[-0.04, 0.115], // inner clip (at roll)
-		[-0.10, 0.01], // inner curve
-		[-0.21, -0.08], // bottom sag
-		[-0.32, 0.01], // outer curve
-		[-0.381, 0.236], // outer clip (at frame rim)
+		[-0.02, 0.10], // inner clip (front edge of roll area)
+		[-0.10, 0.00], // inner curve
+		[-0.24, -0.10], // bottom sag
+		[-0.36, 0.00], // outer curve
+		[-0.455, 0.22], // outer clip (at frame rim)
 	];
 
 	const n = profile.length;
@@ -177,5 +180,5 @@ export function buildGhostBody(
 		transparent: true,
 		opacity: 0.15,
 	});
-	return new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.3, 0.15), mat);
+	return new THREE.Mesh(new THREE.BoxGeometry(0.60, 0.15, 0.12), mat);
 }
