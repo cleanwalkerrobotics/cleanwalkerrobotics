@@ -31,7 +31,8 @@ const demos = [
 	},
 	{
 		title: "Quadrupedal Locomotion",
-		status: "coming",
+		status: "live",
+		slug: "quadrupedal-locomotion",
 		description:
 			"See how our robot traverses curbs, grass, gravel, and uneven terrain that wheeled robots can't handle. Adaptive gait control for any surface.",
 		placeholder: "Physics simulation — terrain traversal across multiple surface types",
@@ -57,7 +58,8 @@ const demos = [
 	},
 	{
 		title: "24/7 Autonomous Operation",
-		status: "coming",
+		status: "live",
+		slug: "autonomous-ops",
 		description:
 			"A day in the life of CleanWalker: dawn patrol, peak-hour navigation around pedestrians, self-charging, night operation with IR perception. Fully autonomous.",
 		placeholder: "Time-lapse simulation — 24 hours of autonomous park cleaning",
