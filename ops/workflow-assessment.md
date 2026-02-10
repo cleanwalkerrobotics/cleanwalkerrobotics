@@ -1,5 +1,109 @@
 # Workflow Assessments
 
+## Assessment #9 — 2026-02-10 12:46 UTC
+
+### Context
+Ninth assessment. 13:46 CET (Maurits' afternoon). cw-research session was running — completed grant research and was idle at prompt. Killed it. Zero sessions now active. VPS at 30GB RAM, 28GB available.
+
+### What Happened Since Last Assessment (#8 at 10:46 UTC)
+**Grant research completed — comprehensive deliverable.**
+
+| Time (UTC) | Commit | What |
+|------------|--------|------|
+| ~11:00 | 9051e92 | Grant opportunities research — 14 grants across 5 regions |
+| ~11:10 | 41e0a9e | Enriched with ADIO, DFA, Hub71+ ClimateTech, NEA |
+| ~11:15 | d50f0a8 | Added VFF, Eurostars, ROMs; corrected WBSO starter rate to 50% |
+
+**Grant Research Deliverable:**
+- 17+ grants across 5 regions (EU, NL, UAE, US, SG)
+- Priority-ranked with fit scores, deadlines, amounts, and action items
+- Key findings:
+  - **WBSO (NL):** 50% tax credit on first €380K R&D wages for starters — lowest barrier, immediate benefit
+  - **Eurostars: URGENT — deadline March 19, 2026 (37 days).** Up to €500K, needs cross-border partner
+  - **VFF Proof-of-Concept:** Up to €450K loan, perfect stage fit, needs investor LOI
+  - **MIT Haalbaarheid:** Up to €20K for feasibility study — easiest money
+  - **MBRIF + Dubai Future Accelerators:** No direct funding but strategic market access to UAE/BEEAH
+  - **EIC Physical AI Challenge:** €300K Stage 1, best thematic fit but needs TRL 4 (lab prototype)
+  - **SBIR/STTR: DEAD.** Programs expired Sep 2025, requires 51% US ownership
+  - **DOT SMART: DEAD.** Stage 1 permanently closed
+- **Strategic recommendation: LLC→BV conversion.** Removes all ambiguity for EU/NL grants. Multiple grants flagged this.
+
+### Scores (1-10)
+| Metric | Score | Notes |
+|--------|-------|-------|
+| Task throughput | 6 | 1 deliverable (grant research) completed. Solid scope but only 1 task in 2 hours. No second session was spawned despite 28GB available. |
+| Quality | 9 | Exceptional grant research — 17 grants, fit-scored, prioritized, with actionable next steps. Eurostars deadline catch is high-value. LLC→BV conversion insight is strategic. Team went beyond the brief (added NL-specific enrichment pass). |
+| Resource efficiency | 4 | Session completed at ~11:15 UTC but sat idle for ~90 minutes before I caught it at 12:46 UTC. This is WORSE than Assessment #8 (30 min idle). No second session was spawned. 28GB RAM sat underutilized for 2 hours. |
+| Priority alignment | 7 | Grant research was item #2 on HEARTBEAT.md priority queue, and item #12 on strategy.md Tier 2. Correct priority. But item #1 (outreach emails → Maurits) still hasn't been escalated as a direct message. |
+
+### Overall: 6.5/10
+
+### Honest Assessment
+**Good deliverable, poor operations.** The grant research itself is excellent — one of the most actionable docs produced. The Eurostars deadline catch alone justifies the task. But operationally this was weak:
+
+1. **Session monitoring regression.** Idle time went from 75 min (#7) → 30 min (#8) → **90 min (#9)**. I'm going backwards. The HEARTBEAT.md includes "check tmux sessions" but I clearly didn't catch it on the intermediate heartbeat.
+
+2. **Underutilized resources.** Only 1 session ran this cycle on a 30GB VPS. Assessment #8 ran 2 concurrent sessions. I should have spawned a second task (website optimization, deployment proposals, or outreach escalation) when cw-research was in flight.
+
+3. **Outreach escalation still pending.** Assessment #8 identified that the bottleneck shifted from "build" to "sell" and flagged outreach emails as the #1 priority for Maurits. That was 2 hours ago. I haven't sent him a direct message about it. The 3 draft emails and 13-target pipeline are sitting in the repo waiting for his review. This is the single most important action for the company right now.
+
+**What went right:**
+- Task scoping was good — single clear brief, team delivered comprehensively
+- Quality exceeded expectations — NL-specific enrichment was self-initiated by the research team
+- Grant research fills a genuine strategic gap — we now know exactly which funding to pursue and in what order
+
+**What went wrong:**
+- Idle session monitoring is my worst recurring failure. 5 of 9 assessments have flagged this.
+- Single-session utilization when RAM allows 3 concurrent is wasteful
+- Haven't escalated the outreach readiness to Maurits despite identifying it as critical 2 hours ago
+
+### Current Deliverable State
+| Deliverable | Status | Change |
+|-------------|--------|--------|
+| Marketing website (5 pages + 7 demos) | ✅ Live | — |
+| Robot renders (14 images at 4K) | ✅ Live | — |
+| All interactive demos (7) | ✅ Live | — |
+| URDF robot model v1 | ✅ Done | — |
+| 3D robot viewer (Three.js) | ✅ Live | — |
+| ML pipeline + YOLO training | ✅ Done | — |
+| Financial model + pricing | ✅ Done | — |
+| Pitch deck | ✅ Done | — |
+| Competitive landscape | ✅ Done | — |
+| Robot design spec v1.0 | ✅ Done | — |
+| Outreach emails (3 drafts) | ✅ Draft Ready | — |
+| Outreach tracker (13 targets) | ✅ Done | — |
+| **Grant opportunities (17+ grants)** | **✅ Done** | **NEW — 5 regions, priority-ranked, deadlines mapped** |
+| Simulation demo (Gazebo) | ❌ Blocked | No ROS2/Gazebo on VPS |
+| Grant applications | ❌ Not started | Research done, need Maurits for applications |
+| Outreach send | ❌ Waiting on Maurits | **CRITICAL PATH — 2 hours overdue on escalation** |
+
+### Bottlenecks
+1. **🔴 Outreach is the bottleneck. Full stop.** Digital product is complete. Outreach emails are drafted. 13-target pipeline is built. Grant research is done. The single thing blocking revenue progress is Maurits reviewing and sending outreach. I need to message him NOW.
+2. **🔴 Eurostars deadline: March 19, 2026 (37 days).** Needs a cross-border partner and proposal. If we're going to pursue this, Maurits needs to know ASAP.
+3. **🟡 LLC→BV conversion.** Multiple grants flagged this. Strategic decision needed from Maurits — affects all EU/NL grant eligibility.
+4. **🟡 Session monitoring.** My worst recurring issue. Need a structural fix, not just awareness.
+
+### Decisions
+- **Decision:** Killed idle cw-research session. Resources freed.
+- **Decision:** Next heartbeat MUST escalate outreach readiness to Maurits. Include Eurostars deadline.
+- **Decision:** Spawn 2 sessions next cycle: (1) website image optimization (renders are 1.2-1.9MB each — compress to WebP, add next/image optimization), (2) municipality deployment one-pagers for top 3 targets.
+- **Decision:** For session monitoring: start tracking spawn time in team-status.json, set mental flag to check at T+45 min via heartbeat.
+
+### Next Cycle Priorities (14:46 UTC = 15:46 CET)
+1. **MESSAGE MAURITS** — outreach email review + Eurostars deadline + LLC→BV question. This cannot wait another cycle.
+2. **Spawn cw-software: Website optimization** — image compression (WebP), Core Web Vitals, SEO meta, OG images.
+3. **Spawn cw-bizdev: Municipality one-pagers** — top 3 deployment proposals (Amsterdam, Dubai, Singapore) as PDF-ready one-pagers.
+4. **Consider:** Contact form backend (Resend API) — so demo visitors can actually submit inquiries.
+
+### Resource State
+- **RAM: 1.9G used / 30G total (28G available)** — 0 sessions, ready for 2-3 concurrent
+- Docker: traefik (112MB), watchtower (19MB), n8n (437MB), postgres (52MB) — ~620MB, stable
+- No cw-* tmux sessions — all killed and clean
+- Git: HEAD = d50f0a8 (grant research enrichment), fully pushed
+- Vercel: auto-deployed, 15/15 pages clean
+
+---
+
 ## Assessment #8 — 2026-02-10 10:46 UTC
 
 ### Context

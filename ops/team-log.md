@@ -4,9 +4,11 @@
 
 ### Grant Research (cw-research)
 - **Assigned:** Research and document top grant opportunities across EU, US, NL, Singapore, UAE
-- **Result:** Complete. Created docs/ceo/grant-opportunities.md with 14 grants analyzed across 5 regions, priority ranking, fit scores, deadlines, and action items
-- **Key findings:** WBSO (NL) and MBRIF (UAE) are immediate priorities; SBIR/STTR is blocked (expired + US ownership requirement); EIC Accelerator is a 2027 target; LLC→BV conversion strongly recommended
-- **Duration:** ~15 min
+- **Result:** Complete. Created docs/ceo/grant-opportunities.md with 17+ grants analyzed across 5 regions, priority ranking, fit scores, deadlines, and action items
+- **Key findings:** WBSO 50% starter rate (not 32%), Eurostars URGENT deadline Mar 19 2026, VFF up to €450K, MBRIF/DFA for UAE access, SBIR/DOT SMART both dead. LLC→BV conversion strongly recommended.
+- **Commits:** 9051e92, 41e0a9e, d50f0a8
+- **Duration:** ~30 min (plus NL enrichment pass)
+- **Session killed:** 12:46 UTC (idle ~90 min post-completion)
 
 ## 2026-02-09
 

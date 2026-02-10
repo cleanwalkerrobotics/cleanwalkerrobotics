@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-10T10:46:00Z",
+  "lastUpdated": "2026-02-10T12:46:00Z",
   "teams": {
     "cw-software": {
       "status": "idle",
@@ -21,9 +21,9 @@
     },
     "cw-research": {
       "status": "idle",
-      "lastTask": "Comprehensive competitive landscape analysis",
+      "lastTask": "Grant application research — 17+ grants across EU, NL, UAE, US, SG. Key: WBSO (50% starter), Eurostars (URGENT Mar 19 deadline), VFF, MBRIF, ADIO",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-10T02:02:00Z"
+      "lastActive": "2026-02-10T11:15:00Z"
     },
     "cw-renders": {
       "status": "idle",
@@ -40,5 +40,5 @@
   },
   "activeSessions": 0,
   "vpsSpec": "30GB RAM",
-  "notes": "All sessions idle. Both cw-software and cw-bizdev completed and killed at 10:46 UTC. 3D viewer live, outreach pipeline ready. 28GB RAM available — ready for next task spawn."
+  "notes": "All sessions idle. cw-research completed grant research (17+ grants, 3 commits) and killed at 12:46 UTC. VPS at 28GB available — ready for next task spawn. CRITICAL: Eurostars deadline March 19, 2026 (37 days)."
 }
