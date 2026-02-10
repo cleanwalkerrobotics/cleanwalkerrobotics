@@ -2,6 +2,15 @@
 
 ## 2026-02-10
 
+### Unitree Go2 Platform Analysis (cw-research) — COMPLETED
+- **Task:** Strategic research on Unitree Go2 as base platform for CleanWalker (pivot from from-scratch build)
+- **Scope:** All Go2 variants specs/pricing, open source ecosystem, mounting/payload, compute/perception, BOM comparison, legal/competitive analysis
+- **Key Finding:** Go2 EDU ($14,500) viable for rapid prototyping (4-6 weeks to demo) but ~2x cost of from-scratch at production scale, no weatherproofing, tight payload
+- **Recommendation:** Use Go2 EDU for prototype/pilot validation, transition to custom platform for production
+- **File:** docs/research/unitree-go2-platform-analysis.md
+
+| 2026-02-10 | cw-research | Unitree Go2 platform analysis — specs, ecosystem, BOM, recommendation | pending |
+
 ### 3D Viewer: Bag Always Open + Play/Pause Button (cw-software) — COMPLETED
 
 | 2025-02-10 17:00 | cw-software | Bag defaults to open (135°), removed continuous fold loop, added play button for on-demand bag swap cycle | 8da2803 |
