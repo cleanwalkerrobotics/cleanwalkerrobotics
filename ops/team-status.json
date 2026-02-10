@@ -1,11 +1,12 @@
 {
-  "lastUpdated": "2026-02-10T14:46:00Z",
+  "lastUpdated": "2026-02-10T14:50:00Z",
   "teams": {
     "cw-software": {
-      "status": "idle",
-      "lastTask": "Three.js 3D robot viewer page — interactive URDF visualization on website",
-      "lastTaskResult": "completed",
-      "lastActive": "2026-02-10T09:30:00Z"
+      "status": "active",
+      "lastTask": "Website image optimization — WebP conversion, next/image, OG images, SEO meta, Core Web Vitals",
+      "lastTaskResult": "in_progress",
+      "lastActive": "2026-02-10T14:50:00Z",
+      "spawnedAt": "2026-02-10T14:50:00Z"
     },
     "cw-hardware": {
       "status": "idle",
@@ -14,14 +15,15 @@
       "lastActive": "2026-02-10T08:00:00Z"
     },
     "cw-bizdev": {
-      "status": "idle",
-      "lastTask": "Outreach emails + tracker (13 targets) + contacts database + additional grant research",
-      "lastTaskResult": "completed",
-      "lastActive": "2026-02-10T14:31:00Z"
+      "status": "active",
+      "lastTask": "Municipality deployment proposals — Amsterdam, Dubai/Sharjah, Veolia ANZ one-pagers",
+      "lastTaskResult": "in_progress",
+      "lastActive": "2026-02-10T14:50:00Z",
+      "spawnedAt": "2026-02-10T14:50:00Z"
     },
     "cw-research": {
       "status": "idle",
-      "lastTask": "Autonomy stack architecture (1,011 lines) + perception demo PoC (Replicate API YOLOv8s)",
+      "lastTask": "Autonomy stack architecture + perception demo PoC",
       "lastTaskResult": "completed",
       "lastActive": "2026-02-10T14:10:00Z"
     },
@@ -38,9 +40,9 @@
       "lastActive": null
     }
   },
-  "activeSessions": 0,
+  "activeSessions": 2,
   "vpsSpec": "30GB RAM",
-  "notes": "Assessment #10: RESEARCH MORATORIUM in effect. All sessions idle. Next spawns must be deal-advancing only: website optimization, municipality one-pagers, contact form backend. Outreach escalation to Maurits EXECUTED this cycle. Eurostars deadline: March 19, 2026 (37 days).",
+  "notes": "Assessment #10 actions: (1) Outreach escalation sent to main session. (2) cw-software spawned for website optimization. (3) cw-bizdev spawned for municipality proposals. Research moratorium in effect. Check sessions at ~15:30 UTC.",
   "researchMoratorium": true,
-  "nextAllowedTaskTypes": ["website-optimization", "municipality-proposals", "contact-form-backend", "outreach-support"]
+  "nextCheckAt": "2026-02-10T15:30:00Z"
 }

@@ -2,6 +2,21 @@
 
 ## 2026-02-10
 
+### Website Image Optimization (cw-software) — SPAWNED 14:50 UTC
+- **Assigned:** WebP conversion of 14 renders, next/image optimization, OG meta images, SEO meta tags, Core Web Vitals fixes
+- **Status:** In progress
+- **Purpose:** Deal-advancing — faster page loads for prospects visiting our site
+
+### Municipality Deployment Proposals (cw-bizdev) — SPAWNED 14:50 UTC
+- **Assigned:** 3 one-pager deployment proposals (Amsterdam, Dubai/Sharjah, Veolia ANZ)
+- **Status:** In progress
+- **Purpose:** Deal-advancing — tangible pilot proposals to attach to outreach emails
+
+### Outreach Escalation (Walker) — 14:46 UTC
+- **Action:** Sent outreach readiness message to main session for relay to Maurits
+- **Content:** 3 draft emails ready, Eurostars deadline (Mar 19), LLC→BV question
+- **Note:** This was overdue by 4 hours (flagged in Assessments #8, #9, #10)
+
 ### Grant Research (cw-research)
 - **Assigned:** Research and document top grant opportunities across EU, US, NL, Singapore, UAE
 - **Result:** Complete. Created docs/ceo/grant-opportunities.md with 17+ grants analyzed across 5 regions, priority ranking, fit scores, deadlines, and action items
