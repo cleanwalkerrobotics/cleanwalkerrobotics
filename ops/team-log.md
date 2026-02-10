@@ -81,5 +81,7 @@
 | 2026-02-10 | cw-bizdev | Additional grant research: Innovate UK, NWO, DARPA, EIT Climate-KIC, Digital Europe, Innosuisse, IRAP, NSF/EPA/DOE, XPRIZE — all blocked by eligibility. Confirms NL/UAE strategy correct. | 27b3d64 |
 | 2026-02-10 | cw-bizdev | Municipality deployment proposals: Amsterdam (Schoon & Afvalvrij), Dubai/BEEAH (AI City Vision), Veolia ANZ (Bondi-to-commercial) — 3 one-pagers in docs/sales/proposals/ | ecdcd3d |
 
+| 2026-02-10 | cw-software | Integrate real AI litter detection into demo — Replicate YOLOv8 API route + rewritten UploadSection with real inference, bounding boxes, mock fallback, URL/sample input | d1641d3 |
+
 ---
 *cw-software complete. cw-bizdev complete. cw-hardware killed (URDF done, Gazebo N/A).*
