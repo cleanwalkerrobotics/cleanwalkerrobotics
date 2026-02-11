@@ -88,6 +88,15 @@ const demos = [
 		placeholder: "Interactive route planning simulation — toggle strategies and fleet size",
 		tags: ["Path Planning", "Fleet Optimization", "Coverage"],
 	},
+	{
+		title: "Cost Savings Calculator",
+		status: "live",
+		slug: "cost-calculator",
+		description:
+			"Calculate your facility's ROI from deploying CleanWalker. Input your current labor costs and see annual savings, payback period, and 5-year projections — instantly.",
+		placeholder: "Interactive ROI calculator — estimate your savings",
+		tags: ["ROI", "Cost Analysis", "Calculator"],
+	},
 ];
 
 export default function DemosPage() {
