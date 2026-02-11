@@ -1,10 +1,20 @@
 # CleanWalker Robotics — Autonomy Stack Architecture
 
-**Version:** 1.0
-**Date:** 2026-02-10
+**Version:** 1.1
+**Date:** 2026-02-11
 **Status:** R&D Foundation Document
 **Hardware Target:** NVIDIA Jetson Orin Nano Super (8 GB, 67 TOPS)
 **Middleware:** ROS 2 Humble Hawksbill (LTS through May 2027)
+
+> **v1.1 Update (2026-02-11):** Perception-related sections below reflect the original architecture from Feb 10. A dedicated **[Perception Pipeline Architecture](perception-pipeline-architecture.md)** document now supersedes Sections 2 and 3 with updated model selections based on comprehensive SOTA research:
+> - **Detection:** YOLO11n → **YOLO26s** (STAL for small objects, NMS-free)
+> - **Terrain:** PIDNet-S → **SegFormer-B0** primary (NVIDIA TAO/Isaac ROS ecosystem), PIDNet-S fallback
+> - **SLAM:** RTAB-Map alone → **cuVSLAM + RTAB-Map hybrid** (GPU VO at 9% GPU + CPU mapping)
+> - **Depth:** Added **Isaac ROS ESS** for stereo with confidence maps (Phase 2)
+> - **Grasping:** Rule-based → **GR-ConvNet v2** (95.4% success, 5-10ms TRT) for Phase 1+
+> - **LiDAR:** RPLidar A1 → **Livox Mid-360** (360° FOV, IP67, 70m range)
+>
+> Sections 4-10 (Navigation, Grasping, Locomotion, Behavior, Integration) remain current.
 
 ---
 
