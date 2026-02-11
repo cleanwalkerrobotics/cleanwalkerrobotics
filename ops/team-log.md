@@ -2,6 +2,12 @@
 
 ## 2026-02-11
 
+### Follow-Up Email Templates (cw-bizdev) — COMPLETED
+- **Task:** Create follow-up email templates for Tier 1 outreach targets
+- **Changes:** 7 templates total: 3 positive reply responses (per-target with one-pager attachment, meeting times, new data points), 3 Day 4 bump emails (per-target with org-specific hooks and WebGPU demo link), 1 Day 10 generic thought-leadership template. Includes follow-up schedule (Day 0/4/10/21/45) and quick-reference table.
+- **Files:** docs/ceo/follow-up-templates.md (new)
+- **Commit:** c383078
+
 ### Pilot Page + Contact API Fix (cw-software) — COMPLETED
 - **Task:** Fix /api/contact build issue (defer Resend init to runtime), create /pilot landing page for outreach partners, add Pilot Program to nav + footer
 - **Changes:** Contact route now handles missing RESEND_API_KEY gracefully at runtime. New /pilot page with hero, pilot overview, metrics, tech summary, availability slots, CTA. Nav + footer updated with Pilot Program link.
