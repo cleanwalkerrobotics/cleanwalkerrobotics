@@ -405,28 +405,36 @@ Professional quadruped robots use **multi-camera + LiDAR fusion**. A minimum via
 - **2023:** Business unit officially wound down
 - **2025:** Stereo cameras (D435i, D455, D405) continue to be sold through existing distribution
 
-### 9.2 Current Status (2026)
+### 9.2 Current Status (February 2026)
 
-- D400 series stereo cameras **remain available** through Intel's distribution partners and RealSenseAI (the successor brand)
-- No new product development expected
+- D400 series stereo cameras **remain available** through Intel's official store and distribution partners
+- **D435i available for $334** on Intel RealSense Store, also on Amazon, B&H Photo, Walmart
+- **Stock appears stable** as of early 2026, but long-term availability uncertain
+- No new product development expected from Intel
 - Driver/firmware updates are minimal (community-driven via librealsense GitHub)
-- Long-term supply chain risk: eventually stock will run out
+- Long-term supply chain risk: eventually stock will run out, no clear successor from Intel
+- **Recommendation:** Still viable for 2026 projects, but new designs should consider alternatives (OAK-D Pro, Orbbec Gemini series) for long-term product roadmap
 
-### 9.3 Recommended Replacements
+### 9.3 Recommended Replacements (Updated 2026)
 
-| RealSense Camera | Best Replacement | Why |
+| RealSense Camera | Best Replacement 2026 | Why |
 |-----------------|-----------------|-----|
-| D435i | **Luxonis OAK-D Pro** | Similar stereo + IR, adds VPU, better software momentum |
-| D435i | **Luxonis OAK-D S2** | Direct analog without IR projector, has IMU, cheaper |
-| D455 | **Stereolabs ZED 2i** | Better outdoor performance, IP66, wider FOV, neural depth |
-| D405 (short range) | **Orbbec Femto Bolt** | ToF gives excellent close-range accuracy (replaces Azure Kinect too) |
-| L515 (LiDAR) | **Livox Mid-360** | 3D LiDAR for mapping/navigation |
+| D435i | **Luxonis OAK-D Pro** ($399) | Similar stereo + IR, adds VPU, better software momentum, active development |
+| D435i | **Orbbec Gemini 2** (~$200-250) | Active stereo, RealSense-compatible API, lower cost, actively maintained |
+| D435i (outdoor) | **Orbbec Gemini 345Lg** (TBD) | Purpose-built for extreme outdoor, IP67, 100+ klux sunlight rating |
+| D455 | **Stereolabs ZED 2i** ($549) | Better outdoor performance, IP66, wider FOV, neural depth |
+| D455 | **Orbbec Gemini 2 XL** (~$300-350) | 20m range, outdoor-optimized, global shutter, similar price point |
+| D405 (short range) | **Orbbec Gemini 305** (TBD) | Close-range specialist, on-camera AI, <100ms latency |
+| D405 (short range) | **Orbbec Femto Bolt** ($490) | ToF gives excellent close-range accuracy (replaces Azure Kinect too) |
+| L515 (LiDAR) | **Livox Mid-360** ($749) | 3D LiDAR for mapping/navigation, IP67 rated |
 
-### 9.4 Other Emerging Alternatives
+### 9.4 Other Emerging Alternatives (2026)
 
-- **Orbbec Gemini 2 series:** Active stereo, RealSense-compatible API, lower cost
+- **Orbbec Gemini 2 series:** Active stereo, RealSense-compatible API, lower cost, officially ROS2 supported
+- **Orbbec Gemini 305/345Lg (CES 2026):** Next-gen outdoor cameras, GMSL2, IP67, purpose-built for robotics
 - **Youyeetoo FHL-D435i:** Hardware clone of D435i using same Intel D4 ASIC
 - **Luxonis OAK 4 D Pro:** Next-generation with improved VPU (RVC4), coming soon
+- **LIPSedge S315:** Compact active-stereo with on-camera Edge AI (156g, sub-2% accuracy)
 
 ---
 
@@ -528,6 +536,8 @@ Professional quadruped robots use **multi-camera + LiDAR fusion**. A minimum via
 
 ## Sources
 
+### Primary Product Pages
+
 - [Luxonis OAK-D Pro Product Page](https://shop.luxonis.com/products/oak-d-pro)
 - [Luxonis OAK-D Lite Product Page](https://shop.luxonis.com/products/oak-d-lite-1)
 - [Luxonis OAK-D S2 Product Page](https://shop.luxonis.com/products/oak-d-s2)
@@ -559,3 +569,22 @@ Professional quadruped robots use **multi-camera + LiDAR fusion**. A minimum via
 - [DepthAI ROS2 Driver](https://docs.luxonis.com/software-v3/depthai/ros/driver/)
 - [ZED SDK for Jetson Orin](https://support.stereolabs.com/hc/en-us/articles/15331222747799-Get-started-with-Jetson-Orin-Nano-NX-devkit-and-ZED-X)
 - [ZED 2i IP66 Rating Details](https://support.stereolabs.com/hc/en-us/articles/10462132852631-What-is-the-IP-rating-of-the-ZED-2i-and-ZED-X-and-what-does-it-mean)
+
+### 2026 Updates and New Releases
+
+- [Orbbec Gemini 345Lg Product Page](https://www.orbbec.com/345lg/)
+- [Orbbec Unveils Gemini 305 and Gemini 345Lg at CES 2026](https://www.orbbec.com/news/orbbec-unveils-gemini-305-and-gemini-345lg-at-ces-2026-advancing-3d-vision-synergy-with-nvidia-jetson-thor/)
+- [Orbbec Gemini 2 Product Page](https://www.orbbec.com/products/stereo-vision-camera/gemini-2/)
+- [Orbbec Gemini 2 XL Product Page](https://www.orbbec.com/products/stereo-vision-camera/gemini-2xl/)
+- [Orbbec Gemini 2 Datasheet](https://orbbec3d.com/wp-content/uploads/2023/04/ORBBEC_Datasheet_Gemini-2-1.pdf)
+- [OrbbecSDK ROS2 Wrapper GitHub](https://github.com/orbbec/OrbbecSDK_ROS2)
+- [Orbbec releases two new Gemini stereo cameras for robotics - The Robot Report](https://www.therobotreport.com/orbbec-releases-two-new-gemini-stereo-cameras-for-robotics/)
+- [Intel RealSense D435i - Buy on Intel Store ($334)](https://store.intelrealsense.com/buy-intel-realsense-depth-camera-d435i.html)
+- [Intel Will Keep Selling RealSense Stereo Cameras - IEEE Spectrum](https://spectrum.ieee.org/intel-realsense)
+- [How To Keep Your RealSense Sensors Alive - Tangram Vision](https://www.tangramvision.com/blog/how-to-keep-your-realsense-sensors-alive)
+- [Stereolabs ZED X Product Page](https://www.stereolabs.com/products/zed-x)
+- [Stereolabs ZED X Mini Product Page](https://www.stereolabs.com/store/products/zed-x-mini-stereo-camera)
+- [ZED 2i Datasheet](https://static.generation-robots.com/media/stereolabs-zed-2i-datasheet.pdf)
+- [Luxonis OAK-D S2 vs OAK-D Pro Discussion](https://discuss.luxonis.com/d/1033-oak-d-s2-vs-oak-d-pro)
+- [Depth Camera 2026: LIPSedge S315 for Cobots, AMRs, AGV](https://www.lips-hci.com/post/lipsedge-s315-slim-active-stereo-edge-ai-depth-camera-for-next-generation-robotic-vision)
+- [Empirical Comparison of Four Stereoscopic Depth Sensing Cameras for Robotics (2025)](https://arxiv.org/abs/2501.07421)
