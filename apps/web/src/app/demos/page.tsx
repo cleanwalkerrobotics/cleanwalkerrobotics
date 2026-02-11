@@ -97,6 +97,15 @@ const demos = [
 		placeholder: "Interactive ROI calculator — estimate your savings",
 		tags: ["ROI", "Cost Analysis", "Calculator"],
 	},
+	{
+		title: "Robot Simulation",
+		status: "live",
+		slug: "simulation",
+		description:
+			"Watch a CW-1 robot autonomously patrol a park, detect and collect litter, fill its bag, and return to the dock for a bag swap. The full operational cycle, visualized.",
+		placeholder: "Live simulation — autonomous litter collection in a park",
+		tags: ["Simulation", "Canvas 2D", "Autonomy"],
+	},
 ];
 
 export default function DemosPage() {
