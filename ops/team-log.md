@@ -135,3 +135,4 @@
 | Date | Team | Task | Commit |
 |------|------|------|--------|
 | 2026-02-11 | cw-software | WebGPU YOLO26 litter detection demo: replaced server-side Replicate API with client-side YOLO26 nano via Transformers.js + WebGPU. Real-time webcam detection with FPS counter, image upload with bounding boxes, confidence threshold slider, WASM fallback, production model note. | ad45fa5 |
+2026-02-11 00:33 | research-team | Update depth camera hardware research with CES 2026 releases (Orbbec Gemini 345Lg, 305) | 5ecc218
