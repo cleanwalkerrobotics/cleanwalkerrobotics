@@ -79,6 +79,15 @@ const demos = [
 		placeholder: "Time-lapse simulation — 24 hours of autonomous park cleaning",
 		tags: ["Autonomy", "Self-Charging", "Night Vision"],
 	},
+	{
+		title: "Route Planning",
+		status: "live",
+		slug: "route-planning",
+		description:
+			"Watch how CleanWalker plans optimal coverage routes across parks and campuses. Compare boustrophedon, boundary-first, and hotspot-priority strategies with multi-robot fleets.",
+		placeholder: "Interactive route planning simulation — toggle strategies and fleet size",
+		tags: ["Path Planning", "Fleet Optimization", "Coverage"],
+	},
 ];
 
 export default function DemosPage() {
