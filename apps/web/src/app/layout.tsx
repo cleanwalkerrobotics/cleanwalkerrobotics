@@ -121,6 +121,11 @@ function Footer() {
 									Contact
 								</a>
 							</li>
+							<li>
+								<a href="/insights" className="transition-colors hover:text-cw-green">
+									Insights
+								</a>
+							</li>
 						</ul>
 					</div>
 

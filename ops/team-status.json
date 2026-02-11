@@ -1,11 +1,11 @@
 {
-  "lastUpdated": "2026-02-11T12:00:00Z",
+  "lastUpdated": "2026-02-11T14:46:00Z",
   "teams": {
     "cw-software": {
       "status": "idle",
-      "lastTask": "Cost calculator + route planning demos, pilot page, product spec update",
+      "lastTask": "Homepage hero enhancement + Trusted Technology section",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-11T08:00:00Z"
+      "lastActive": "2026-02-11T14:45:00Z"
     },
     "cw-research": {
       "status": "idle",
@@ -15,9 +15,9 @@
     },
     "cw-bizdev": {
       "status": "idle",
-      "lastTask": "Follow-up email templates + SRTIP SAIA application",
+      "lastTask": "Sheraa application + Helsinki email + Tier 2 outreach scheduled",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-11T02:30:00Z"
+      "lastActive": "2026-02-11T12:00:00Z"
     },
     "cw-hardware": {
       "status": "idle",
@@ -33,8 +33,7 @@
     }
   },
   "activeSessions": 0,
-  "vpsSpec": "30GB RAM",
-  "notes": "Daily Assembly completed 12:00 UTC. 19 commits today, 5,519 lines. Tier 1 outreach live (BEEAH+Amsterdam sent, Veolia tonight). All teams idle — ready for Tier 2 scheduling and simulation GPU run.",
+  "notes": "cw-software finished hero+tech section but didn't callback (comms failure). Session killed. 12 commits in last 2h. All teams idle. Next priority: spawn next task from HEARTBEAT.md queue.",
   "autonomousOutreachApproved": true,
-  "keyDirective": "GO AUTONOMOUS — Monitor replies, schedule Tier 2, simulation GPU"
+  "keyDirective": "GO AUTONOMOUS — Monitor replies, Tier 2 scheduled, simulation needs GPU"
 }

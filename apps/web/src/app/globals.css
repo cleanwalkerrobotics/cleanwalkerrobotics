@@ -95,6 +95,49 @@
 	}
 }
 
+/* Article prose styles */
+.prose-cw {
+	color: #d1d5db;
+	line-height: 1.8;
+	font-size: 1.0625rem;
+}
+
+.prose-cw p {
+	margin-bottom: 1.5rem;
+}
+
+.prose-cw h2 {
+	color: #fff;
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin-top: 2.5rem;
+	margin-bottom: 1rem;
+}
+
+.prose-cw a {
+	color: #22c55e;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.prose-cw a:hover {
+	color: #16a34a;
+}
+
+.prose-cw ul,
+.prose-cw ol {
+	margin-bottom: 1.5rem;
+	padding-left: 1.5rem;
+}
+
+.prose-cw li {
+	margin-bottom: 0.5rem;
+}
+
+.prose-cw strong {
+	color: #fff;
+}
+
 /* Hero CTA pulse animation */
 .hero-pulse-btn {
 	animation: heroPulse 3s ease-in-out infinite;
