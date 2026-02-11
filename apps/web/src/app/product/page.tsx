@@ -3,6 +3,7 @@
 
 import type { Metadata } from "next";
 import Image from "next/image";
+import HowItWorks from "./HowItWorks";
 
 export const metadata: Metadata = {
 	title: "Product",
@@ -46,85 +47,8 @@ export default function ProductPage() {
 				</div>
 			</section>
 
-			{/* How It Works */}
-			<section className="bg-cw-light px-6 py-24">
-				<div className="mx-auto max-w-7xl">
-					<div className="text-center">
-						<h2 className="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
-							How It Works
-						</h2>
-						<p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
-							Detect, navigate, collect, and dispose — all autonomously.
-						</p>
-					</div>
-					<div className="mt-16 grid gap-12 md:grid-cols-2">
-						<div className="space-y-8">
-							{[
-								{
-									title: "AI Litter Detection",
-									desc: "YOLO-based vision model identifies bottles, cans, wrappers, cups, cigarette butts, and 50+ litter types in real-time. Continuously improving through over-the-air model updates.",
-								},
-								{
-									title: "Autonomous Navigation",
-									desc: "Stereo depth cameras and LiDAR create a 3D map of the environment. The robot plans efficient routes, avoids obstacles, and navigates complex terrain including grass, paths, and slopes.",
-								},
-								{
-									title: "Precision Collection",
-									desc: "A 2-DOF robotic arm with a mechanical gripper with silicone-tipped fingers precisely picks up litter items from 5g to 500g. The gripper handles everything from cigarette butts to water bottles.",
-								},
-								{
-									title: "Self-Charging",
-									desc: "When the battery runs low or the bag cassette needs replacing, the robot autonomously returns to its charging dock. Pogo-pin contacts and self-alignment make docking fully automatic.",
-								},
-							].map((item) => (
-								<div key={item.title} className="flex gap-4">
-									<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-cw-green/10">
-										<svg
-											className="h-5 w-5 text-cw-green"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											strokeWidth={2}
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												d="M4.5 12.75l6 6 9-13.5"
-											/>
-										</svg>
-									</div>
-									<div>
-										<h3 className="text-lg font-semibold text-gray-900">
-											{item.title}
-										</h3>
-										<p className="mt-1 leading-relaxed text-gray-600">{item.desc}</p>
-									</div>
-								</div>
-							))}
-						</div>
-						<div className="space-y-6">
-							<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
-								<Image
-									src="/renders/v3/detail-gripper.webp"
-									alt="Close-up of CleanWalker's mechanical gripper picking up an aluminum can with silicone-tipped rigid fingers"
-									fill
-									className="object-cover"
-									sizes="(max-width: 768px) 100vw, 50vw"
-								/>
-							</div>
-							<div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-cw-charcoal">
-								<Image
-									src="/renders/v3/detail-charging-dock.webp"
-									alt="CleanWalker robot docked at its weatherproof charging station in a park setting"
-									fill
-									className="object-cover"
-									sizes="(max-width: 768px) 100vw, 50vw"
-								/>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
+			{/* How It Works — Animated */}
+			<HowItWorks />
 
 			{/* Exploded View — Technology Deep Dive */}
 			<section className="bg-white px-6 py-24">
