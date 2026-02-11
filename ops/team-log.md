@@ -129,3 +129,9 @@
 | 2026-02-10 23:14 | cw-renders | V3 renders via nano-banana: 14/14 succeeded. Used reference image as image_input for design consistency. All files 962KB–2.1MB (~20MB total). Visual QA passed: no branding/logos/watermarks, consistent robot design across all renders. | 53a19c7 |
 | 2026-02-10 | cw-software | Swap all website image refs to v3 renders: 20 paths updated across 4 pages (page.tsx, about, product, demos) from /renders/*.webp to /renders/v3/*.png. Zero broken refs. | pending |
 | 2026-02-10 23:54 | cw-software | Go2 URDF + reference render: Downloaded Unitree Go2 URDF/xacro/MuJoCo XML from unitree_ros + unitree_mujoco repos, generated Go2 reference render via nano-banana (Replicate). Mesh files (24.7MB DAE, 27.1MB OBJ) not committed — README with download instructions provided. | pending |
+
+## 2026-02-11
+
+| Date | Team | Task | Commit |
+|------|------|------|--------|
+| 2026-02-11 | cw-software | WebGPU YOLO26 litter detection demo: replaced server-side Replicate API with client-side YOLO26 nano via Transformers.js + WebGPU. Real-time webcam detection with FPS counter, image upload with bounding boxes, confidence threshold slider, WASM fallback, production model note. | ad45fa5 |
