@@ -79,6 +79,8 @@ export default function ContactPage() {
 		message: "",
 	});
 	const [submitted, setSubmitted] = useState(false);
+	const [submitting, setSubmitting] = useState(false);
+	const [error, setError] = useState("");
 	const [openFaq, setOpenFaq] = useState<number | null>(null);
 
 	function handleChange(
@@ -89,9 +91,31 @@ export default function ContactPage() {
 		setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 	}
 
-	function handleSubmit(e: React.FormEvent) {
+	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
-		setSubmitted(true);
+		setSubmitting(true);
+		setError("");
+
+		try {
+			const res = await fetch("/api/contact", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(formData),
+			});
+
+			if (!res.ok) {
+				const data = await res.json();
+				throw new Error(data.error || "Failed to send message.");
+			}
+
+			setSubmitted(true);
+		} catch (err) {
+			setError(
+				err instanceof Error ? err.message : "Something went wrong. Please try again.",
+			);
+		} finally {
+			setSubmitting(false);
+		}
 	}
 
 	return (
@@ -291,11 +315,18 @@ export default function ContactPage() {
 										/>
 									</div>
 
+									{error && (
+										<div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+											{error}
+										</div>
+									)}
+
 									<button
 										type="submit"
-										className="w-full rounded-lg bg-cw-green px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-cw-green-dark"
+										disabled={submitting}
+										className="w-full rounded-lg bg-cw-green px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-cw-green-dark disabled:opacity-50"
 									>
-										Send Message
+										{submitting ? "Sending..." : "Send Message"}
 									</button>
 								</form>
 							)}

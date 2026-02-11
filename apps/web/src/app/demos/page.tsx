@@ -87,7 +87,7 @@ export default function DemosPage() {
 			{/* Hero — Subtle background image */}
 			<section className="relative px-6 py-24 text-center">
 				<Image
-					src="/renders/v3/hero-park.png"
+					src="/renders/v3/hero-park.webp"
 					alt="CleanWalker robot in a park setting"
 					fill
 					className="object-cover opacity-15"

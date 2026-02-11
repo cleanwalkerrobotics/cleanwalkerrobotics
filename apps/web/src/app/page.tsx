@@ -9,7 +9,7 @@ export default function Home() {
 			{/* Hero Section — Full-bleed with robot image */}
 			<section className="relative min-h-[90vh] bg-cw-dark">
 				<Image
-					src="/renders/v3/hero-park.png"
+					src="/renders/v3/hero-park.webp"
 					alt="CleanWalker autonomous robot picking up a plastic bottle in a sunlit park"
 					fill
 					className="object-cover"
@@ -219,7 +219,7 @@ export default function Home() {
 				<div className="mx-auto max-w-7xl">
 					<div className="relative aspect-[21/9] overflow-hidden rounded-2xl">
 						<Image
-							src="/renders/v3/hero-fleet.png"
+							src="/renders/v3/hero-fleet.webp"
 							alt="Three CleanWalker robots working together in an urban park, aerial drone perspective"
 							fill
 							className="object-cover"
@@ -253,7 +253,7 @@ export default function Home() {
 					<div className="mt-12 grid gap-6 md:grid-cols-2">
 						<div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
 							<Image
-								src="/renders/v3/lifestyle-night-ops.png"
+								src="/renders/v3/lifestyle-night-ops.webp"
 								alt="CleanWalker robot operating at night with LED illumination on a city sidewalk"
 								fill
 								className="object-cover"
@@ -269,7 +269,7 @@ export default function Home() {
 						</div>
 						<div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
 							<Image
-								src="/renders/v3/lifestyle-before-after.png"
+								src="/renders/v3/lifestyle-before-after.webp"
 								alt="Before and after comparison showing a littered park transformed to a clean space by CleanWalker robots"
 								fill
 								className="object-cover"
@@ -355,7 +355,7 @@ export default function Home() {
 			{/* CTA Section with background image */}
 			<section className="relative bg-cw-dark px-6 py-24">
 				<Image
-					src="/renders/v3/hero-sidewalk.png"
+					src="/renders/v3/hero-sidewalk.webp"
 					alt="CleanWalker robot on a European city sidewalk"
 					fill
 					className="object-cover opacity-30"
