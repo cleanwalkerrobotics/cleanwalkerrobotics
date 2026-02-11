@@ -74,6 +74,12 @@ function Navbar() {
 						Product
 					</a>
 					<a
+						href="/pilot"
+						className="text-sm text-gray-300 transition-colors hover:text-cw-green"
+					>
+						Pilot Program
+					</a>
+					<a
 						href="/demos"
 						className="text-sm text-gray-300 transition-colors hover:text-cw-green"
 					>
@@ -96,6 +102,9 @@ function Navbar() {
 				<div className="flex items-center gap-4 md:hidden">
 					<a href="/product" className="text-sm text-gray-300">
 						Product
+					</a>
+					<a href="/pilot" className="text-sm text-gray-300">
+						Pilot
 					</a>
 					<a
 						href="/contact"
@@ -160,6 +169,11 @@ function Footer() {
 							<li>
 								<a href="/about" className="transition-colors hover:text-cw-green">
 									About Us
+								</a>
+							</li>
+							<li>
+								<a href="/pilot" className="transition-colors hover:text-cw-green">
+									Pilot Program
 								</a>
 							</li>
 							<li>

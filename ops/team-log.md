@@ -2,6 +2,11 @@
 
 ## 2026-02-11
 
+### Pilot Page + Contact API Fix (cw-software) — COMPLETED
+- **Task:** Fix /api/contact build issue (defer Resend init to runtime), create /pilot landing page for outreach partners, add Pilot Program to nav + footer
+- **Changes:** Contact route now handles missing RESEND_API_KEY gracefully at runtime. New /pilot page with hero, pilot overview, metrics, tech summary, availability slots, CTA. Nav + footer updated with Pilot Program link.
+- **Files:** apps/web/src/app/api/contact/route.ts, apps/web/src/app/pilot/page.tsx (new), apps/web/src/app/layout.tsx
+
 ### Product Page Spec Update (cw-software) — COMPLETED
 - **Task:** Update product page specs to match researched architecture (design spec V2.3, perception pipeline docs)
 - **Changes:** Physical: size 600x150x350mm, weight 15kg, 20 bags. Intelligence: Jetson Orin Nano Super (67 TOPS), Dual OAK-D Pro, Livox Mid-360 3D LiDAR, YOLO26s (50+ types), LTE+WiFi. Also updated engineering bullet points.
