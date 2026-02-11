@@ -9,6 +9,10 @@ version = "0.1.0"
 [[package]]
 name = "cw-controller"
 version = "0.1.0"
+dependencies = [
+ "cw-comms",
+ "cw-motor-driver",
+]
 
 [[package]]
 name = "cw-motor-driver"

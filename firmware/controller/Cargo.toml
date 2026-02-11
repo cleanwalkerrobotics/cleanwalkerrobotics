@@ -4,3 +4,15 @@ version = "0.1.0"
 edition = "2021"
 license = "AGPL-3.0-or-later"
 description = "CleanWalker main robot controller"
+
+[[bin]]
+name = "cw-controller"
+path = "src/main.rs"
+
+[lib]
+name = "cw_controller"
+path = "src/lib.rs"
+
+[dependencies]
+cw-motor-driver = { path = "../motor-driver" }
+cw-comms = { path = "../comms" }
