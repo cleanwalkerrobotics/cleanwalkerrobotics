@@ -1,5 +1,12 @@
 # Team Log — Chronological
 
+## 2026-02-11
+
+### Product Page Spec Update (cw-software) — COMPLETED
+- **Task:** Update product page specs to match researched architecture (design spec V2.3, perception pipeline docs)
+- **Changes:** Physical: size 600x150x350mm, weight 15kg, 20 bags. Intelligence: Jetson Orin Nano Super (67 TOPS), Dual OAK-D Pro, Livox Mid-360 3D LiDAR, YOLO26s (50+ types), LTE+WiFi. Also updated engineering bullet points.
+- **File:** apps/web/src/app/product/page.tsx
+
 ## 2026-02-10
 
 ### Unitree Go2 Platform Analysis (cw-research) — COMPLETED

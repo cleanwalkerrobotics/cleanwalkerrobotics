@@ -155,9 +155,9 @@ export default function ProductPage() {
 							<div className="mt-8 space-y-4">
 								{[
 									"12 servo actuators for adaptive quadrupedal locomotion",
-									"OAK-D Pro stereo depth + 2D RPLiDAR sensor fusion",
+									"Dual OAK-D Pro stereo depth + Livox Mid-360 3D LiDAR",
 									"2-DOF gripper arm with 5g–500g pickup range",
-									"Bag Cassette System with 20-30 bags per cartridge",
+									"Bag Cassette System with 20 bags per cartridge",
 									"IP54+ weatherproof enclosure for year-round operation",
 								].map((feature) => (
 									<div key={feature} className="flex items-start gap-3">
@@ -197,10 +197,10 @@ export default function ProductPage() {
 							<dl className="mt-6 space-y-4">
 								{[
 									["Form Factor", "Quadrupedal (4-leg)"],
-									["Size", "~80cm L x 40cm W x 50cm H"],
-									["Weight", "~25kg (estimated)"],
+									["Size", "600mm L x 150mm W x 350mm H"],
+									["Weight", "~15kg"],
 									["Weatherproofing", "IP54+ rated"],
-									["Collection", "Bag Cassette System, 20-30 bags per cartridge"],
+									["Collection", "Bag Cassette System, 20 bags per cartridge"],
 									["Mobility", "Grass, pavement, gravel, slopes"],
 								].map(([label, value]) => (
 									<div
@@ -217,11 +217,11 @@ export default function ProductPage() {
 							<h3 className="text-lg font-semibold text-gray-900">Intelligence</h3>
 							<dl className="mt-6 space-y-4">
 								{[
-									["Compute", "NVIDIA Jetson Orin Nano"],
-									["Vision", "OAK-D Pro stereo depth camera"],
-									["LiDAR", "2D RPLiDAR for obstacle avoidance"],
-									["AI Model", "Custom YOLO litter detection"],
-									["Connectivity", "4G LTE (always-on cellular)"],
+									["Compute", "NVIDIA Jetson Orin Nano Super (67 TOPS)"],
+									["Vision", "Dual OAK-D Pro stereo depth cameras"],
+									["LiDAR", "Livox Mid-360 3D LiDAR"],
+									["AI Model", "YOLO26s detection (50+ litter types)"],
+									["Connectivity", "LTE + WiFi"],
 									["Updates", "Over-the-air firmware & ML models"],
 								].map(([label, value]) => (
 									<div
