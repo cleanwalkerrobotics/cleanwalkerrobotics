@@ -13,6 +13,27 @@ const techBadges = [
 	{ name: "Three.js", desc: "3D Visualization" },
 ];
 
+const featuredDemos = [
+	{
+		title: "AI Litter Detection",
+		desc: "See our YOLO model detect 50+ litter types in real-time.",
+		href: "/demos/litter-detection",
+		tags: ["Computer Vision", "YOLO"],
+	},
+	{
+		title: "3D Robot Viewer",
+		desc: "Explore the CW-1 quadruped in interactive 3D.",
+		href: "/demos/3d-robot-viewer",
+		tags: ["Three.js", "3D Model"],
+	},
+	{
+		title: "Cost Savings Calculator",
+		desc: "Calculate your ROI from deploying CleanWalker.",
+		href: "/demos/cost-calculator",
+		tags: ["ROI", "Calculator"],
+	},
+];
+
 export default function Home() {
 	return (
 		<div>
@@ -30,16 +51,18 @@ export default function Home() {
 							Built on proven, industry-standard robotics and AI frameworks
 						</p>
 					</div>
-					<div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+					<div className="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
 						{techBadges.map((badge) => (
 							<div
 								key={badge.name}
-								className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 backdrop-blur-sm"
+								className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-sm sm:gap-2.5 sm:px-5 sm:py-2.5"
 							>
-								<span className="text-sm font-medium text-gray-200">
+								<span className="text-xs font-medium text-gray-200 sm:text-sm">
 									{badge.name}
 								</span>
-								<span className="text-xs text-gray-500">{badge.desc}</span>
+								<span className="hidden text-xs text-gray-500 sm:inline">
+									{badge.desc}
+								</span>
 							</div>
 						))}
 					</div>
@@ -154,7 +177,7 @@ export default function Home() {
 							From site assessment to fully operational in under 4 weeks.
 						</p>
 					</div>
-					<div className="mt-16 grid gap-8 md:grid-cols-4">
+					<div className="mt-16 grid gap-8 sm:grid-cols-2 md:grid-cols-4">
 						{[
 							{
 								step: "01",
@@ -205,7 +228,7 @@ export default function Home() {
 							sizes="(max-width: 1280px) 100vw, 1280px"
 						/>
 						<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
-						<div className="absolute bottom-0 left-0 right-0 p-8">
+						<div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
 							<p className="text-xl font-semibold text-white">
 								Fleet Deployment
 							</p>
@@ -266,13 +289,127 @@ export default function Home() {
 				</div>
 			</section>
 
-			{/* Social Proof */}
+			{/* CleanWalker vs Manual — ROI comparison */}
+			<section className="bg-white px-6 py-24">
+				<div className="mx-auto max-w-7xl">
+					<div className="text-center">
+						<h2 className="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
+							CleanWalker vs Manual Collection
+						</h2>
+						<p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
+							See how autonomous litter collection compares to traditional methods.
+						</p>
+					</div>
+					<div className="mx-auto mt-12 max-w-4xl overflow-hidden rounded-2xl border border-gray-200">
+						<div className="grid grid-cols-3 bg-gray-50 text-center text-sm font-semibold text-gray-600">
+							<div className="p-4" />
+							<div className="border-x border-gray-200 bg-cw-green/5 p-4 text-cw-green">
+								CleanWalker
+							</div>
+							<div className="p-4">Manual Crew</div>
+						</div>
+						{[
+							{ label: "Daily Coverage", cw: "20+ hours", manual: "8 hours" },
+							{ label: "Weather Ops", cw: "Rain, night, weekends", manual: "Fair weather only" },
+							{ label: "Consistency", cw: "100% route coverage", manual: "Variable" },
+							{ label: "Staffing", cw: "Zero required", manual: "2-4 FTE per site" },
+							{ label: "Data & Reporting", cw: "Real-time analytics", manual: "Manual logs" },
+							{ label: "Scalability", cw: "Add robots instantly", manual: "Hire & train" },
+						].map((row, i) => (
+							<div
+								key={row.label}
+								className={`grid grid-cols-3 text-center text-sm ${i % 2 === 0 ? "bg-white" : "bg-gray-50/50"}`}
+							>
+								<div className="p-4 text-left font-medium text-gray-900">
+									{row.label}
+								</div>
+								<div className="border-x border-gray-100 p-4 font-medium text-cw-green">
+									{row.cw}
+								</div>
+								<div className="p-4 text-gray-500">{row.manual}</div>
+							</div>
+						))}
+					</div>
+					<div className="mt-8 text-center">
+						<a
+							href="/demos/cost-calculator"
+							className="inline-flex items-center gap-2 text-sm font-semibold text-cw-green transition-colors hover:text-cw-green-dark"
+						>
+							Calculate your savings
+							<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+								<path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+							</svg>
+						</a>
+					</div>
+				</div>
+			</section>
+
+			{/* Interactive Demos — featured */}
+			<section className="bg-cw-dark px-6 py-24">
+				<div className="mx-auto max-w-7xl">
+					<div className="text-center">
+						<div className="mb-4 inline-block rounded-full border border-cw-green/30 bg-cw-green/10 px-4 py-1.5 text-sm text-cw-green">
+							Try It Yourself
+						</div>
+						<h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
+							See the Technology in Action
+						</h2>
+						<p className="mx-auto mt-4 max-w-2xl text-lg text-gray-400">
+							Interactive demos running directly in your browser — no installation required.
+						</p>
+					</div>
+					<div className="mt-12 grid gap-6 md:grid-cols-3">
+						{featuredDemos.map((demo) => (
+							<a
+								key={demo.title}
+								href={demo.href}
+								className="group rounded-2xl border border-white/10 bg-white/5 p-6 transition-all hover:border-cw-green/30 hover:bg-white/[0.07]"
+							>
+								<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-cw-green/10">
+									<svg className="h-6 w-6 text-cw-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+										<path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z" />
+									</svg>
+								</div>
+								<h3 className="text-lg font-semibold text-white group-hover:text-cw-green">
+									{demo.title}
+								</h3>
+								<p className="mt-2 text-sm leading-relaxed text-gray-400">
+									{demo.desc}
+								</p>
+								<div className="mt-4 flex flex-wrap gap-2">
+									{demo.tags.map((tag) => (
+										<span
+											key={tag}
+											className="rounded-full bg-white/5 px-3 py-1 text-xs text-gray-400"
+										>
+											{tag}
+										</span>
+									))}
+								</div>
+							</a>
+						))}
+					</div>
+					<div className="mt-10 text-center">
+						<a
+							href="/demos"
+							className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-white/10"
+						>
+							View All 10 Demos
+							<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+								<path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+							</svg>
+						</a>
+					</div>
+				</div>
+			</section>
+
+			{/* Social Proof — Designed for */}
 			<section className="bg-white px-6 py-24">
 				<div className="mx-auto max-w-7xl">
 					<p className="text-center text-sm font-medium uppercase tracking-wider text-gray-500">
 						Designed for
 					</p>
-					<div className="mt-8 grid grid-cols-2 gap-8 md:grid-cols-5">
+					<div className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-5">
 						{[
 							"Municipal Parks",
 							"University Campuses",
@@ -282,9 +419,9 @@ export default function Home() {
 						].map((name) => (
 							<div
 								key={name}
-								className="flex h-16 items-center justify-center rounded-xl border border-gray-200 bg-cw-light px-6"
+								className="flex h-14 items-center justify-center rounded-xl border border-gray-200 bg-cw-light px-4 sm:h-16 sm:px-6"
 							>
-								<span className="text-sm font-medium text-gray-400">{name}</span>
+								<span className="text-xs font-medium text-gray-400 sm:text-sm">{name}</span>
 							</div>
 						))}
 					</div>
@@ -311,7 +448,7 @@ export default function Home() {
 								Schedule a Consultation
 							</a>
 						</div>
-						<div className="grid grid-cols-2 gap-6">
+						<div className="grid grid-cols-2 gap-4 sm:gap-6">
 							{[
 								{ value: "24/7", label: "Continuous autonomous operation" },
 								{ value: "20+", label: "Hours of daily coverage" },
@@ -320,10 +457,10 @@ export default function Home() {
 							].map((stat) => (
 								<div
 									key={stat.label}
-									className="rounded-xl border border-gray-200 bg-white p-6"
+									className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6"
 								>
 									<div className="text-2xl font-bold text-cw-green">{stat.value}</div>
-									<div className="mt-1 text-sm text-gray-600">{stat.label}</div>
+									<div className="mt-1 text-xs text-gray-600 sm:text-sm">{stat.label}</div>
 								</div>
 							))}
 						</div>
@@ -357,10 +494,10 @@ export default function Home() {
 							Schedule a Demo
 						</a>
 						<a
-							href="/contact"
+							href="/pilot"
 							className="rounded-lg border border-white/20 bg-white/5 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-white/10"
 						>
-							Contact Sales
+							Join the Pilot Program
 						</a>
 					</div>
 				</div>

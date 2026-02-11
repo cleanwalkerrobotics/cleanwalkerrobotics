@@ -115,21 +115,21 @@ export default function HeroSection() {
 						</div>
 						<div
 							ref={statsRef}
-							className="mt-10 flex items-center gap-8 rounded-xl border border-white/10 bg-black/30 px-6 py-4 text-sm text-gray-400 backdrop-blur-sm"
+							className="mt-10 grid grid-cols-3 gap-3 rounded-xl border border-white/10 bg-black/30 px-3 py-4 text-sm text-gray-400 backdrop-blur-sm sm:px-6 md:flex md:items-center md:gap-8"
 						>
-							<div>
+							<div className="text-center md:text-left">
 								<AnimatedCounter end={24} suffix="/7" inView={statsInView} />
-								Autonomous operation
+								<span className="text-xs sm:text-sm">Autonomous</span>
 							</div>
-							<div className="h-10 w-px bg-white/20" />
-							<div>
+							<div className="hidden h-10 w-px bg-white/20 md:block" />
+							<div className="border-x border-white/10 text-center md:border-0 md:text-left">
 								<AnimatedCounter end={50} suffix="+" inView={statsInView} />
-								Litter types detected
+								<span className="text-xs sm:text-sm">Litter types</span>
 							</div>
-							<div className="h-10 w-px bg-white/20" />
-							<div>
+							<div className="hidden h-10 w-px bg-white/20 md:block" />
+							<div className="text-center md:text-left">
 								<AnimatedCounter end={10} prefix="5-" inView={statsInView} />
-								Acres per day
+								<span className="text-xs sm:text-sm">Acres/day</span>
 							</div>
 						</div>
 					</div>

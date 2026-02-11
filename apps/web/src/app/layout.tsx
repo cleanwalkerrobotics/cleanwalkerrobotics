@@ -3,6 +3,7 @@
 
 import type { Metadata } from "next";
 import "./globals.css";
+import Navbar from "./components/Navbar";
 
 const siteUrl = "https://cleanwalkerrobotics.com";
 
@@ -56,67 +57,6 @@ export const metadata: Metadata = {
 	},
 };
 
-function Navbar() {
-	return (
-		<nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-cw-dark/95 backdrop-blur-sm">
-			<div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-				<a href="/" className="flex items-center gap-2">
-					<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-cw-green">
-						<span className="text-sm font-bold text-white">CW</span>
-					</div>
-					<span className="text-lg font-bold text-white">CleanWalker</span>
-				</a>
-				<div className="hidden items-center gap-8 md:flex">
-					<a
-						href="/product"
-						className="text-sm text-gray-300 transition-colors hover:text-cw-green"
-					>
-						Product
-					</a>
-					<a
-						href="/pilot"
-						className="text-sm text-gray-300 transition-colors hover:text-cw-green"
-					>
-						Pilot Program
-					</a>
-					<a
-						href="/demos"
-						className="text-sm text-gray-300 transition-colors hover:text-cw-green"
-					>
-						Demos
-					</a>
-					<a
-						href="/about"
-						className="text-sm text-gray-300 transition-colors hover:text-cw-green"
-					>
-						About
-					</a>
-					<a
-						href="/contact"
-						className="rounded-lg bg-cw-green px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-cw-green-dark"
-					>
-						Contact Sales
-					</a>
-				</div>
-				{/* Mobile: show key links */}
-				<div className="flex items-center gap-4 md:hidden">
-					<a href="/product" className="text-sm text-gray-300">
-						Product
-					</a>
-					<a href="/pilot" className="text-sm text-gray-300">
-						Pilot
-					</a>
-					<a
-						href="/contact"
-						className="rounded-lg bg-cw-green px-4 py-2 text-sm font-semibold text-white"
-					>
-						Contact Sales
-					</a>
-				</div>
-			</div>
-		</nav>
-	);
-}
 
 function Footer() {
 	return (

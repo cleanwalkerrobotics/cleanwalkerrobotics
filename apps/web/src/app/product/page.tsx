@@ -32,6 +32,20 @@ export default function ProductPage() {
 								outdoor environments. AI-powered perception, all-weather operation, and
 								zero human intervention required.
 							</p>
+							<div className="mt-8 flex flex-wrap gap-4">
+								<a
+									href="/contact"
+									className="rounded-lg bg-cw-green px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-cw-green-dark"
+								>
+									Schedule a Demo
+								</a>
+								<a
+									href="/demos"
+									className="rounded-lg border border-white/20 bg-white/5 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-white/10"
+								>
+									Try Interactive Demos
+								</a>
+							</div>
 						</div>
 						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
 							<Image
@@ -116,20 +130,20 @@ export default function ProductPage() {
 						</h2>
 					</div>
 					<div className="mt-16 grid gap-8 md:grid-cols-2">
-						<div className="rounded-2xl border border-gray-200 bg-white p-8">
+						<div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
 							<h3 className="text-lg font-semibold text-gray-900">Physical</h3>
 							<dl className="mt-6 space-y-4">
 								{[
 									["Form Factor", "Quadrupedal (4-leg)"],
-									["Size", "600mm L x 150mm W x 350mm H"],
+									["Size", "600 x 150 x 350mm"],
 									["Weight", "~15kg"],
 									["Weatherproofing", "IP54+ rated"],
-									["Collection", "Bag Cassette System, 20 bags per cartridge"],
+									["Collection", "Bag Cassette, 20/cartridge"],
 									["Mobility", "Grass, pavement, gravel, slopes"],
 								].map(([label, value]) => (
 									<div
 										key={label}
-										className="flex justify-between border-b border-gray-100 pb-3"
+										className="flex flex-col gap-1 border-b border-gray-100 pb-3 sm:flex-row sm:justify-between sm:gap-4"
 									>
 										<dt className="text-sm text-gray-500">{label}</dt>
 										<dd className="text-sm font-medium text-gray-900">{value}</dd>
@@ -137,20 +151,20 @@ export default function ProductPage() {
 								))}
 							</dl>
 						</div>
-						<div className="rounded-2xl border border-gray-200 bg-white p-8">
+						<div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
 							<h3 className="text-lg font-semibold text-gray-900">Intelligence</h3>
 							<dl className="mt-6 space-y-4">
 								{[
 									["Compute", "NVIDIA Jetson Orin Nano Super (67 TOPS)"],
-									["Vision", "Dual OAK-D Pro stereo depth cameras"],
-									["LiDAR", "Livox Mid-360 3D LiDAR"],
-									["AI Model", "YOLO26s detection (50+ litter types)"],
+									["Vision", "Dual OAK-D Pro stereo depth"],
+									["LiDAR", "Livox Mid-360 3D"],
+									["AI Model", "YOLO26s (50+ litter types)"],
 									["Connectivity", "LTE + WiFi"],
-									["Updates", "Over-the-air firmware & ML models"],
+									["Updates", "OTA firmware & ML models"],
 								].map(([label, value]) => (
 									<div
 										key={label}
-										className="flex justify-between border-b border-gray-100 pb-3"
+										className="flex flex-col gap-1 border-b border-gray-100 pb-3 sm:flex-row sm:justify-between sm:gap-4"
 									>
 										<dt className="text-sm text-gray-500">{label}</dt>
 										<dd className="text-sm font-medium text-gray-900">{value}</dd>
@@ -158,21 +172,20 @@ export default function ProductPage() {
 								))}
 							</dl>
 						</div>
-						<div className="rounded-2xl border border-gray-200 bg-white p-8">
+						<div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
 							<h3 className="text-lg font-semibold text-gray-900">Performance</h3>
 							<dl className="mt-6 space-y-4">
 								{[
 									["Coverage", "5-10 acres per day"],
-									["Daily Operation", "20+ hours (with self-charging)"],
+									["Daily Operation", "20+ hours (self-charging)"],
 									["Battery", "48V 20Ah Li-ion"],
 									["Litter Range", "5g to 500g items"],
-									["Litter Types", "Bottles, cans, wrappers, cups, butts, paper"],
-									["Curb Drop", "Sealed bags at municipal collection points"],
+									["Litter Types", "Bottles, cans, wrappers, cups, butts"],
 									["Charging", "Autonomous self-docking"],
 								].map(([label, value]) => (
 									<div
 										key={label}
-										className="flex justify-between border-b border-gray-100 pb-3"
+										className="flex flex-col gap-1 border-b border-gray-100 pb-3 sm:flex-row sm:justify-between sm:gap-4"
 									>
 										<dt className="text-sm text-gray-500">{label}</dt>
 										<dd className="text-sm font-medium text-gray-900">{value}</dd>
@@ -180,20 +193,20 @@ export default function ProductPage() {
 								))}
 							</dl>
 						</div>
-						<div className="rounded-2xl border border-gray-200 bg-white p-8">
+						<div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
 							<h3 className="text-lg font-semibold text-gray-900">Safety</h3>
 							<dl className="mt-6 space-y-4">
 								{[
 									["Emergency Stop", "Physical button + remote"],
 									["Obstacle Avoidance", "Multi-sensor fusion"],
-									["Pedestrian Detection", "Real-time AI detection"],
+									["Pedestrian Detection", "Real-time AI"],
 									["Weather Safety", "Auto-dock in severe weather"],
-									["Liability", "Comprehensive commercial insurance"],
+									["Liability", "Commercial insurance"],
 									["Replacement", "48hr replacement SLA"],
 								].map(([label, value]) => (
 									<div
 										key={label}
-										className="flex justify-between border-b border-gray-100 pb-3"
+										className="flex flex-col gap-1 border-b border-gray-100 pb-3 sm:flex-row sm:justify-between sm:gap-4"
 									>
 										<dt className="text-sm text-gray-500">{label}</dt>
 										<dd className="text-sm font-medium text-gray-900">{value}</dd>
@@ -258,7 +271,7 @@ export default function ProductPage() {
 							/>
 						</div>
 					</div>
-					<div className="mt-12 grid gap-6 md:grid-cols-3">
+					<div className="mt-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
 						{[
 							{
 								title: "Real-Time Map",
@@ -278,7 +291,7 @@ export default function ProductPage() {
 							},
 							{
 								title: "Alerts & Notifications",
-								desc: "Get notified about bag cassette status, maintenance needs, unusual events, and performance reports.",
+								desc: "Get notified about bag cassette status, maintenance needs, and performance reports.",
 							},
 							{
 								title: "API Access",
@@ -299,6 +312,53 @@ export default function ProductPage() {
 				</div>
 			</section>
 
+			{/* Try Interactive Demos */}
+			<section className="bg-cw-dark px-6 py-24">
+				<div className="mx-auto max-w-7xl">
+					<div className="rounded-2xl border border-white/10 bg-white/5 p-8 sm:p-12">
+						<div className="grid items-center gap-8 md:grid-cols-2">
+							<div>
+								<div className="mb-4 inline-block rounded-full border border-cw-green/30 bg-cw-green/10 px-4 py-1.5 text-sm text-cw-green">
+									Interactive Demos
+								</div>
+								<h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
+									Try the Technology Yourself
+								</h2>
+								<p className="mt-4 leading-relaxed text-gray-400">
+									Explore 10 interactive demos running in your browser — from AI litter
+									detection to 3D robot visualization and fleet management simulations.
+								</p>
+								<a
+									href="/demos"
+									className="mt-8 inline-flex items-center gap-2 rounded-lg bg-cw-green px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-cw-green-dark"
+								>
+									Explore All Demos
+									<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+										<path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+									</svg>
+								</a>
+							</div>
+							<div className="grid grid-cols-2 gap-4">
+								{[
+									{ label: "AI Detection", href: "/demos/litter-detection" },
+									{ label: "3D Viewer", href: "/demos/3d-robot-viewer" },
+									{ label: "Navigation", href: "/demos/autonomous-navigation" },
+									{ label: "Cost Calculator", href: "/demos/cost-calculator" },
+								].map((demo) => (
+									<a
+										key={demo.label}
+										href={demo.href}
+										className="flex items-center justify-center rounded-xl border border-white/10 bg-white/5 p-4 text-sm font-medium text-gray-300 transition-all hover:border-cw-green/30 hover:bg-white/[0.07] hover:text-cw-green"
+									>
+										{demo.label}
+									</a>
+								))}
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
 			{/* Product Gallery */}
 			<section className="bg-white px-6 py-24">
 				<div className="mx-auto max-w-7xl">
@@ -307,14 +367,14 @@ export default function ProductPage() {
 							Gallery
 						</h2>
 					</div>
-					<div className="mt-12 grid gap-6 md:grid-cols-3">
+					<div className="mt-12 grid gap-4 sm:grid-cols-2 md:grid-cols-3 sm:gap-6">
 						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
 							<Image
 								src="/renders/v3/detail-side-profile.webp"
 								alt="CleanWalker robot clean side profile showing four articulated legs, folded gripper arm, and LiDAR sensor"
 								fill
 								className="object-cover"
-								sizes="(max-width: 768px) 100vw, 33vw"
+								sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
 							/>
 						</div>
 						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
@@ -323,7 +383,7 @@ export default function ProductPage() {
 								alt="CleanWalker front-face sensor array with stereo camera lenses and green LED status indicator"
 								fill
 								className="object-cover"
-								sizes="(max-width: 768px) 100vw, 33vw"
+								sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
 							/>
 						</div>
 						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
@@ -332,7 +392,16 @@ export default function ProductPage() {
 								alt="CleanWalker robot operating at night on a city street with green LED strip illumination"
 								fill
 								className="object-cover"
-								sizes="(max-width: 768px) 100vw, 33vw"
+								sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+							/>
+						</div>
+						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
+							<Image
+								src="/renders/v3/detail-gripper.webp"
+								alt="CleanWalker gripper mechanism close-up"
+								fill
+								className="object-cover"
+								sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
 							/>
 						</div>
 						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
@@ -341,16 +410,16 @@ export default function ProductPage() {
 								alt="CleanWalker brushless actuator motor with integrated controller board alongside robot"
 								fill
 								className="object-cover"
-								sizes="(max-width: 768px) 100vw, 33vw"
+								sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
 							/>
 						</div>
 						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-cw-charcoal">
 							<Image
-								src="/renders/v3/component-pcb.webp"
-								alt="CleanWalker robot with exposed main control PCB showing sensor and motor driver connections"
+								src="/renders/v3/detail-charging-dock.webp"
+								alt="CleanWalker autonomous charging dock station"
 								fill
 								className="object-cover"
-								sizes="(max-width: 768px) 100vw, 33vw"
+								sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
 							/>
 						</div>
 					</div>
@@ -367,12 +436,20 @@ export default function ProductPage() {
 						Schedule a site assessment and we&apos;ll show you exactly how our robots
 						would operate at your facility.
 					</p>
-					<a
-						href="/contact"
-						className="mt-10 inline-block rounded-lg bg-cw-green px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-cw-green-dark"
-					>
-						Schedule a Demo
-					</a>
+					<div className="mt-10 flex flex-wrap justify-center gap-4">
+						<a
+							href="/contact"
+							className="rounded-lg bg-cw-green px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-cw-green-dark"
+						>
+							Schedule a Demo
+						</a>
+						<a
+							href="/pilot"
+							className="rounded-lg border border-white/20 bg-white/5 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-white/10"
+						>
+							Join Pilot Program
+						</a>
+					</div>
 				</div>
 			</section>
 		</div>
