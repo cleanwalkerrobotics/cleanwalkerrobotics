@@ -42,6 +42,7 @@ from isaaclab.terrains import TerrainImporterCfg
 from isaaclab.utils import configclass
 
 from .terrain_config import ROUGH_TERRAIN_CFG
+from . import rewards as litter_rewards
 
 # ---------------------------------------------------------------------------
 # URDF path (relative to repository root). Convert to USD before training:
@@ -85,6 +86,21 @@ PENALIZED_CONTACT_BODIES = [
 
 # Foot links (desired ground contact)
 FOOT_BODIES = ["FL_foot", "FR_foot", "RL_foot", "RR_foot"]
+
+# Arm joint names (5 DOF — actuated during litter collection)
+ARM_JOINT_NAMES = [
+    "arm_turret_yaw_joint",
+    "arm_shoulder_pitch_joint",
+    "arm_elbow_pitch_joint",
+    "arm_wrist_pitch_joint",
+    "arm_gripper_joint",
+]
+
+# Default arm target for ground pickup (pre-computed IK):
+# turret: forward (0), shoulder: extended (2.5), elbow: bent (1.5),
+# wrist: down (-0.5), gripper: open (0.0) → closed (0.8)
+ARM_PICKUP_TARGET = [0.0, 2.5, 1.5, -0.5, 0.0]
+ARM_GRIPPER_CLOSED = 0.8
 
 
 # ===========================================================================
@@ -287,6 +303,58 @@ class CleanWalkerRoughEnvCfg(CleanWalkerFlatEnvCfg):
 
     # Relax flat orientation penalty for rough terrain
     rew_flat_orientation: float = -1.0
+
+
+# ===========================================================================
+# Litter Collection Environment Config (Phase 3)
+# ===========================================================================
+
+@configclass
+class CleanWalkerLitterEnvCfg(CleanWalkerFlatEnvCfg):
+    """Litter collection environment — locomotion + arm control.
+
+    Extends flat terrain locomotion with stop-and-reach behavior
+    for picking up litter. The robot learns to:
+      1. Walk toward a commanded position (velocity tracking)
+      2. Stop smoothly when a pick command is issued
+      3. Stabilize body for arm operation
+      4. Extend arm toward ground target
+      5. Close gripper to grasp litter
+
+    Action space expands from 12 (legs only) to 17 (legs + arm):
+      [0:12]  leg joints (same as locomotion)
+      [12:17] arm joints (turret, shoulder, elbow, wrist, gripper)
+
+    Observation space expands from 48 to 58:
+      [0:48]  same as locomotion
+      [48:53] arm joint positions (relative to default)
+      [53:58] arm joint velocities
+      Plus pick_command flag is embedded in commands[2] override.
+    """
+
+    # Expanded action/observation spaces
+    action_space: int = 17           # 12 leg + 5 arm
+    observation_space: int = 58      # 48 base + 5 arm pos + 5 arm vel
+
+    # Episode is shorter — pickup should be fast
+    episode_length_s: float = 15.0
+
+    # --- Litter collection reward scales ---
+    # Stop-and-reach rewards (active during pick command)
+    rew_stop_and_stabilize: float = 2.0
+    rew_arm_reach: float = 3.0
+    rew_grasp: float = 5.0
+    rew_smooth_deceleration: float = -2.0
+
+    # Enhanced smoothness rewards
+    rew_jerk: float = -0.005         # Penalize jerk (2nd derivative of action)
+    rew_power: float = -1.0e-5       # Penalize mechanical power
+
+    # Probability of pick command per episode reset
+    pick_command_prob: float = 0.4   # 40% of episodes include a pickup phase
+
+    # Pick command activates after this many seconds into the episode
+    pick_command_delay_range: tuple[float, float] = (3.0, 8.0)
 
 
 # ===========================================================================
@@ -594,3 +662,207 @@ class CleanWalkerLocomotionEnv(DirectRLEnv):
             self._motor_strength[env_ids] = torch.empty(
                 len(env_ids), self.cfg.action_space, device=self.device
             ).uniform_(*self.cfg.motor_strength_range)
+
+
+class CleanWalkerLitterEnv(CleanWalkerLocomotionEnv):
+    """Litter collection environment — extends locomotion with arm control.
+
+    Adds stop-and-reach behavior: the robot learns to walk, stop when
+    near litter, stabilize, extend its arm, and close the gripper.
+
+    This is what differentiates CleanWalker from standard quadruped
+    locomotion training.
+    """
+
+    cfg: CleanWalkerLitterEnvCfg
+
+    def __init__(self, cfg: CleanWalkerLitterEnvCfg, render_mode: str | None = None, **kwargs):
+        super().__init__(cfg, render_mode, **kwargs)
+
+        # Arm joint indices
+        self._arm_joint_ids, _ = self._robot.find_joints(
+            "|".join(ARM_JOINT_NAMES)
+        )
+
+        # Expanded action buffer (legs + arm)
+        self._actions = torch.zeros(self.num_envs, self.cfg.action_space, device=self.device)
+        self._previous_actions = torch.zeros_like(self._actions)
+        self._preprevious_actions = torch.zeros_like(self._actions)
+
+        # Pick command state
+        self._pick_command = torch.zeros(self.num_envs, device=self.device)
+        self._pick_command_step = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
+
+        # Arm pickup target (pre-computed IK for ground reach)
+        self._arm_target = torch.tensor(
+            ARM_PICKUP_TARGET, device=self.device
+        ).unsqueeze(0).expand(self.num_envs, -1)
+
+        # Previous velocity for deceleration penalty
+        self._prev_root_lin_vel_b = torch.zeros(self.num_envs, 3, device=self.device)
+
+        # Motor strength for expanded action space
+        self._motor_strength = torch.ones(
+            self.num_envs, self.cfg.action_space, device=self.device
+        )
+
+    def _pre_physics_step(self, actions: torch.Tensor):
+        self._preprevious_actions = self._previous_actions.clone()
+        self._actions = actions.clone().clamp(-1.0, 1.0)
+
+        # Leg actions (indices 0:12)
+        leg_actions = self._actions[:, :12]
+        default_leg_pos = self._robot.data.default_joint_pos[:, self._leg_joint_ids]
+        leg_strength = self._motor_strength[:, :12]
+        self._processed_leg_actions = self.cfg.action_scale * leg_actions * leg_strength + default_leg_pos
+
+        # Arm actions (indices 12:17) — use smaller action scale for precision
+        arm_actions = self._actions[:, 12:17]
+        default_arm_pos = self._robot.data.default_joint_pos[:, self._arm_joint_ids]
+        arm_strength = self._motor_strength[:, 12:17]
+        arm_action_scale = 0.1  # More conservative than legs
+        self._processed_arm_actions = arm_action_scale * arm_actions * arm_strength + default_arm_pos
+
+        # During non-pick phases, override arm to default (stay folded)
+        no_pick = (self._pick_command == 0.0).unsqueeze(1).expand_as(self._processed_arm_actions)
+        self._processed_arm_actions = torch.where(
+            no_pick, default_arm_pos, self._processed_arm_actions
+        )
+
+        # Activate pick command based on episode step
+        current_step = self.episode_length_buf
+        should_pick = (current_step >= self._pick_command_step) & (self._pick_command_step > 0)
+        self._pick_command = should_pick.float()
+
+    def _apply_action(self):
+        # Apply leg actions
+        self._robot.set_joint_position_target(
+            self._processed_leg_actions, joint_ids=self._leg_joint_ids
+        )
+        # Apply arm actions
+        self._robot.set_joint_position_target(
+            self._processed_arm_actions, joint_ids=self._arm_joint_ids
+        )
+
+    def _get_observations(self) -> dict:
+        self._previous_actions = self._actions.clone()
+        self._prev_root_lin_vel_b = self._robot.data.root_lin_vel_b.clone()
+
+        # Base observations (48 dims — same as locomotion)
+        base_obs = torch.cat(
+            [
+                self._robot.data.root_lin_vel_b,
+                self._robot.data.root_ang_vel_b,
+                self._robot.data.projected_gravity_b,
+                self._commands,
+                self._robot.data.joint_pos[:, self._leg_joint_ids]
+                - self._robot.data.default_joint_pos[:, self._leg_joint_ids],
+                self._robot.data.joint_vel[:, self._leg_joint_ids],
+                self._actions[:, :12],
+            ],
+            dim=-1,
+        )
+
+        # Arm observations (10 dims — arm pos + arm vel)
+        arm_obs = torch.cat(
+            [
+                self._robot.data.joint_pos[:, self._arm_joint_ids]
+                - self._robot.data.default_joint_pos[:, self._arm_joint_ids],
+                self._robot.data.joint_vel[:, self._arm_joint_ids],
+            ],
+            dim=-1,
+        )
+
+        obs = torch.cat([base_obs, arm_obs], dim=-1)
+        return {"policy": obs}
+
+    def _get_rewards(self) -> torch.Tensor:
+        # Get base locomotion reward
+        base_reward = super()._get_rewards()
+        dt = self.step_dt
+
+        # --- Litter collection rewards ---
+
+        # Stop and stabilize (when pick command active)
+        rew_stop = litter_rewards.reward_stop_and_stabilize(
+            root_lin_vel_b=self._robot.data.root_lin_vel_b,
+            root_ang_vel_b=self._robot.data.root_ang_vel_b,
+            projected_gravity_b=self._robot.data.projected_gravity_b,
+            pick_command=self._pick_command,
+            dt=dt,
+            stop_scale=self.cfg.rew_stop_and_stabilize,
+        )
+
+        # Arm reach toward pickup target
+        arm_pos = self._robot.data.joint_pos[:, self._arm_joint_ids]
+        rew_reach = litter_rewards.reward_arm_reach(
+            arm_joint_pos=arm_pos,
+            arm_target_pos=self._arm_target,
+            pick_command=self._pick_command,
+            dt=dt,
+            reach_scale=self.cfg.rew_arm_reach,
+        )
+
+        # Grasp reward (gripper closing when arm is near target)
+        arm_error = torch.sum(torch.square(arm_pos[:, :4] - self._arm_target[:, :4]), dim=1)
+        arm_near = arm_error < 0.3  # threshold for "near enough"
+        gripper_pos = arm_pos[:, 4]  # gripper joint
+        rew_grasp = litter_rewards.reward_grasp(
+            gripper_pos=gripper_pos,
+            gripper_target=ARM_GRIPPER_CLOSED,
+            arm_near_target=arm_near,
+            pick_command=self._pick_command,
+            dt=dt,
+            grasp_scale=self.cfg.rew_grasp,
+        )
+
+        # Smooth deceleration penalty
+        rew_decel = litter_rewards.reward_smooth_deceleration(
+            root_lin_vel_b=self._robot.data.root_lin_vel_b,
+            prev_root_lin_vel_b=self._prev_root_lin_vel_b,
+            pick_command=self._pick_command,
+            dt=dt,
+            scale=self.cfg.rew_smooth_deceleration,
+        )
+
+        # Smooth motion (jerk penalty) for all phases
+        rew_smooth = litter_rewards.reward_smooth_motion(
+            actions=self._actions,
+            previous_actions=self._previous_actions,
+            preprevious_actions=self._preprevious_actions,
+            joint_acc=self._robot.data.joint_acc[:, self._leg_joint_ids],
+            dt=dt,
+            jerk_scale=self.cfg.rew_jerk,
+        )
+
+        # Energy efficiency (power penalty)
+        rew_energy = litter_rewards.reward_energy_efficiency(
+            applied_torque=self._robot.data.applied_torque[:, self._leg_joint_ids],
+            joint_vel=self._robot.data.joint_vel[:, self._leg_joint_ids],
+            dt=dt,
+            power_scale=self.cfg.rew_power,
+        )
+
+        return base_reward + rew_stop + rew_reach + rew_grasp + rew_decel + rew_smooth + rew_energy
+
+    def _reset_idx(self, env_ids: torch.Tensor | None):
+        super()._reset_idx(env_ids)
+
+        if env_ids is None:
+            return
+
+        # Reset arm-related buffers
+        self._preprevious_actions[env_ids] = 0.0
+        self._prev_root_lin_vel_b[env_ids] = 0.0
+
+        # Randomly assign pick commands to some episodes
+        has_pick = torch.rand(len(env_ids), device=self.device) < self.cfg.pick_command_prob
+        delay_s = torch.empty(len(env_ids), device=self.device).uniform_(
+            *self.cfg.pick_command_delay_range
+        )
+        delay_steps = (delay_s / self.step_dt).long()
+
+        self._pick_command[env_ids] = 0.0
+        self._pick_command_step[env_ids] = torch.where(
+            has_pick, delay_steps, torch.zeros_like(delay_steps)
+        )

@@ -24,3 +24,13 @@ gym.register(
         "rsl_rl_cfg_entry_point": f"{__name__}.train_config:CleanWalkerRoughPPORunnerCfg",
     },
 )
+
+gym.register(
+    id="CleanWalker-CW1-Litter-v0",
+    entry_point=f"{__name__}.cleanwalker_env:CleanWalkerLitterEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.cleanwalker_env:CleanWalkerLitterEnvCfg",
+        "rsl_rl_cfg_entry_point": f"{__name__}.train_config:CleanWalkerLitterPPORunnerCfg",
+    },
+)

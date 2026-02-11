@@ -1,0 +1,150 @@
+# CleanWalker CW-1 — Docker Compose for GPU Training
+#
+# Usage:
+#   # Phase 1: Flat terrain training
+#   docker compose -f ml/locomotion/docker-compose.yml up train-flat
+#
+#   # Phase 2: Rough terrain (after flat completes)
+#   docker compose -f ml/locomotion/docker-compose.yml run train-rough
+#
+#   # Litter collection (after rough completes)
+#   docker compose -f ml/locomotion/docker-compose.yml run train-litter
+#
+#   # Export policy to ONNX
+#   docker compose -f ml/locomotion/docker-compose.yml run export-policy
+#
+#   # TensorBoard monitoring (open http://localhost:6006)
+#   docker compose -f ml/locomotion/docker-compose.yml up tensorboard
+#
+# Cloud GPU Options (estimated cost for 24h training):
+#
+#   Provider        GPU             $/hr    24h Cost    Notes
+#   --------------- --------------- ------- ----------  ---------------------------
+#   Lambda Labs     A100 80GB       $1.29   ~$31        Best value, often sold out
+#   Lambda Labs     H100 80GB       $2.49   ~$60        Fastest training
+#   RunPod          A100 80GB       $1.64   ~$39        On-demand, good availability
+#   RunPod          RTX 4090        $0.44   ~$11        Budget option, sufficient for CW-1
+#   Vast.ai         RTX 4090        $0.25   ~$6         Cheapest, variable reliability
+#   Vast.ai         A100 80GB       $0.90   ~$22        Good value if available
+#
+#   Recommended: RunPod RTX 4090 ($0.44/hr) for development iterations,
+#                Lambda A100 ($1.29/hr) for final training runs.
+#
+#   24h is sufficient for flat (1500 iters, ~3h) + rough (3000 iters, ~8h)
+#   + litter collection (2000 iters, ~5h) with margin.
+
+services:
+  # --- Phase 1: Flat terrain locomotion ---
+  train-flat:
+    build:
+      context: ../..
+      dockerfile: ml/locomotion/Dockerfile
+    image: cleanwalker-train:latest
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - ../../:/workspace
+      - training-logs:/workspace/logs
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    command: >
+      python ml/locomotion/train.py
+        --task CleanWalker-CW1-Flat-v0
+        --headless
+        --max_iterations 1500
+    shm_size: "8g"
+    ipc: host
+
+  # --- Phase 2: Rough terrain (resume from flat) ---
+  train-rough:
+    image: cleanwalker-train:latest
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - ../../:/workspace
+      - training-logs:/workspace/logs
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    command: >
+      python ml/locomotion/train.py
+        --task CleanWalker-CW1-Rough-v0
+        --headless
+        --max_iterations 3000
+    shm_size: "8g"
+    ipc: host
+
+  # --- Phase 3: Litter collection ---
+  train-litter:
+    image: cleanwalker-train:latest
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - ../../:/workspace
+      - training-logs:/workspace/logs
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    command: >
+      python ml/locomotion/train.py
+        --task CleanWalker-CW1-Litter-v0
+        --headless
+        --max_iterations 2000
+    shm_size: "8g"
+    ipc: host
+
+  # --- Export trained policy to ONNX ---
+  export-policy:
+    image: cleanwalker-train:latest
+    volumes:
+      - ../../:/workspace
+      - training-logs:/workspace/logs
+    command: >
+      python ml/locomotion/export_policy.py
+        --checkpoint logs/rsl_rl/cleanwalker_cw1_rough/latest/model_3000.pt
+        --output ml/locomotion/assets/cleanwalker_cw1_policy.onnx
+        --fp16
+
+  # --- TensorBoard for monitoring ---
+  tensorboard:
+    image: tensorflow/tensorflow:latest
+    ports:
+      - "6006:6006"
+    volumes:
+      - training-logs:/logs
+    command: tensorboard --logdir /logs --host 0.0.0.0 --port 6006
+
+  # --- URDF to USD conversion ---
+  convert-urdf:
+    image: cleanwalker-train:latest
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - ../../:/workspace
+    command: >
+      python ml/locomotion/convert_urdf.py
+
+volumes:
+  training-logs:
+    driver: local

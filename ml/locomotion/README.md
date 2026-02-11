@@ -1,21 +1,40 @@
-# CleanWalker CW-1 — Locomotion Training
+# CleanWalker CW-1 — Locomotion & Litter Collection Training
 
-RL-based locomotion training for the CleanWalker CW-1 quadruped robot using **NVIDIA IsaacLab** and **rsl_rl** PPO.
+RL-based locomotion and litter collection training for the CleanWalker CW-1 quadruped robot using **NVIDIA IsaacLab** and **rsl_rl** PPO.
 
 ## Architecture
 
 ```
 ml/locomotion/
-├── __init__.py           # Gymnasium environment registration
+├── __init__.py           # Gymnasium environment registration (3 envs)
 ├── cleanwalker_env.py    # IsaacLab DirectRLEnv + ArticulationCfg
-├── train_config.py       # rsl_rl PPO hyperparameters
+├── train_config.py       # rsl_rl PPO hyperparameters (flat/rough/litter)
 ├── terrain_config.py     # Procedural terrain generation
+├── rewards.py            # Litter collection reward functions
+├── train.py              # Main training entry point
+├── play.py               # Visualize trained policy
+├── export_policy.py      # Export to ONNX for Jetson deployment
+├── convert_urdf.py       # URDF → USD conversion for Isaac Sim
+├── Dockerfile            # Isaac Sim GPU training container
+├── docker-compose.yml    # Docker services (train/export/tensorboard)
+├── assets/               # Converted USD assets + exported ONNX models
+│   └── .gitkeep
 └── README.md             # This file
 ```
 
-**Robot:** 18 DOF total, 12 leg joints actuated for locomotion.
+**Robot:** 18 DOF total. 12 leg joints for locomotion, 5 arm joints for litter pickup, 1 bag hinge.
 **Policy:** MLP [512, 256, 128] with ELU activation, trained via PPO.
 **Sim:** 200 Hz physics, 50 Hz policy (decimation=4), 4096 parallel envs.
+
+## Training Pipeline
+
+Three-phase curriculum:
+
+| Phase | Task ID | Iterations | Time (4090) | Description |
+|-------|---------|-----------|-------------|-------------|
+| 1 | `CleanWalker-CW1-Flat-v0` | 1,500 | ~3h | Flat terrain locomotion |
+| 2 | `CleanWalker-CW1-Rough-v0` | 3,000 | ~8h | Rough terrain curriculum |
+| 3 | `CleanWalker-CW1-Litter-v0` | 2,000 | ~5h | Locomotion + arm control |
 
 ## Prerequisites
 
@@ -28,17 +47,13 @@ ml/locomotion/
 
 1. **NVIDIA Isaac Sim 4.5+**
    ```bash
-   # Install via Omniverse Launcher:
-   # https://developer.nvidia.com/isaac-sim
-   # Or via pip (Isaac Sim 4.5+):
    pip install isaacsim-rl isaacsim-replicator isaacsim-extscache-physics isaacsim-extscache-kit-sdk
    ```
 
 2. **IsaacLab**
    ```bash
    git clone https://github.com/isaac-sim/IsaacLab.git
-   cd IsaacLab
-   ./isaaclab.sh --install  # or: pip install -e .
+   cd IsaacLab && ./isaaclab.sh --install
    ```
 
 3. **rsl_rl** (included with IsaacLab, or install separately)
@@ -48,113 +63,161 @@ ml/locomotion/
 
 4. **This package**
    ```bash
-   cd <repo_root>/ml/locomotion
-   pip install -e .  # If setup.py exists, or add to PYTHONPATH
-   # OR: export PYTHONPATH="$PYTHONPATH:<repo_root>/ml"
+   export PYTHONPATH="$PYTHONPATH:<repo_root>/ml"
    ```
 
-## URDF to USD Conversion
+## Quick Start
 
-IsaacLab works best with USD assets. Convert the URDF before training:
+### 1. Convert URDF to USD (optional, improves load time)
 
 ```bash
-cd <IsaacLab_root>
-
-./isaaclab.sh -p scripts/tools/convert_urdf.py \
-    <repo_root>/hardware/urdf/cleanwalker-cw1/cleanwalker_cw1.urdf \
-    <repo_root>/hardware/urdf/cleanwalker-cw1/cleanwalker_cw1.usd \
-    --merge-joints \
-    --make-instanceable \
-    --joint-stiffness 0.0 \
-    --joint-damping 0.0 \
-    --joint-target-type none
+python ml/locomotion/convert_urdf.py
 ```
 
-After conversion, update `CLEANWALKER_URDF_PATH` in `cleanwalker_env.py` to point to the `.usd` file (and change `UrdfFileCfg` to `UsdFileCfg`).
-
-**Note:** The environment also supports direct URDF loading via `UrdfFileCfg`. This is slower but works without pre-conversion.
-
-## Training
-
-### Phase 1: Flat Terrain
+### 2. Train Phase 1: Flat Terrain
 
 ```bash
-# From IsaacLab root:
-./isaaclab.sh -p scripts/train.py --task CleanWalker-CW1-Flat-v0
-
-# With custom num_envs:
-./isaaclab.sh -p scripts/train.py --task CleanWalker-CW1-Flat-v0 --num_envs 2048
-
-# Headless (no GUI, faster):
-./isaaclab.sh -p scripts/train.py --task CleanWalker-CW1-Flat-v0 --headless
+python ml/locomotion/train.py --task CleanWalker-CW1-Flat-v0 --headless
 ```
 
-Expected: ~1500 iterations, ~2-4 hours on RTX 4090.
-
-### Phase 2: Rough Terrain (Curriculum)
+### 3. Train Phase 2: Rough Terrain
 
 ```bash
-# Resume from flat-terrain checkpoint:
-./isaaclab.sh -p scripts/train.py --task CleanWalker-CW1-Rough-v0 \
-    --load_run <flat_run_name> --checkpoint model_1500.pt
+python ml/locomotion/train.py --task CleanWalker-CW1-Rough-v0 \
+    --load_run <flat_run_name> --checkpoint model_1500.pt --headless
 ```
 
-Expected: ~3000 iterations, ~6-10 hours on RTX 4090.
-
-### Visualize Trained Policy
+### 4. Train Phase 3: Litter Collection
 
 ```bash
-./isaaclab.sh -p scripts/play.py --task CleanWalker-CW1-Flat-v0 \
+python ml/locomotion/train.py --task CleanWalker-CW1-Litter-v0 \
+    --load_run <rough_run_name> --checkpoint model_3000.pt --headless
+```
+
+### 5. Visualize Trained Policy
+
+```bash
+python ml/locomotion/play.py --task CleanWalker-CW1-Flat-v0 \
     --load_run <run_name> --checkpoint model_1500.pt
 ```
 
-### Monitor Training
+### 6. Export to ONNX for Jetson
 
 ```bash
-tensorboard --logdir logs/rsl_rl/cleanwalker_cw1_flat
+python ml/locomotion/export_policy.py \
+    --checkpoint logs/rsl_rl/cleanwalker_cw1_rough/<run>/model_3000.pt \
+    --output ml/locomotion/assets/cleanwalker_cw1_policy.onnx --fp16
 ```
+
+### 7. Monitor Training
+
+```bash
+tensorboard --logdir logs/rsl_rl/
+```
+
+## Docker Training (Cloud GPU)
+
+### Build and Run
+
+```bash
+# Build container
+docker compose -f ml/locomotion/docker-compose.yml build
+
+# Phase 1
+docker compose -f ml/locomotion/docker-compose.yml up train-flat
+
+# Phase 2
+docker compose -f ml/locomotion/docker-compose.yml run train-rough
+
+# Phase 3
+docker compose -f ml/locomotion/docker-compose.yml run train-litter
+
+# Export
+docker compose -f ml/locomotion/docker-compose.yml run export-policy
+
+# TensorBoard (http://localhost:6006)
+docker compose -f ml/locomotion/docker-compose.yml up tensorboard
+```
+
+### Cloud GPU Options (24h Training Cost)
+
+| Provider | GPU | $/hr | 24h Cost | Notes |
+|----------|-----|------|----------|-------|
+| Lambda Labs | A100 80GB | $1.29 | ~$31 | Best value, often sold out |
+| Lambda Labs | H100 80GB | $2.49 | ~$60 | Fastest training |
+| RunPod | A100 80GB | $1.64 | ~$39 | Good availability |
+| **RunPod** | **RTX 4090** | **$0.44** | **~$11** | **Recommended for dev** |
+| Vast.ai | RTX 4090 | $0.25 | ~$6 | Cheapest, variable reliability |
+| Vast.ai | A100 80GB | $0.90 | ~$22 | Good value if available |
+
+**Recommended:** RunPod RTX 4090 ($0.44/hr) for iteration, Lambda A100 ($1.29/hr) for final runs.
+
+24h budget covers all 3 phases (~16h total) with margin for experimentation.
+
+## Litter Collection Reward Function
+
+Phase 3 adds rewards specific to autonomous litter pickup. This is what differentiates CleanWalker from standard quadruped locomotion.
+
+### Base Rewards (always active)
+
+| Reward | Weight | Purpose |
+|--------|--------|---------|
+| Velocity tracking (XY) | +1.5 | Follow movement commands |
+| Yaw rate tracking | +0.75 | Follow turn commands |
+| Feet air time | +0.5 | Encourage alternating gait |
+| Vertical velocity | -2.0 | Minimize bouncing |
+| Body orientation | -5.0 | Keep body level |
+| Joint torques | -2.5e-5 | Energy efficiency |
+| Joint accelerations | -2.5e-7 | Smooth motion |
+| Action rate | -0.01 | Smooth actions |
+| Jerk (2nd derivative) | -0.005 | Ultra-smooth motion |
+| Mechanical power | -1.0e-5 | Energy penalty |
+| Undesired contacts | -1.0 | Only feet touch ground |
+| Joint limits | -10.0 | Stay away from limits |
+| Stumble | -0.5 | Penalize tripping |
+
+### Litter Pickup Rewards (active during pick command)
+
+| Reward | Weight | Purpose |
+|--------|--------|---------|
+| Stop and stabilize | +2.0 | Zero velocity + stable body |
+| Arm reach | +3.0 | Arm joints reach pickup config |
+| Grasp | +5.0 | Gripper closes when arm at target |
+| Smooth deceleration | -2.0 | No slamming to a stop |
+
+### How It Works
+
+1. During 40% of episodes, a **pick command** activates after 3-8 seconds
+2. When active, the robot must **decelerate smoothly** (deceleration penalty)
+3. Once stopped, it earns reward for **body stability** (tighter than walking)
+4. The **arm extends** toward a ground-level target (pre-computed IK)
+5. **Gripper closes** only when arm is near target (staged reward)
+6. The policy learns to coordinate all 17 joints for the full walk→stop→pick cycle
 
 ## Environment Details
 
-### Observation Space (48 dims)
+### Locomotion (48 obs, 12 act)
 
-| Index | Quantity | Dims | Description |
-|-------|----------|------|-------------|
-| 0-2 | Base linear velocity | 3 | Body-frame velocity (m/s) |
-| 3-5 | Base angular velocity | 3 | Body-frame angular velocity (rad/s) |
-| 6-8 | Projected gravity | 3 | Gravity vector in body frame |
-| 9-11 | Velocity commands | 3 | Target vx, vy, yaw_rate |
-| 12-23 | Joint positions (relative) | 12 | Current - default joint positions |
-| 24-35 | Joint velocities | 12 | Joint angular velocities |
-| 36-47 | Previous actions | 12 | Last policy output |
+| Index | Quantity | Dims |
+|-------|----------|------|
+| 0-2 | Base linear velocity | 3 |
+| 3-5 | Base angular velocity | 3 |
+| 6-8 | Projected gravity | 3 |
+| 9-11 | Velocity commands | 3 |
+| 12-23 | Joint positions (relative) | 12 |
+| 24-35 | Joint velocities | 12 |
+| 36-47 | Previous actions | 12 |
 
-### Action Space (12 dims)
+### Litter Collection (58 obs, 17 act)
 
-Position targets for the 12 leg joints, scaled by `action_scale` (0.25) and added to default standing pose:
+Adds to locomotion:
 
-```
-FL: hip_yaw, hip_pitch, knee_pitch
-FR: hip_yaw, hip_pitch, knee_pitch
-RL: hip_yaw, hip_pitch, knee_pitch
-RR: hip_yaw, hip_pitch, knee_pitch
-```
+| Index | Quantity | Dims |
+|-------|----------|------|
+| 48-52 | Arm joint positions (relative) | 5 |
+| 53-57 | Arm joint velocities | 5 |
 
-### Reward Structure
-
-| Reward | Weight | Type | Purpose |
-|--------|--------|------|---------|
-| Track linear vel XY | +1.5 | Exponential | Follow velocity commands |
-| Track angular vel Z | +0.75 | Exponential | Follow yaw rate commands |
-| Feet air time | +0.5 | Linear | Encourage alternating gait |
-| Vertical velocity | -2.0 | L2 | Minimize bouncing |
-| Roll/pitch angular vel | -0.05 | L2 | Smooth body rotation |
-| Joint torques | -2.5e-5 | L2 | Energy efficiency |
-| Joint accelerations | -2.5e-7 | L2 | Smoothness |
-| Action rate | -0.01 | L2 | Smooth actions |
-| Flat orientation | -5.0 | L2 | Keep body level |
-| Undesired contacts | -1.0 | Binary | Penalize non-foot contacts |
-| Joint position limits | -10.0 | Soft | Stay away from joint limits |
-| Stumble | -0.5 | Heuristic | Penalize tripping |
+Actions 12-16: turret_yaw, shoulder_pitch, elbow_pitch, wrist_pitch, gripper.
 
 ### Domain Randomization
 
@@ -164,54 +227,21 @@ RR: hip_yaw, hip_pitch, knee_pitch
 | Base mass | -1.0 to +3.0 kg | Additive |
 | Motor strength | 0.8 - 1.2x | Multiplicative |
 
-### Termination Conditions
+## ONNX Deployment on Jetson
 
-- Body link contacts the ground (force > 1 N)
-- Body orientation exceeds 60 degrees from upright
-- Episode timeout (20 seconds)
+After exporting to ONNX:
 
-## CW-1 Joint Reference
+```bash
+# On Jetson Orin Nano Super — convert to TensorRT
+/usr/src/tensorrt/bin/trtexec \
+    --onnx=cleanwalker_cw1_policy.onnx \
+    --saveEngine=cleanwalker_cw1_policy.engine \
+    --fp16 --workspace=256
 
+# Expected: <1ms inference at 50 Hz
+# Input:  float32[1, 48] or [1, 58]
+# Output: float32[1, 12] or [1, 17]
 ```
-18 DOF total:
-  4 legs x 3 DOF = 12 (actuated for locomotion)
-    hip_yaw:   Z-axis rotation, +/- 28.6 deg
-    hip_pitch:  Y-axis rotation, +/- 90 deg
-    knee_pitch: Y-axis rotation
-      Front: [-5.7, 149] deg (bends forward)
-      Rear:  [-149, 5.7] deg (bends backward)
-
-  1 arm x 5 DOF = 5 (locked during locomotion)
-    turret_yaw, shoulder_pitch, elbow_pitch, wrist_pitch, gripper
-
-  1 bag hinge = 1 (locked during locomotion)
-```
-
-## Customization
-
-### Tuning Reward Weights
-
-Edit the `rew_*` fields in `CleanWalkerFlatEnvCfg` (in `cleanwalker_env.py`). Start with the defaults and adjust based on training behavior:
-
-- **Robot falls over:** Increase `rew_flat_orientation` (more negative)
-- **Jerky motion:** Increase `rew_action_rate` and `rew_joint_accel` (more negative)
-- **Doesn't follow commands:** Increase `rew_track_lin_vel_xy` and `rew_track_ang_vel_z`
-- **Drags feet:** Increase `rew_feet_air_time`
-- **Uses too much energy:** Increase `rew_joint_torques` (more negative)
-
-### Changing PD Gains
-
-Edit the `actuators` section in `CLEANWALKER_CW1_CFG`:
-```python
-"legs": ImplicitActuatorCfg(
-    stiffness=25.0,   # Kp — increase for stiffer position tracking
-    damping=0.5,      # Kd — increase for more damping
-)
-```
-
-### Adding Height Scanner (for rough terrain)
-
-For rough terrain, add a `RayCasterCfg` height scanner to the environment config. See the ANYmal-C rough environment in IsaacLab for reference.
 
 ## References
 
