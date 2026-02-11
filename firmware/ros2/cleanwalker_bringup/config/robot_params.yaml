@@ -1,0 +1,104 @@
+# CleanWalker CW-1 — Robot Parameters
+# Loaded by robot.launch.py, shared across all nodes
+#
+# Reference: docs/technical/perception-pipeline-architecture.md
+# Reference: docs/technical/autonomy-stack-architecture.md
+
+# ── Detection Node (YOLO26s) ──
+detection_node:
+  ros__parameters:
+    model_path: "/opt/models/detection/yolo26s_litter_v1.engine"
+    confidence_threshold: 0.5
+    nms_threshold: 0.45        # YOLO26 is NMS-free, but kept for compatibility
+    input_size: 640
+    device: "cuda:0"
+
+# ── Depth Node (OAK-D Pro stereo) ──
+depth_node:
+  ros__parameters:
+    use_ess: false              # Phase 2: enable Isaac ROS ESS
+    min_depth: 0.2              # meters (OAK-D Pro minimum)
+    max_depth: 10.0             # meters
+    confidence_threshold: 0.7
+    median_filter_size: 5
+
+# ── Segmentation Node (SegFormer-B0) ──
+segmentation_node:
+  ros__parameters:
+    model_path: "/opt/models/segmentation/segformer_b0_terrain_v1.engine"
+    input_width: 512
+    input_height: 512
+    inference_rate: 5.0         # Hz (terrain changes slowly)
+    device: "cuda:0"
+    enabled: true               # Disable during picking to free GPU
+
+# ── SLAM Node (cuVSLAM wrapper) ──
+slam_node:
+  ros__parameters:
+    enable_imu_fusion: true
+    enable_localization_n_mapping: true
+    publish_odom_to_base_tf: true
+    map_frame: "map"
+    odom_frame: "odom"
+    base_frame: "base_link"
+
+# ── Path Planner Node (BCD coverage) ──
+path_planner_node:
+  ros__parameters:
+    sweep_width: 0.8            # meters (camera FOV at ground distance)
+    overlap_ratio: 0.1          # 10% overlap between sweeps
+    robot_radius: 0.3           # meters (body diagonal / 2)
+    replan_on_detection: true
+    operating_bounds: [0.0, 0.0, 50.0, 50.0]  # [x_min, y_min, x_max, y_max]
+
+# ── Grasp Planner Node (rule-based / GR-ConvNet v2) ──
+grasp_planner_node:
+  ros__parameters:
+    use_learned_grasping: false  # Phase 2: enable GR-ConvNet v2
+    model_path: "/opt/models/grasping/grconvnet_v2_grasp_v1.engine"
+    grasp_height_offset: 0.05   # meters above object center
+    pre_grasp_distance: 0.10    # meters above grasp point
+    max_grasp_attempts: 3
+
+# ── Arm Controller Node (analytical IK) ──
+arm_controller_node:
+  ros__parameters:
+    max_velocity: 1.0           # rad/s
+    trajectory_duration: 2.0    # seconds (pre-grasp to grasp)
+    gripper_open_angle: 1.0     # radians (~57°)
+    gripper_close_angle: 0.0    # radians (fully closed)
+
+# ── Robot Localization (EKF) — robot_localization package ──
+# TODO: Configure when robot_localization is integrated
+# ekf_filter_node:
+#   ros__parameters:
+#     frequency: 50.0
+#     sensor_timeout: 0.1
+#     odom_frame: "odom"
+#     base_link_frame: "base_link"
+#     world_frame: "odom"
+#     odom0: "/visual_odom"
+#     odom0_config: [true, true, true,
+#                    false, false, false,
+#                    true, true, true,
+#                    false, false, false,
+#                    false, false, false]
+#     imu0: "/oak/imu"
+#     imu0_config: [false, false, false,
+#                   true, true, true,
+#                   false, false, false,
+#                   true, true, true,
+#                   true, true, true]
+
+# ── Nav2 Parameters ──
+# TODO: Configure when Nav2 is integrated
+# controller_server:
+#   ros__parameters:
+#     controller_frequency: 20.0
+#     FollowPath:
+#       plugin: "dwb_core::DWBLocalPlanner"
+#       max_vel_x: 0.5
+#       min_vel_x: 0.0
+#       max_vel_theta: 1.0
+#       min_speed_xy: 0.0
+#       max_speed_xy: 0.5

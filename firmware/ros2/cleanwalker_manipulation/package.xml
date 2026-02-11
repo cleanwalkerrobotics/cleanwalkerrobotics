@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>cleanwalker_manipulation</name>
+  <version>0.1.0</version>
+  <description>Manipulation nodes for CleanWalker CW-1: grasp planning (GR-ConvNet v2), arm joint trajectory control</description>
+  <maintainer email="engineering@cleanwalkerrobotics.com">CleanWalker Robotics</maintainer>
+  <license>AGPL-3.0-only</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>trajectory_msgs</depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
