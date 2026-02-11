@@ -2,6 +2,13 @@
 
 ## 2026-02-11
 
+### Component Selection Decision Matrix (cw-research) — COMPLETED
+- **Task:** Comprehensive component decision matrix for all 15 CW-1 subsystems
+- **Scope:** Compute, camera, LiDAR, leg actuators (12 joints), arm actuators (5 joints), battery, motor drivers, IMU, communications, frame, gripper, bag system, weatherproofing, charging dock, emergency stop
+- **Key Work:** Torque analysis from CW-1 URDF (15 kg mass model), cost at 1/10/100/1000 scale, risk assessment, confidence levels, procurement priority ordering, supplier contacts
+- **Key Findings:** AK70-10 adequate for legs (1.13-1.65× margin), XM430 shoulder torque tight (0.65× at worst case), bag system is lowest-confidence subsystem, actuators are 60% of BOM, total prototype ~$11,627
+- **File:** docs/design/component-decisions.md (new)
+
 ### Follow-Up Email Templates (cw-bizdev) — COMPLETED
 - **Task:** Create follow-up email templates for Tier 1 outreach targets
 - **Changes:** 7 templates total: 3 positive reply responses (per-target with one-pager attachment, meeting times, new data points), 3 Day 4 bump emails (per-target with org-specific hooks and WebGPU demo link), 1 Day 10 generic thought-leadership template. Includes follow-up schedule (Day 0/4/10/21/45) and quick-reference table.
