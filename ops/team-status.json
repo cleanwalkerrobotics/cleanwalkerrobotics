@@ -1,11 +1,11 @@
 {
-  "lastUpdated": "2026-02-11T00:46:00Z",
+  "lastUpdated": "2026-02-11T02:46:00Z",
   "teams": {
     "cw-software": {
       "status": "idle",
-      "lastTask": "Contact form Resend API + WebP render conversion",
+      "lastTask": "IsaacLab RL locomotion training config",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-11T12:00:00Z"
+      "lastActive": "2026-02-11T01:30:00Z"
     },
     "cw-research": {
       "status": "idle",
@@ -15,26 +15,26 @@
     },
     "cw-bizdev": {
       "status": "idle",
-      "lastTask": "Municipality-specific one-pagers (3 Tier 1 targets)",
+      "lastTask": "SRTIP SAIA application draft + UAE grant strategy",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-11T00:45:00Z"
+      "lastActive": "2026-02-11T02:30:00Z"
+    },
+    "cw-hardware": {
+      "status": "idle",
+      "lastTask": "CleanWalker CW-1 URDF v1.0",
+      "lastTaskResult": "completed",
+      "lastActive": "2026-02-11T01:00:00Z"
     },
     "cw-renders": {
       "status": "idle",
       "lastTask": "V3 nano-banana renders 14/14",
       "lastTaskResult": "completed",
       "lastActive": "2026-02-10T23:14:00Z"
-    },
-    "cw-ops": {
-      "status": "idle",
-      "lastTask": "Design spec V2.3 update",
-      "lastTaskResult": "completed",
-      "lastActive": "2026-02-10T20:00:00Z"
     }
   },
   "activeSessions": 0,
   "vpsSpec": "30GB RAM",
-  "notes": "All teams idle. 3 Tier 1 outreach emails scheduled for today (BEEAH 05:00, Amsterdam 08:00, Veolia 22:00 UTC). Phase 2 R&D complete: perception pipeline architecture, edge detection, SLAM, segmentation, depth research all done. Next: Tier 2 outreach scheduling, grant prep, CAD/URDF update.",
+  "notes": "All teams idle. Massive output overnight: SRTIP SAIA app, UAE+NL grant strategies, 10 one-pagers, WBSO draft, IsaacLab config, product specs fix. 3 Tier 1 outreach emails scheduled (BEEAH 05:00, Amsterdam 08:00, Veolia 22:00 UTC). Next priorities: Tier 2 outreach scheduling, website product specs page update.",
   "autonomousOutreachApproved": true,
   "keyDirective": "GO AUTONOMOUS — Outreach day, monitor for replies"
 }
