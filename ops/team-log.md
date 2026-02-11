@@ -172,3 +172,4 @@
 | 2026-02-11 03:30 | cw-software | Route planning visualization demo - interactive canvas with 3 strategies, multi-robot fleet, live stats | 38923f2 |
 | 2026-02-11 | cw-software | Cost savings calculator demo - interactive ROI calculator with sliders, side-by-side comparison cards, 5-year bar chart, payback period. Added to demos grid + sitemap. | 4a8abb5 |
 | 2026-02-11 | cw-ops | Strategy.md full update: removed IFAT refs, NL as EU entry point, marked items 1-7 done, added SRTIP/WBSO/EU compliance priorities, dual-track funding, regulatory compliance, tech readiness, competitive position sections | 82f30ae |
+| 2026-02-11 | cw-software | Browser-based robot simulation demo: Canvas 2D simulation of CW-1 autonomously patrolling a park — walking animation, litter detection radius, arm pickup, bag fill indicator, dock/bag swap cycle, stats overlay, play/pause/speed controls. Added to demos grid + sitemap. | cf0d13e |
