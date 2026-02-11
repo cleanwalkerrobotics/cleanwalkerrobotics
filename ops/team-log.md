@@ -138,3 +138,4 @@
 2026-02-11 00:33 | research-team | Update depth camera hardware research with CES 2026 releases (Orbbec Gemini 345Lg, 305) | 5ecc218
 | 2026-02-11 00:38 | cw-research | Consolidated perception stack research: depth estimation (DA V2/V3, Isaac ROS ESS), grasp planning (GR-ConvNet v2, VGN), camera hardware (OAK-D Pro, Gemini 345Lg, ZED) | c82b81c |
 | 2026-02-11 | cw-research | Unified perception pipeline architecture: consolidated 6 research docs into single pilot-partner-ready reference. ROS2 node graph, latency/memory/GPU budgets, model specs table, deployment strategy, phase plan. Updated autonomy-stack-architecture.md v1.0→v1.1. | 8b73152 |
+| 2026-02-11 | cw-bizdev | Sales one-pagers: 3 municipality-specific one-pagers (Veolia ANZ, BEEAH, Amsterdam) in docs/sales/one-pagers/ — tailored challenge/solution/pilot/economics/CTA, PDF-ready | pending |
