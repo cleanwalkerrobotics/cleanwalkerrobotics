@@ -45,6 +45,7 @@ No commercial quadrupedal litter robot exists anywhere in the world. Amsterdam w
 ## Next Steps
 
 We'd welcome a **20-minute call** to discuss fit, timeline, and pilot scope. As a Dutch founder, I'm happy to work in Dutch or English.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Maurits Bos** — Founder & CEO
 walker@cleanwalkerrobotics.com

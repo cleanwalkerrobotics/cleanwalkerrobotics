@@ -46,6 +46,7 @@ Forum Virium helped Trombia go from Helsinki pilot to global markets. CleanWalke
 ## Next Steps
 
 We'd welcome a **20-minute call** to discuss the Urban Mobile Robotics programme, Stara collaboration, and pilot scope.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Maurits Bos** — Founder & CEO
 walker@cleanwalkerrobotics.com

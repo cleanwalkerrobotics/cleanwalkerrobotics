@@ -46,6 +46,7 @@ Vienna would be the first major European capital to deploy a commercial quadrupe
 ## Next Steps
 
 We'd welcome a **20-minute call** to discuss alignment with MA48's electrification programme, ICRA 2026 timing, and pilot scope.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Maurits Bos** — Founder & CEO
 walker@cleanwalkerrobotics.com

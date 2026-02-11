@@ -50,6 +50,7 @@ As a Dutch founder, I understand the city's culture and operations firsthand. We
 ### Next Steps
 
 A 15-minute introductory call to discuss fit, timeline, and pilot scope.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Contact:** Maurits Bos | cleanwalkerrobotics.com
 

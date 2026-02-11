@@ -46,6 +46,7 @@ Melbourne's Testbed is designed exactly for this — evaluating emerging technol
 ## Next Steps
 
 We'd welcome a **20-minute call** to discuss Testbed participation, pilot scope, and deployment across Melbourne's parks and waterfront.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Maurits Bos** — Founder & CEO
 walker@cleanwalkerrobotics.com

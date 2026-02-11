@@ -46,6 +46,7 @@ Copenhagen would be the first Nordic city to deploy a commercial quadrupedal lit
 ## Next Steps
 
 We'd welcome a **20-minute call** to discuss fit with the Resource & Waste Strategy 2030, Solutions Lab pilot process, and deployment scope.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Maurits Bos** — Founder & CEO
 walker@cleanwalkerrobotics.com

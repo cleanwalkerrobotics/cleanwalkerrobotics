@@ -59,6 +59,7 @@ No other company offers a commercial quadrupedal litter robot. This is a first-m
 ### Next Steps
 
 A 15-minute call to discuss pilot scope, site selection, and how CleanWalker integrates with Veolia's existing operations.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Contact:** Maurits Bos | cleanwalkerrobotics.com
 

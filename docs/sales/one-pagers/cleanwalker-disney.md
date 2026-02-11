@@ -46,6 +46,7 @@ Disney has a unique relationship with robots — guests expect them. A CleanWalk
 ## Next Steps
 
 We'd welcome a **20-minute call** to discuss pilot scope, sustainability team alignment, and resort deployment logistics.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Maurits Bos** — Founder & CEO
 walker@cleanwalkerrobotics.com

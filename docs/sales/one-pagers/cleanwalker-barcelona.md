@@ -46,6 +46,7 @@ A Barcelona pilot starting in Q2 2026 produces results ready to showcase at Smar
 ## Next Steps
 
 We'd welcome a **20-minute call** to discuss fit with Cuidem Barcelona innovation goals, BIT Habitat challenge participation, and deployment timeline.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Maurits Bos** — Founder & CEO
 walker@cleanwalkerrobotics.com

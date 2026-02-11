@@ -43,6 +43,7 @@ A Sharjah pilot positions BEEAH as the first operator of a commercial quadrupeda
 ## Next Steps
 
 We'd welcome a **20-minute call** to discuss pilot scope, AI City Vision integration, and deployment timeline.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Maurits Bos** — Founder & CEO
 walker@cleanwalkerrobotics.com

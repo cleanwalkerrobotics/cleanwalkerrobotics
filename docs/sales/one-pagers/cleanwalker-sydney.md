@@ -46,6 +46,7 @@ Sydney's Waste Reduction & Circular Materials Strategy 2025–2035 sets a 10-yea
 ## Next Steps
 
 We'd welcome a **20-minute call** to discuss pilot scope, CityConnect integration, and deployment across Sydney's parks and foreshore.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Maurits Bos** — Founder & CEO
 walker@cleanwalkerrobotics.com

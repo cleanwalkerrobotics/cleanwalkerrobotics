@@ -50,6 +50,7 @@ The regional visibility — a walking robot cleaning Sharjah's waterfront — ge
 ### Next Steps
 
 A 15-minute introductory call to discuss pilot scope, integration with BEEAH Digital systems, and deployment timeline.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Contact:** Maurits Bos | cleanwalkerrobotics.com
 

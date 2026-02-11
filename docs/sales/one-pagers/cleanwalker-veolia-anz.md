@@ -43,6 +43,7 @@ A successful Sydney pilot creates the blueprint for deployment across Veolia's 5
 ## Next Steps
 
 We'd welcome a **20-minute call** to discuss pilot scope, site selection, and how CleanWalker integrates with your existing operations.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Maurits Bos** — Founder & CEO
 walker@cleanwalkerrobotics.com

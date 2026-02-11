@@ -46,6 +46,7 @@ A CleanWalker robot patrolling the Burj Khalifa boulevard is not just a cleaning
 ## Next Steps
 
 We'd welcome a **20-minute call** to discuss pilot scope, ECM integration, and deployment across Emaar communities.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Maurits Bos** — Founder & CEO
 walker@cleanwalkerrobotics.com

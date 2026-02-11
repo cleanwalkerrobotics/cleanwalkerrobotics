@@ -46,6 +46,7 @@ UT Austin is uniquely positioned for this pilot. The NSF grant has already clear
 ## Next Steps
 
 We'd welcome a **20-minute call** to discuss pilot scope, Facilities Services integration, and research collaboration opportunities.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Maurits Bos** — Founder & CEO
 walker@cleanwalkerrobotics.com

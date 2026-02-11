@@ -46,6 +46,7 @@ Enova's Veolia lineage means the CleanWalker partnership carries strategic weigh
 ## Next Steps
 
 We'd welcome a **20-minute call** to discuss pilot scope, Hubgrade integration, and deployment across MAF properties.
+Pilot Program Details: cleanwalkerrobotics.com/pilot
 
 **Maurits Bos** — Founder & CEO
 walker@cleanwalkerrobotics.com
