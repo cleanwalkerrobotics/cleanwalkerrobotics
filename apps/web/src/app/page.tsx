@@ -2,67 +2,46 @@
 // Licensed under the AGPL-3.0 License. See LICENSE in the project root.
 
 import Image from "next/image";
+import HeroSection from "./components/HeroSection";
+
+const techBadges = [
+	{ name: "NVIDIA Jetson", desc: "Edge AI" },
+	{ name: "ROS 2", desc: "Robotics Framework" },
+	{ name: "YOLO", desc: "Object Detection" },
+	{ name: "Python", desc: "ML Pipeline" },
+	{ name: "Rust", desc: "Firmware" },
+	{ name: "Three.js", desc: "3D Visualization" },
+];
 
 export default function Home() {
 	return (
 		<div>
 			{/* Hero Section — Full-bleed with robot image */}
-			<section className="relative min-h-[90vh] bg-cw-dark">
-				<Image
-					src="/renders/v3/hero-park.webp"
-					alt="CleanWalker autonomous robot picking up a plastic bottle in a sunlit park"
-					fill
-					className="object-cover"
-					priority
-					sizes="100vw"
-				/>
-				<div className="absolute inset-0 bg-gradient-to-r from-cw-dark via-cw-dark/80 to-cw-dark/30" />
-				<div className="relative z-10 flex min-h-[90vh] items-center px-6">
-					<div className="mx-auto w-full max-w-7xl">
-						<div className="max-w-2xl">
-							<div className="mb-6 inline-block rounded-full border border-cw-green/30 bg-cw-green/10 px-4 py-1.5 text-sm font-medium text-cw-green backdrop-blur-sm">
-								Smart City Infrastructure
+			<HeroSection />
+
+			{/* Trusted Technology */}
+			<section className="border-b border-white/5 bg-cw-dark px-6 py-16">
+				<div className="mx-auto max-w-7xl">
+					<div className="text-center">
+						<h2 className="text-lg font-semibold tracking-wide text-white">
+							Trusted Technology
+						</h2>
+						<p className="mt-2 text-sm text-gray-500">
+							Built on proven, industry-standard robotics and AI frameworks
+						</p>
+					</div>
+					<div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+						{techBadges.map((badge) => (
+							<div
+								key={badge.name}
+								className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 backdrop-blur-sm"
+							>
+								<span className="text-sm font-medium text-gray-200">
+									{badge.name}
+								</span>
+								<span className="text-xs text-gray-500">{badge.desc}</span>
 							</div>
-							<h1 className="text-4xl font-bold leading-tight tracking-tight text-white md:text-6xl">
-								Autonomous Litter Collection for{" "}
-								<span className="text-cw-green">Cleaner Spaces</span>
-							</h1>
-							<p className="mt-6 max-w-lg text-lg leading-relaxed text-gray-300">
-								CleanWalker deploys intelligent, autonomous robots that keep parks,
-								campuses, and public spaces clean — 24/7, rain or shine. No staffing
-								challenges. No coverage gaps. Just cleaner spaces.
-							</p>
-							<div className="mt-10 flex flex-wrap gap-4">
-								<a
-									href="/contact"
-									className="rounded-lg bg-cw-green px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-cw-green-dark"
-								>
-									Schedule a Demo
-								</a>
-								<a
-									href="/product"
-									className="rounded-lg border border-white/20 bg-white/5 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-white/10"
-								>
-									See How It Works
-								</a>
-							</div>
-							<div className="mt-10 flex items-center gap-8 rounded-xl border border-white/10 bg-black/30 px-6 py-4 text-sm text-gray-400 backdrop-blur-sm">
-								<div>
-									<span className="block text-2xl font-bold text-white">24/7</span>
-									Autonomous operation
-								</div>
-								<div className="h-10 w-px bg-white/20" />
-								<div>
-									<span className="block text-2xl font-bold text-white">50+</span>
-									Litter types detected
-								</div>
-								<div className="h-10 w-px bg-white/20" />
-								<div>
-									<span className="block text-2xl font-bold text-white">5-10</span>
-									Acres per day
-								</div>
-							</div>
-						</div>
+						))}
 					</div>
 				</div>
 			</section>
