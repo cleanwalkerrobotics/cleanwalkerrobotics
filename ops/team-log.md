@@ -171,3 +171,4 @@
 | 2026-02-11 | cw-software | Added /pilot link to all 16 sales docs (13 one-pagers + 3 proposals), created sitemap.xml (7 pages) + robots.txt for SEO | pending |
 | 2026-02-11 03:30 | cw-software | Route planning visualization demo - interactive canvas with 3 strategies, multi-robot fleet, live stats | 38923f2 |
 | 2026-02-11 | cw-software | Cost savings calculator demo - interactive ROI calculator with sliders, side-by-side comparison cards, 5-year bar chart, payback period. Added to demos grid + sitemap. | 4a8abb5 |
+| 2026-02-11 | cw-ops | Strategy.md full update: removed IFAT refs, NL as EU entry point, marked items 1-7 done, added SRTIP/WBSO/EU compliance priorities, dual-track funding, regulatory compliance, tech readiness, competitive position sections | 82f30ae |
