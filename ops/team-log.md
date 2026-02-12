@@ -2,6 +2,10 @@
 
 ## 2026-02-12
 
+### Industrial-Grade Cost Analysis (research) — COMPLETED
+
+| 2026-02-12 | research | Industrial-grade cost analysis: consumer BOM $11.6K vs industrial $49.3K prototype ($20.3K at 1000 units). Covers IP67, actuators, marine materials, compute, sensors, LFP battery, EU certification, maintenance, RaaS pricing. | b3c68ef |
+
 ### Remove Explicit Pricing (cw-software) — COMPLETED
 
 | 2026-02-12 | cw-software | Remove explicit $3,000-3,500 pricing from 13 one-pagers, cost calculator demo, SRTIP application; add review header to pilot financial model; regenerate 13 PDFs; update CODEBASE.md | c974849 |
