@@ -15,6 +15,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		{ url: `${siteUrl}/about`, lastModified: new Date(), priority: 0.7 },
 		{ url: `${siteUrl}/contact`, lastModified: new Date(), priority: 0.8 },
 		{ url: `${siteUrl}/insights`, lastModified: new Date(), priority: 0.8 },
+		{ url: `${siteUrl}/privacy`, lastModified: new Date(), priority: 0.3 },
+		{ url: `${siteUrl}/terms`, lastModified: new Date(), priority: 0.3 },
 	];
 
 	const articlePages = articles.map((article) => ({

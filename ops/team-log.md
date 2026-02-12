@@ -2,6 +2,11 @@
 
 ## 2026-02-12
 
+### Website Professionalism Overhaul (cw-software) — COMPLETED
+- **Task:** Add legal pages, footer updates, QA audit, and bug fixes for professional website
+- **Files:** apps/web/src/app/privacy/page.tsx (new), apps/web/src/app/terms/page.tsx (new), apps/web/src/app/icon.svg (new), apps/web/src/app/layout.tsx, apps/web/src/app/sitemap.ts, apps/web/src/app/product/page.tsx, apps/web/src/app/page.tsx, CODEBASE.md
+- **QA fixes:** Fixed broken link /demos/autonomous-navigation → /demos/route-planning, added missing favicon, fixed "10 Demos" → "9 Demos" text
+
 ### Codebase Knowledge Management System (cw-software) — COMPLETED
 - **Task:** Implement 3-layer codebase knowledge system (CODEBASE.md + PURPOSE.md + build-time checks)
 - **Commit:** 7cbca05
@@ -208,3 +213,8 @@
 - **Commits:** 4186be0 (manifest system), f80634d (demo registry)
 - **Note:** Session ran out of context (5%) before deploying to Vercel. Deployment pending.
 - **Comms issue:** No callback sent — caught by team-comms-optimizer at 02:46 UTC
+
+### Comms Optimizer Check — 2026-02-12 06:46 UTC
+- **cw-software** idle at prompt ~2h, no callback. Output captured, session killed.
+- Task was complete (codebase knowledge system, commits 7cbca05/d3e2a76). No new commits in last 2h.
+- team-status.json updated. No sessions running. Quiet hours (01:46 COT).

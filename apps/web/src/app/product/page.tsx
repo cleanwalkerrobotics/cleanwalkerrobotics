@@ -342,7 +342,7 @@ export default function ProductPage() {
 								{[
 									{ label: "AI Detection", href: "/demos/litter-detection" },
 									{ label: "3D Viewer", href: "/demos/3d-robot-viewer" },
-									{ label: "Navigation", href: "/demos/autonomous-navigation" },
+									{ label: "Navigation", href: "/demos/route-planning" },
 									{ label: "Cost Calculator", href: "/demos/cost-calculator" },
 								].map((demo) => (
 									<a

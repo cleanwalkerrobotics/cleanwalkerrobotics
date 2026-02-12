@@ -141,8 +141,18 @@ function Footer() {
 					</div>
 				</div>
 
-				<div className="mt-12 border-t border-white/10 pt-8 text-center text-sm text-gray-500">
-					&copy; {new Date().getFullYear()} MB Software Studio LLC. All rights reserved.
+				<div className="mt-12 flex flex-col items-center gap-4 border-t border-white/10 pt-8 text-sm text-gray-500">
+					<div className="flex gap-6">
+						<a href="/privacy" className="transition-colors hover:text-cw-green">
+							Privacy Policy
+						</a>
+						<a href="/terms" className="transition-colors hover:text-cw-green">
+							Terms of Service
+						</a>
+					</div>
+					<p>
+						&copy; {new Date().getFullYear()} MB Software Studio LLC. All rights reserved.
+					</p>
 				</div>
 			</div>
 		</footer>
