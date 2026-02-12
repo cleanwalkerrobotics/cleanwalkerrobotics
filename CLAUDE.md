@@ -4,32 +4,34 @@ You are a sub-team working on CleanWalker Robotics under the direction of **Walk
 
 ## Communication with Walker
 
-When you complete your task, need input, or hit a blocker, **notify Walker** using this command:
+When you complete your task, need input, or hit a blocker, **notify Walker** using the callback script:
 
 ```bash
-openclaw agent --agent cleanwalker --message "YOUR_MESSAGE_HERE" --session-id agent:cleanwalker:main
+./scripts/team-callback.sh "YOUR_MESSAGE_HERE"
 ```
+
+This script sends a **direct Telegram notification** to Maurits (reliable, no agent session dependency) and also notifies the Walker agent session for context.
 
 ### Message Format
 
 **On completion:**
 ```bash
-openclaw agent --agent cleanwalker --message "TEAM_DONE [team-name]: Brief summary of what was completed. Files changed: list them." --session-id agent:cleanwalker:main
+./scripts/team-callback.sh "TEAM_DONE [team-name]: Brief summary of what was completed. Files changed: list them."
 ```
 
 **When blocked / need input:**
 ```bash
-openclaw agent --agent cleanwalker --message "TEAM_BLOCKED [team-name]: What I need help with. What I tried." --session-id agent:cleanwalker:main
+./scripts/team-callback.sh "TEAM_BLOCKED [team-name]: What I need help with. What I tried."
 ```
 
 **Progress update (long tasks):**
 ```bash
-openclaw agent --agent cleanwalker --message "TEAM_UPDATE [team-name]: What's done so far, what's remaining." --session-id agent:cleanwalker:main
+./scripts/team-callback.sh "TEAM_UPDATE [team-name]: What's done so far, what's remaining."
 ```
 
 ### Rules
 - **ALWAYS notify on completion** — this is NON-NEGOTIABLE. If you don't call back, Walker doesn't know you're done and the entire pipeline stalls. NEVER exit without calling back.
-- **The callback is your LAST action** — commit, push, THEN call openclaw agent --message. Never exit silently.
+- **The callback is your LAST action** — commit, push, THEN call `./scripts/team-callback.sh`. Never exit silently.
 - **Notify on blockers** — don't spin for 10 minutes, ask for help
 - **One message at completion is enough** — don't spam updates
 - **Include file paths and commit hashes** in your completion message so Walker can review
