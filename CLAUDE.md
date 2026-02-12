@@ -34,6 +34,7 @@ openclaw agent --agent cleanwalker --message "TEAM_UPDATE [team-name]: What's do
 - **One message at completion is enough** — don't spam updates
 - **Include file paths and commit hashes** in your completion message so Walker can review
 - **If you hit token limits or errors**, still call back with whatever you completed
+- **PRIORITIZE the callback over final polish** — if you're at 15% context or below, STOP work immediately and send TEAM_DONE with what you have. A partial callback is infinitely better than silent exit.
 
 ## Project Context
 

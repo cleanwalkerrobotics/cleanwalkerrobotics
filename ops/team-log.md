@@ -256,3 +256,8 @@
 - **cw-software** idle at prompt ~2h, no callback. Output captured, session killed.
 - Task was complete (codebase knowledge system, commits 7cbca05/d3e2a76). No new commits in last 2h.
 - team-status.json updated. No sessions running. Quiet hours (01:46 COT).
+
+### Comms Optimizer Check — 2026-02-12 22:46 UTC
+- **cw-research** idle at prompt, no callback. macOS training package complete (commit 5bf3613, logged earlier). Session killed.
+- 2nd comms failure — teams keep completing without calling back. CLAUDE.md callback instructions may need reinforcement.
+- team-status.json updated. No sessions running. Quiet hours (17:46 COT).

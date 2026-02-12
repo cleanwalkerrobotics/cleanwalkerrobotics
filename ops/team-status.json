@@ -1,18 +1,18 @@
 {
-  "lastUpdated": "2026-02-12T16:46:00Z",
+  "lastUpdated": "2026-02-12T22:46:00Z",
   "teams": {
     "cw-software": {
       "status": "idle",
       "lastTask": "Website polish wave 2: error pages, performance, a11y, OG metadata, email signature + branded HTML one-pagers + legal pages",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-12T15:57:00Z",
-      "notes": "9 commits 15:50-16:34 UTC. Vercel redeploy triggered with RESEND_API_KEY."
+      "lastActive": "2026-02-12T15:57:00Z"
     },
     "cw-research": {
       "status": "idle",
-      "lastTask": "Technical white paper (3,587 words, branded HTML)",
+      "lastTask": "macOS Apple Silicon training package for CW-1 locomotion",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-12T16:08:00Z"
+      "lastActive": "2026-02-12T21:03:00Z",
+      "notes": "Commit 5bf3613. No callback sent — caught by comms optimizer. Session killed at 22:46 UTC."
     },
     "cw-bizdev": {
       "status": "idle",
@@ -28,7 +28,7 @@
     }
   },
   "activeSessions": 0,
-  "notes": "Big output burst 15:50-16:34 UTC (9 commits). All teams idle now. Tier 2 emails launch Feb 13. Awaiting replies from BEEAH/Amsterdam/Veolia.",
+  "notes": "All idle. cw-research finished macOS training package (5bf3613) but didn't callback — 2nd comms failure. Tier 2 emails launch Feb 13. Quiet hours (17:46 COT).",
   "autonomousOutreachApproved": true,
   "keyDirective": "GO AUTONOMOUS — Monitor replies, Tier 2 scheduled Feb 13-14, simulation needs GPU"
 }
