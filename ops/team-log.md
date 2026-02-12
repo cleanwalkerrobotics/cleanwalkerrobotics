@@ -2,6 +2,20 @@
 
 ## 2026-02-12
 
+### Technical White Paper (cw-research) — COMPLETED
+
+| 2026-02-12 16:30 | cw-research | Technical white paper: autonomous quadrupedal litter collection (3,587 words, branded HTML template) | de9f4dc |
+
+**Files created:**
+- `docs/sales/white-paper-autonomous-litter-collection.md` — 9-section white paper for municipal/enterprise technical evaluators
+- `docs/sales/templates/white-paper-template.html` — branded multi-page A4 HTML version with cover page
+
+**Sections:** Executive Summary, Urban Litter Challenge (market data), Technical Approach (locomotion, perception, grasping, navigation), System Architecture (specs table, software stack, fleet mgmt), Operational Model (RaaS, deployment), Safety & Compliance (EU MR 2023/1230, dual-channel safety, certification pathway), Economic Analysis (TCO comparison, ROI), Pilot Program, About.
+
+**QA Review:** No competitor brand names, no pricing leaked, all specs verified against source docs, professional academic tone confirmed.
+
+---
+
 ### Website Polish & Performance Wave 2 (cw-software) — COMPLETED
 | 2026-02-12 16:00 | cw-software | Custom error pages, next/font, skip-to-content, FAQ a11y, OG metadata, email signature | fad752f |
 
