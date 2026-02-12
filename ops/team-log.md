@@ -192,3 +192,9 @@
 | 2026-02-12 | cw-research | Component decision matrix: 15 subsystems analyzed with unit costs, confidence levels, supplier options. Total prototype $11,627, production @1000 $6,218. Actuators = 60% of cost. | ee9d71a |
 | 2026-02-12 | cw-software | Remove autonomous-navigation demo (covered by simulation), create demo registry system (registry.json + check-demo-registry.mjs + prebuild hook + CLAUDE.md rule) | 2bd0c57 |
 | 2026-02-12 | cw-software | Codebase manifest system: 5 MANIFEST.md files (apps/web, firmware, ml, hardware, docs), check-manifests.mjs validation script, 211 files tracked at 100% coverage, wired into prebuild, CLAUDE.md updated with mandatory manifest rules | pending |
+
+### Codebase Manifest System (cw-software) — COMPLETED
+- **Task:** Codebase manifest system with prebuild validation + demo registry
+- **Commits:** 4186be0 (manifest system), f80634d (demo registry)
+- **Note:** Session ran out of context (5%) before deploying to Vercel. Deployment pending.
+- **Comms issue:** No callback sent — caught by team-comms-optimizer at 02:46 UTC
