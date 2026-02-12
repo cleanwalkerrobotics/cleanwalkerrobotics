@@ -80,18 +80,28 @@ Before committing any render, image, or website visual change:
 3. **Always include in render prompts:** "No text, no logos, no branding, no watermarks on the robot body"
 4. For website changes: use `node scripts/screenshot.mjs <url> <output.png>` to screenshot pages and visually verify layout
 
-## Demo Registry (MANDATORY)
+## Codebase Manifest System (MANDATORY)
 
-Before creating a new demo page, **check `apps/web/src/app/demos/registry.json`** for existing demos with similar purposes. If a demo already covers the concept, enhance it instead of creating a duplicate.
+Every division maintains a `MANIFEST.md` tracking all owned files. **Every commit that adds, removes, or moves files MUST update the relevant MANIFEST.md.** The prebuild script (`node scripts/check-manifests.mjs`) validates manifests — **untracked files will fail the build.**
 
-When adding a new demo:
-1. Check `registry.json` for overlapping purposes
-2. Add a directory under `apps/web/src/app/demos/<slug>/`
-3. Add an entry to `registry.json` with: `id`, `name`, `purpose` (1-line), `status` ("active"), `added` (YYYY-MM-DD)
-4. Add it to the demos grid in `apps/web/src/app/demos/page.tsx`
-5. Run `node scripts/check-demo-registry.mjs` to validate
+### Manifest locations:
+- `apps/web/MANIFEST.md` — pages, components, API routes, demos, configs
+- `firmware/MANIFEST.md` — Rust crates, ROS2 packages, controllers
+- `ml/MANIFEST.md` — models, training configs, perception scripts
+- `hardware/MANIFEST.md` — URDFs, PCB designs, BOM files
+- `docs/MANIFEST.md` — research, sales, grants, strategy docs
 
-The `prebuild` script runs this check automatically — **unregistered demos will fail the build**.
+### When adding a file:
+1. Add an entry to the relevant `MANIFEST.md` with: path (relative to division root), purpose (1 line), status (`active`/`deprecated`/`draft`), updated date
+2. Run `node scripts/check-manifests.mjs` to validate
+3. For demos: also add to `apps/web/src/app/demos/registry.json` and the demos grid
+
+### When removing/moving a file:
+1. Remove or update the entry in `MANIFEST.md`
+2. Run `node scripts/check-manifests.mjs` to confirm no stale entries
+
+### What's NOT tracked (auto-excluded by the check script):
+Binary assets (images, fonts, STL), lock files, `.gitkeep`, `.gitignore`, `.env*`, build artifacts, `__pycache__`
 
 ## Standards
 - Commit messages: `type(scope): description` (conventional commits)
