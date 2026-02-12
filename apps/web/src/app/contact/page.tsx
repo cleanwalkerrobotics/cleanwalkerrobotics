@@ -451,6 +451,8 @@ export default function ContactPage() {
 							>
 								<button
 									onClick={() => setOpenFaq(openFaq === i ? null : i)}
+									aria-expanded={openFaq === i}
+									aria-label={`${faq.question} — ${openFaq === i ? "collapse" : "expand"}`}
 									className="flex w-full items-center justify-between px-6 py-5 text-left"
 								>
 									<span className="pr-4 text-sm font-semibold text-white">

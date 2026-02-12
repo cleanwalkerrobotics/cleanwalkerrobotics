@@ -2,8 +2,15 @@
 // Licensed under the AGPL-3.0 License. See LICENSE in the project root.
 
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+
+const inter = Inter({
+	subsets: ["latin"],
+	display: "swap",
+	variable: "--font-inter",
+});
 
 const siteUrl = "https://cleanwalkerrobotics.com";
 
@@ -165,10 +172,16 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body className="min-h-screen bg-cw-dark text-gray-900 antialiased">
+		<html lang="en" className={inter.variable}>
+			<body className="min-h-screen bg-cw-dark font-sans text-gray-900 antialiased">
+				<a
+					href="#main-content"
+					className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-20 focus:z-[60] focus:rounded-lg focus:bg-cw-green focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+				>
+					Skip to content
+				</a>
 				<Navbar />
-				<main className="pt-16">{children}</main>
+				<main id="main-content" className="pt-16">{children}</main>
 				<Footer />
 			</body>
 		</html>

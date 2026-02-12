@@ -8,6 +8,11 @@ export const metadata: Metadata = {
 	title: "Insights",
 	description:
 		"Articles on autonomous robotics, litter collection technology, and the future of municipal waste management from the CleanWalker team.",
+	openGraph: {
+		title: "Insights — CleanWalker Robotics",
+		description:
+			"Articles on autonomous robotics, litter collection technology, and the future of municipal waste management.",
+	},
 };
 
 export default function InsightsPage() {
