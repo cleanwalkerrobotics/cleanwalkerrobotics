@@ -2,6 +2,10 @@
 
 ## 2026-02-12
 
+### Remove Explicit Pricing (cw-software) — COMPLETED
+
+| 2026-02-12 | cw-software | Remove explicit $3,000-3,500 pricing from 13 one-pagers, cost calculator demo, SRTIP application; add review header to pilot financial model; regenerate 13 PDFs; update CODEBASE.md | c974849 |
+
 ### Demo Rebrand + OG Cache Script (cw-software) — COMPLETED
 
 | 2026-02-12 | cw-software | Rebrand litter detection demo (remove WebGPU/YOLO/ONNX from UI), tone down tech branding across all demos + homepage + product + about pages, create OG cache invalidation script, add post-deploy docs to CLAUDE.md | 17fc47e |
