@@ -80,18 +80,27 @@ Before committing any render, image, or website visual change:
 3. **Always include in render prompts:** "No text, no logos, no branding, no watermarks on the robot body"
 4. For website changes: use `node scripts/screenshot.mjs <url> <output.png>` to screenshot pages and visually verify layout
 
-## Demo Registry (MANDATORY)
+## Codebase Knowledge (MANDATORY)
 
-Before creating a new demo page, **check `apps/web/src/app/demos/registry.json`** for existing demos with similar purposes. If a demo already covers the concept, enhance it instead of creating a duplicate.
+Before starting any task:
+1. **Read `CODEBASE.md`** at the repo root — auto-generated map of all divisions, files, and structure
+2. **Read `PURPOSE.md`** in the division you're working in — what belongs here, what doesn't, who owns it
+3. After adding or removing files, **run `node scripts/generate-codebase-map.mjs`** to regenerate `CODEBASE.md`
+4. PURPOSE.md updates are only needed when a division's scope changes (rare)
+
+The `prebuild` script validates CODEBASE.md freshness, PURPOSE.md existence, and demo registration automatically.
+
+## Demo Registry
+
+Before creating a new demo, **check `apps/web/src/app/demos/registry.json`** for existing demos with similar purposes. Enhance existing demos instead of duplicating.
 
 When adding a new demo:
 1. Check `registry.json` for overlapping purposes
 2. Add a directory under `apps/web/src/app/demos/<slug>/`
 3. Add an entry to `registry.json` with: `id`, `name`, `purpose` (1-line), `status` ("active"), `added` (YYYY-MM-DD)
 4. Add it to the demos grid in `apps/web/src/app/demos/page.tsx`
-5. Run `node scripts/check-demo-registry.mjs` to validate
 
-The `prebuild` script runs this check automatically — **unregistered demos will fail the build**.
+Unregistered demos will fail the prebuild check.
 
 ## Standards
 - Commit messages: `type(scope): description` (conventional commits)
