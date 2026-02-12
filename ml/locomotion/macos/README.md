@@ -5,7 +5,39 @@ Train the CleanWalker CW-1 quadruped locomotion policy on your Mac using MuJoCo 
 **Target hardware:** Apple M4 Max (40-core GPU, 32GB unified RAM)
 **Expected training time:** ~30-60 min for 2M steps
 
-## Quick Start
+## One Command
+
+Run the entire pipeline — setup, train, validate, and render — with a single command:
+
+```bash
+cd ml/locomotion/macos
+./run.sh
+```
+
+That's it. The script will:
+1. Check Python 3.10+, create a venv, and install all dependencies
+2. Verify MPS (Apple GPU) availability (falls back to CPU if needed)
+3. Convert URDF → MuJoCo MJCF
+4. Train PPO for 2M steps (~30-60 min on M4 Max)
+5. Validate the policy against a random baseline
+6. Render a demo video and open it
+
+**Options:**
+```bash
+./run.sh --steps 500000    # Shorter training run
+./run.sh --skip-video      # Skip video rendering
+./run.sh --cpu-only        # Force CPU (no MPS)
+```
+
+After training, package your model for distribution:
+```bash
+python upload_model.py --local    # Create versioned zip archive
+python upload_model.py --github   # Create GitHub release (requires gh CLI)
+```
+
+## Manual Quick Start
+
+If you prefer step-by-step:
 
 ```bash
 # 1. Install Python 3.11+ (if not already installed)
@@ -28,13 +60,16 @@ python convert_urdf_to_mjcf.py
 # 6. Train (2M steps, ~30-60 min on M4 Max)
 python train.py
 
-# 7. Watch the trained policy walk
+# 7. Validate the trained policy
+python validate.py
+
+# 8. Watch the trained policy walk
 python play.py
 
-# 8. Export for deployment
+# 9. Export for deployment
 python export_policy.py
 
-# 9. Render a polished demo video
+# 10. Render a polished demo video
 python render_demo.py
 ```
 
@@ -48,6 +83,9 @@ python render_demo.py
 | `play.py` | Interactive MuJoCo viewer with trained policy |
 | `export_policy.py` | Export trained policy to ONNX |
 | `render_demo.py` | Render polished 1080p demo video |
+| `run.sh` | **One-command** full pipeline (setup → train → validate → render) |
+| `validate.py` | Evaluate policy vs random baseline (100 episodes) |
+| `upload_model.py` | Package & upload model (local zip or GitHub release) |
 
 ## Environment Details
 
