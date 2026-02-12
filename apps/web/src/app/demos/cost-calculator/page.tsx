@@ -19,11 +19,12 @@ export default function CostCalculatorPage() {
 	const [hoursPerDay, setHoursPerDay] = useState(8);
 	const [daysPerWeek, setDaysPerWeek] = useState(5);
 	const [complaints, setComplaints] = useState(50);
+	const [costPerUnit, setCostPerUnit] = useState(3000);
 
 	const calc = useMemo(() => {
 		const annualLaborCost = workers * hourlyRate * hoursPerDay * daysPerWeek * 52;
 		const recommendedUnits = Math.max(1, Math.ceil(acres / 7.5));
-		const annualRobotCost = recommendedUnits * 3250 * 12;
+		const annualRobotCost = recommendedUnits * costPerUnit * 12;
 		const annualSavings = annualLaborCost - annualRobotCost;
 		const roiPct = annualRobotCost > 0 ? (annualSavings / annualRobotCost) * 100 : 0;
 		const paybackMonths =
@@ -51,7 +52,7 @@ export default function CostCalculatorPage() {
 			coverageIncreasePct,
 			isPositive: annualSavings > 0,
 		};
-	}, [acres, workers, hourlyRate, hoursPerDay, daysPerWeek, complaints]);
+	}, [acres, workers, hourlyRate, hoursPerDay, daysPerWeek, complaints, costPerUnit]);
 
 	return (
 		<div className="min-h-screen bg-cw-dark">
@@ -216,6 +217,16 @@ export default function CostCalculatorPage() {
 								max={500}
 								step={5}
 								onChange={setComplaints}
+							/>
+							<SliderInput
+								label="Est. Monthly Cost / Unit"
+								value={costPerUnit}
+								min={1500}
+								max={5000}
+								step={50}
+								prefix="$"
+								suffix="/mo"
+								onChange={setCostPerUnit}
 								last
 							/>
 						</div>
@@ -597,8 +608,8 @@ export default function CostCalculatorPage() {
 				<div className="mt-8 border-t border-white/5 pt-6 text-center">
 					<p className="font-mono text-[10px] text-gray-600">
 						Calculations based on estimated averages. Actual savings may vary
-						based on facility-specific conditions. CleanWalker pricing at
-						$3,250/unit/month (RaaS model). Contact sales for custom quotes.
+						based on facility-specific conditions. CleanWalker pricing is
+						customized per deployment — contact sales for a tailored quote.
 					</p>
 				</div>
 			</div>

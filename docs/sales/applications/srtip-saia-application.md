@@ -19,7 +19,7 @@
 | **Legal entity** | MB Software Studio LLC (United States) |
 | **Founder** | Maurits Bos — Dutch national, based in Colombia, software engineering and full-stack robotics background |
 | **Product** | Autonomous quadrupedal litter-collecting robot (CW-1) |
-| **Business model** | Robot-as-a-Service (RaaS) — USD 3,000–3,500/month per unit, all-inclusive |
+| **Business model** | Robot-as-a-Service (RaaS) — custom pricing per unit based on deployment scope, fleet size, and SLA requirements |
 | **Stage** | Pre-production — ML pipeline operational, URDF model complete, RL training configured, live AI demo at cleanwalkerrobotics.com |
 | **SAIA focus sector** | Waste Management & Circularity |
 | **License** | AGPL-3.0 |
@@ -99,13 +99,13 @@ No new waste processing infrastructure is required. CleanWalker fills bags. Tand
 
 ### Robot-as-a-Service (RaaS) Model
 
-| Tier | Monthly Rate (USD) | Contract | Includes |
-|------|-------------------|----------|----------|
-| Pilot | 3,000/unit | 6 months | Hardware, software, fleet dashboard, maintenance, OTA updates |
-| Standard | 3,500/unit | 12 months | Same + SLA guarantees |
-| Fleet | 3,000/unit | 24+ months, 50+ units | Volume pricing, dedicated support |
+| Tier | Contract | Includes |
+|------|----------|----------|
+| Pilot | 6 months | Hardware, software, fleet dashboard, maintenance, OTA updates |
+| Standard | 12 months | Same + SLA guarantees |
+| Fleet | 24+ months, 50+ units | Volume pricing, dedicated support |
 
-Each unit operates 20+ hours/day via autonomous dock charging, replacing the equivalent of 1.5–2.5 FTEs of manual litter collection. At standard pricing, CleanWalker delivers 40–60% cost savings versus manual labour at scale.
+Pricing is customized based on deployment scope, fleet size, and SLA requirements. Each unit operates 20+ hours/day via autonomous dock charging, replacing the equivalent of 1.5–2.5 FTEs of manual litter collection. CleanWalker delivers 40–60% cost savings versus manual labour at scale.
 
 ---
 

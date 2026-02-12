@@ -35,7 +35,7 @@ Collected waste is bagged for existing collection routes — no new infrastructu
 
 | Metric | Details |
 |--------|---------|
-| Monthly cost per unit | USD 3,000–3,500 (RaaS model, all-inclusive) |
+| Monthly cost per unit | Custom — based on deployment scope, fleet size, and SLA requirements |
 | Manual labour equivalent | Each unit offsets 1.5–2.5 FTEs of manual litter picking |
 | ROI vs. manual collection | 40–60% cost reduction at scale across park zones |
 | Hardware ownership | Zero — the municipality pays only for the service |

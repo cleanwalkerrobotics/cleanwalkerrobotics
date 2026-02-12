@@ -1,5 +1,7 @@
 # CleanWalker Robotics -- Pilot Financial Model
 
+> **⚠️ UNDER REVIEW:** Unit costs based on consumer-grade components. Industrial-grade recalculation in progress.
+
 **Date:** February 2026
 **Version:** 1.0
 **Purpose:** Answer the CEO's question: "If I charge a customer X for a pilot, what does it actually cost me, and what do I need upfront?"
