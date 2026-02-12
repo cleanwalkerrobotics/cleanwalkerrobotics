@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanWalker Robotics — Technical White Paper: Autonomous Quadrupedal Litter Collection</title>
+    <style>
+        /* Reset & Base */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        @page { size: A4; margin: 0; }
+        @page :first { margin-top: 0; }
+        html, body { width: 100%; }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 10.5px;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #ffffff;
+        }
+
+        /* Page Container */
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 18mm 22mm 18mm 22mm;
+            page-break-after: always;
+            position: relative;
+        }
+        .page:last-child { page-break-after: auto; }
+
+        /* Cover Page */
+        .cover {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(175deg, #111827 0%, #1f2937 45%, #111827 100%);
+            color: #ffffff;
+            text-align: center;
+            page-break-after: always;
+            position: relative;
+        }
+        .cover-accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #22c55e;
+        }
+        .cover-logo {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+        .cover-logo span { color: #22c55e; }
+        .cover-divider {
+            width: 80px;
+            height: 3px;
+            background: #22c55e;
+            margin: 24px auto;
+        }
+        .cover-title {
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1.3;
+            max-width: 480px;
+            margin-bottom: 12px;
+        }
+        .cover-subtitle {
+            font-size: 14px;
+            color: #9ca3af;
+            font-weight: 400;
+            max-width: 420px;
+            line-height: 1.5;
+            margin-bottom: 40px;
+        }
+        .cover-meta {
+            font-size: 11px;
+            color: #6b7280;
+            line-height: 1.8;
+        }
+        .cover-footer {
+            position: absolute;
+            bottom: 24px;
+            font-size: 10px;
+            color: #4b5563;
+        }
+        .cover-footer a { color: #22c55e; text-decoration: none; }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #22c55e;
+            margin-bottom: 16px;
+        }
+        .page-header-logo {
+            font-size: 13px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .page-header-logo span { color: #22c55e; }
+        .page-header-title {
+            font-size: 9px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        /* Page Footer */
+        .page-footer {
+            position: absolute;
+            bottom: 14mm;
+            left: 22mm;
+            right: 22mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 8px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 8px;
+            color: #9ca3af;
+        }
+        .page-footer a { color: #22c55e; text-decoration: none; }
+
+        /* Headings */
+        h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #22c55e;
+        }
+        h2 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #111827;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-top: 16px;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1.5px solid #e5e7eb;
+        }
+        h2 .num { color: #22c55e; margin-right: 6px; }
+        h3 {
+            font-size: 11px;
+            font-weight: 700;
+            color: #374151;
+            margin-top: 12px;
+            margin-bottom: 6px;
+        }
+
+        /* Body Text */
+        p {
+            font-size: 10.5px;
+            line-height: 1.65;
+            color: #374151;
+            margin-bottom: 8px;
+            text-align: justify;
+            hyphens: auto;
+        }
+
+        /* Lists */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 8px;
+        }
+        ul li {
+            font-size: 10.5px;
+            line-height: 1.55;
+            color: #374151;
+            padding: 2px 0 2px 16px;
+            position: relative;
+        }
+        ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+        }
+        ul li strong { color: #111827; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0 12px 0;
+            font-size: 10px;
+        }
+        th {
+            background: #f0fdf4;
+            color: #111827;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 6px 10px;
+            text-align: left;
+            border-bottom: 2px solid #22c55e;
+        }
+        td {
+            font-size: 10px;
+            color: #374151;
+            padding: 5px 10px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+        tr:last-child td { border-bottom: none; }
+        td:first-child { font-weight: 600; color: #111827; }
+
+        /* Callout Box */
+        .callout {
+            background: #f0fdf4;
+            border-left: 3px solid #22c55e;
+            padding: 10px 14px;
+            margin: 10px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .callout p {
+            font-size: 10.5px;
+            color: #374151;
+            margin-bottom: 0;
+        }
+        .callout strong { color: #111827; }
+
+        /* Stat Grid */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 10px 0 14px 0;
+        }
+        .stat-item {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 10px 8px;
+            text-align: center;
+        }
+        .stat-item .number {
+            font-size: 18px;
+            font-weight: 700;
+            color: #22c55e;
+            line-height: 1.2;
+        }
+        .stat-item .label {
+            font-size: 8px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-top: 3px;
+            line-height: 1.3;
+        }
+
+        /* Executive Summary Box */
+        .exec-summary {
+            background: #111827;
+            color: #e5e7eb;
+            padding: 16px 18px;
+            border-radius: 6px;
+            margin-bottom: 14px;
+        }
+        .exec-summary h2 {
+            color: #22c55e;
+            border-bottom-color: #374151;
+            margin-top: 0;
+        }
+        .exec-summary p {
+            color: #d1d5db;
+            font-size: 10.5px;
+        }
+
+        /* Two Column */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: #111827;
+            color: #ffffff;
+            padding: 14px 18px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+        }
+        .cta-text { font-size: 11px; }
+        .cta-text strong {
+            font-size: 13px;
+            display: block;
+            margin-bottom: 3px;
+        }
+        .cta-text a { color: #22c55e; text-decoration: none; font-weight: 600; }
+        .cta-contact {
+            text-align: right;
+            font-size: 10px;
+            line-height: 1.7;
+        }
+        .cta-contact strong { font-size: 11px; display: block; }
+        .cta-contact a { color: #22c55e; text-decoration: none; }
+
+        /* Spec Table Highlight */
+        .spec-table td:first-child {
+            width: 40%;
+            background: #fafafa;
+        }
+
+        /* Section Number Badge */
+        .section-num {
+            display: inline-block;
+            background: #22c55e;
+            color: #ffffff;
+            font-size: 9px;
+            font-weight: 700;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 50%;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        /* Print Styles */
+        @media print {
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .page { page-break-after: always; }
+            .cover { page-break-after: always; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- COVER PAGE -->
+    <div class="cover">
+        <div class="cover-accent"></div>
+        <div class="cover-logo">Clean<span>Walker</span> Robotics</div>
+        <div class="cover-divider"></div>
+        <div class="cover-title">Autonomous Quadrupedal Litter Collection</div>
+        <div class="cover-subtitle">A Technical White Paper for Municipal Operations, Property Management, and Procurement Teams</div>
+        <div class="cover-meta">
+            February 2026<br>
+            Version 1.0<br>
+            CONFIDENTIAL
+        </div>
+        <div class="cover-footer">
+            <a href="https://cleanwalkerrobotics.com">cleanwalkerrobotics.com</a> &nbsp;|&nbsp;
+            <a href="mailto:walker@cleanwalkerrobotics.com">walker@cleanwalkerrobotics.com</a> &nbsp;|&nbsp;
+            MB Software Studio LLC
+        </div>
+    </div>
+
+    <!-- PAGE 2: EXECUTIVE SUMMARY + MARKET PROBLEM -->
+    <div class="page">
+        <div class="page-header">
+            <div class="page-header-logo">Clean<span>Walker</span> Robotics</div>
+            <div class="page-header-title">Technical White Paper &mdash; Autonomous Litter Collection</div>
+        </div>
+
+        <div class="exec-summary">
+            <h2>Executive Summary</h2>
+            <p>Urban litter collection consumes $8&ndash;12 billion annually in the United States alone, with 55&ndash;70% of costs driven by manual labor. Current solutions&mdash;diesel sweeper trucks and manual crews&mdash;cannot access the parks, plazas, and pedestrian zones where litter is most visible and collection most labor-intensive.</p>
+            <p style="margin-top: 6px;">CleanWalker Robotics has developed the CW-1, an autonomous quadrupedal robot for outdoor litter collection. The CW-1 combines terrain-adaptive legged locomotion, an AI perception pipeline detecting 10 litter categories in under 75 ms, and a robotic arm with class-specific grasping. Deployed as a Robot-as-a-Service fleet, the CW-1 delivers 40&ndash;60% cost reduction versus manual labor at scale while operating across grass, gravel, paths, and uneven terrain that wheeled platforms cannot traverse.</p>
+        </div>
+
+        <h1><span class="section-num">1</span> The Urban Litter Challenge</h1>
+
+        <h3>Scale of the Problem</h3>
+        <p>Municipal cleaning is a substantial and growing fiscal burden. US municipalities spend $8&ndash;12 billion annually on street cleaning; the EU allocates a comparable EUR 9&ndash;14 billion. Individual cities bear disproportionate costs: San Francisco allocates $47.8 million annually ($59 per capita), while NYC's Department of Sanitation devotes ~$890 million to collection and street cleaning. San Francisco's budget rose 63% between 2018 and 2025, yet the city simultaneously cut 20 positions due to fiscal pressure.</p>
+
+        <div class="stat-grid">
+            <div class="stat-item">
+                <div class="number">$8-12B</div>
+                <div class="label">US Annual Street Cleaning Spend</div>
+            </div>
+            <div class="stat-item">
+                <div class="number">55-70%</div>
+                <div class="label">Labor Share of Cleaning Costs</div>
+            </div>
+            <div class="stat-item">
+                <div class="number">$85K</div>
+                <div class="label">Fully Loaded FTE Cost (High)</div>
+            </div>
+            <div class="stat-item">
+                <div class="number">0</div>
+                <div class="label">Certified Outdoor Litter Robots</div>
+            </div>
+        </div>
+
+        <h3>Why Current Solutions Fail</h3>
+        <p><strong>Mechanized sweepers</strong> ($250K&ndash;$450K per unit) are confined to paved roads, generate 85&ndash;95 dB noise, and cannot selectively collect individual litter items from grass or garden beds. <strong>Manual crews</strong> cost $55,000&ndash;$85,000 per FTE annually, face recruitment challenges, and cover only 2&ndash;4 hectares per shift. Neither operates economically during off-peak hours, and neither generates data on litter accumulation patterns.</p>
+
+        <h3>The Automation Gap</h3>
+        <p>The autonomous cleaning robot market ($592M in 2025, projected $832M by 2034) has focused exclusively on indoor environments. All commercially certified autonomous cleaners operate in airports, malls, and warehouses on flat, predictable surfaces. No commercially available robot addresses outdoor litter collection in parks, plazas, and pedestrian zones&mdash;the segment where labor costs per hectare are highest.</p>
+
+        <div class="page-footer">
+            <span>&copy; 2026 MB Software Studio LLC</span>
+            <span><a href="https://cleanwalkerrobotics.com">cleanwalkerrobotics.com</a></span>
+            <span>Page 2</span>
+        </div>
+    </div>
+
+    <!-- PAGE 3: TECHNICAL APPROACH -->
+    <div class="page">
+        <div class="page-header">
+            <div class="page-header-logo">Clean<span>Walker</span> Robotics</div>
+            <div class="page-header-title">Technical White Paper &mdash; Autonomous Litter Collection</div>
+        </div>
+
+        <h1><span class="section-num">2</span> Technical Approach</h1>
+
+        <h3>Quadrupedal Locomotion</h3>
+        <p>The CW-1 uses four-legged locomotion rather than wheels or tracks. Urban parks present grass, gravel, tree roots, curbs, slopes to 15&deg;, and narrow gaps between furniture that wheeled platforms cannot traverse. Each leg has three degrees of freedom (hip abduction, hip flexion, knee flexion) driven by quasi-direct-drive actuators providing up to 24.8 Nm peak torque. The 12-DOF system enables dynamic gait selection&mdash;trot, walk, and amble&mdash;based on real-time terrain classification. Ground clearance of ~35 cm allows stepping over low obstacles.</p>
+        <p>Locomotion control uses model predictive control (MPC) for initial deployment, with a reinforcement learning policy trained in NVIDIA Isaac Lab (4,096 parallel environments, domain randomization) as the production path for superior terrain adaptability.</p>
+
+        <h3>AI Perception Pipeline</h3>
+        <p>Three concurrent pipelines run on a single NVIDIA Jetson Orin Nano Super (67 TOPS INT8):</p>
+        <ul>
+            <li><strong>Litter Detection:</strong> YOLO26s (TensorRT INT8) detects 10 litter categories at ~260 FPS with 5&ndash;10 ms latency. STAL (Small-Target-Aware Label Assignment) ensures detection of items as small as cigarette butts at 0.3&ndash;5 m range. Trained on 30,000+ annotated images from public and field-collected datasets.</li>
+            <li><strong>Stereo Depth:</strong> OAK-D Pro provides hardware stereo depth at 30 FPS (0.7&ndash;15 m, active IR) with zero GPU cost&mdash;runs on the camera's onboard 4 TOPS VPU. Isaac ROS ESS adds confidence-filtered depth for production.</li>
+            <li><strong>Terrain Segmentation:</strong> SegFormer-B0 (TRT FP16) classifies 8 ground surface types at 5 Hz, feeding speed and traversability costs directly into the navigation costmap.</li>
+            <li><strong>SLAM &amp; Localization:</strong> cuVSLAM (GPU visual odometry, 30 Hz, 9% GPU) fused with RTAB-Map mapping and Livox Mid-360 LiDAR (360&deg; &times; 59&deg; FOV, IP67) via EKF sensor fusion.</li>
+        </ul>
+
+        <div class="callout">
+            <p><strong>Pipeline Performance:</strong> The full detection-to-grasp pipeline operates within 50&ndash;75 ms end-to-end. Total GPU utilization across all concurrent models is ~52%, with 48% headroom for future capabilities. Memory usage is 3.6 GB of 8 GB available.</p>
+        </div>
+
+        <h3>Grasping System</h3>
+        <p>A 5-DOF robotic arm (turret, shoulder, elbow, wrist, gripper) with 50 cm reach collects detected items. GR-ConvNet v2 (1.9M params, 5&ndash;10 ms TRT INT8) generates grasp poses achieving 95.4% success rate, with class-specific strategies: enveloping grasps for bottles/cans, pinch grasps for cigarette butts, scoop grasps for flat wrappers. A wrist camera provides visual servoing for the final approach. Failed grasps (3 attempts) are logged with GPS and photo for human review.</p>
+
+        <h3>Autonomous Navigation</h3>
+        <p>ROS 2 Nav2 handles path planning and obstacle avoidance, integrated with Boustrophedon Cell Decomposition for systematic area coverage. Pedestrian-aware navigation inflates detected people into costmap zones (1.5 m adults, 2.0 m children/pets) with adaptive speed modulation: 0.5 m/s at distance, full stop below 2 m.</p>
+
+        <div class="page-footer">
+            <span>&copy; 2026 MB Software Studio LLC</span>
+            <span><a href="https://cleanwalkerrobotics.com">cleanwalkerrobotics.com</a></span>
+            <span>Page 3</span>
+        </div>
+    </div>
+
+    <!-- PAGE 4: SYSTEM ARCHITECTURE -->
+    <div class="page">
+        <div class="page-header">
+            <div class="page-header-logo">Clean<span>Walker</span> Robotics</div>
+            <div class="page-header-title">Technical White Paper &mdash; Autonomous Litter Collection</div>
+        </div>
+
+        <h1><span class="section-num">3</span> System Architecture</h1>
+
+        <h3>CW-1 Platform Specifications</h3>
+        <table class="spec-table">
+            <thead>
+                <tr><th>Parameter</th><th>Specification</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Mass</td><td>15 kg (fully loaded)</td></tr>
+                <tr><td>Dimensions (L &times; W &times; H)</td><td>60 &times; 20 &times; 55 cm (standing)</td></tr>
+                <tr><td>Locomotion</td><td>12-DOF quadrupedal, 3 joints per leg</td></tr>
+                <tr><td>Manipulation</td><td>5-DOF arm with mechanical gripper, 50 cm reach</td></tr>
+                <tr><td>Compute</td><td>NVIDIA Jetson Orin Nano Super (8 GB, 67 TOPS)</td></tr>
+                <tr><td>Primary Camera</td><td>Luxonis OAK-D Pro (12 MP RGB, stereo depth, 9-axis IMU)</td></tr>
+                <tr><td>LiDAR</td><td>Livox Mid-360 (360&deg; &times; 59&deg; FOV, 70 m range, IP67)</td></tr>
+                <tr><td>Battery</td><td>48V 20Ah Li-ion NMC (960 Wh)</td></tr>
+                <tr><td>Runtime</td><td>4&ndash;5 hours per charge (terrain dependent)</td></tr>
+                <tr><td>Operating Speed</td><td>0.5 m/s patrol &nbsp;|&nbsp; 1.5 m/s transit</td></tr>
+                <tr><td>Litter Categories</td><td>10 classes (bottles, cans, butts, paper, bags, wrappers, glass, cardboard, styrofoam, general)</td></tr>
+                <tr><td>Detection Latency</td><td>5&ndash;10 ms (YOLO26s TensorRT INT8)</td></tr>
+                <tr><td>Full Pipeline Latency</td><td>50&ndash;75 ms (detection through grasp pose)</td></tr>
+                <tr><td>Connectivity</td><td>4G LTE (global) + WiFi</td></tr>
+                <tr><td>Weather Rating</td><td>IP65 (dust-tight, water jet resistant)</td></tr>
+                <tr><td>Noise Level</td><td>&lt; 55 dB at 1 m</td></tr>
+                <tr><td>Operating Temperature</td><td>-10&deg;C to 45&deg;C</td></tr>
+                <tr><td>Charging</td><td>Autonomous contact docking, 2&ndash;4 hr charge</td></tr>
+                <tr><td>Collection System</td><td>Roll-dispensed bag, auto-seal, 30&ndash;50 L</td></tr>
+                <tr><td>Safety</td><td>Physical + wireless e-stop, independent safety MCU</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Software Stack</h3>
+        <p>Built on ROS 2 Humble Hawksbill (LTS through May 2027) with TensorRT-optimized neural networks, Nav2 navigation, BehaviorTree.CPP v4 state management, and a cloud-based fleet management dashboard for remote monitoring, mission assignment, telemetry, and OTA model updates.</p>
+
+        <h3>Fleet Management</h3>
+        <p>Each CW-1 reports real-time telemetry&mdash;position, battery state, collection count, litter heatmaps, system health&mdash;to a web-based dashboard. Operators define geofenced zones, schedule patrols, review analytics, and receive automated maintenance alerts. OTA updates enable continuous model improvement without physical access.</p>
+
+        <div class="page-footer">
+            <span>&copy; 2026 MB Software Studio LLC</span>
+            <span><a href="https://cleanwalkerrobotics.com">cleanwalkerrobotics.com</a></span>
+            <span>Page 4</span>
+        </div>
+    </div>
+
+    <!-- PAGE 5: OPERATIONS + SAFETY -->
+    <div class="page">
+        <div class="page-header">
+            <div class="page-header-logo">Clean<span>Walker</span> Robotics</div>
+            <div class="page-header-title">Technical White Paper &mdash; Autonomous Litter Collection</div>
+        </div>
+
+        <h1><span class="section-num">4</span> Operational Model</h1>
+
+        <h3>Robot-as-a-Service (RaaS)</h3>
+        <p>CleanWalker deploys exclusively via a monthly subscription that includes hardware, software, remote monitoring, maintenance, and model updates. This eliminates capital expenditure, aligns cost with usage, and ensures continuous fleet improvement. The RaaS model suits municipal procurement where OPEX budgets are more flexible than CAPEX.</p>
+
+        <h3>Deployment Process</h3>
+        <table>
+            <thead>
+                <tr><th>Phase</th><th>Duration</th><th>Activities</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Site Assessment</td><td>2 weeks</td><td>Survey area, plan dock placement, define operating zones</td></tr>
+                <tr><td>Infrastructure</td><td>2 weeks</td><td>Install charging docks, outdoor power, network</td></tr>
+                <tr><td>Deployment</td><td>1 week</td><td>Deploy fleet, initial mapping, supervised autonomy</td></tr>
+                <tr><td>Operations</td><td>Ongoing</td><td>Full autonomous operation with remote monitoring</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Maintenance</h3>
+        <p>Quarterly gripper pad replacement, semi-annual actuator inspection, annual battery assessment. All maintenance performed on-site through modular component swap. Remote diagnostics identify issues before downtime occurs.</p>
+
+        <h1 style="margin-top: 18px;"><span class="section-num">5</span> Safety &amp; Compliance</h1>
+
+        <h3>EU Machinery Regulation 2023/1230</h3>
+        <p>The CW-1 is designed for full compliance with EU Machinery Regulation 2023/1230 (effective January 20, 2027). As an autonomous machine with ML-based safety functions, it requires mandatory Notified Body CE certification under Annex I, Part A. The architecture addresses autonomous mobile machinery provisions (Section 3.5.4): supervisor function, working area safety, and movement functions with people/animal detection.</p>
+
+        <h3>Dual-Channel Safety Architecture</h3>
+        <ul>
+            <li><strong>Software layer:</strong> Behavior tree enforces pedestrian clearance (1.5 m adults, 2.0 m children/pets), speed modulation, geofence compliance, and battery management with immediate stop on collision risk detection.</li>
+            <li><strong>Hardware layer:</strong> Independent STM32 safety MCU monitors physical e-stop, wireless kill switch (100 m range), motor overcurrent, Jetson watchdog, and tilt/rollover. Cuts motor power via hardware relay within 10 ms. Satisfies ISO 13849 Performance Level d.</li>
+        </ul>
+
+        <h3>Applicable Standards</h3>
+        <table>
+            <thead>
+                <tr><th>Standard</th><th>Scope</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>EN ISO 12100:2010</td><td>Risk assessment and risk reduction</td></tr>
+                <tr><td>ISO 13482 (revised)</td><td>Safety for professional service robots</td></tr>
+                <tr><td>IEC 63327</td><td>Autonomous mobile robot safety</td></tr>
+                <tr><td>ISO 13849-1 / IEC 62061</td><td>Safety control systems (PL/SIL)</td></tr>
+                <tr><td>IEC 62443</td><td>Industrial cybersecurity</td></tr>
+                <tr><td>EU AI Act 2024/1689</td><td>High-risk AI system requirements</td></tr>
+            </tbody>
+        </table>
+
+        <div class="callout">
+            <p><strong>First-Mover Advantage:</strong> No competitor has publicly achieved CE certification for an autonomous outdoor litter-collecting robot. CleanWalker's compliance-first architecture creates a 12&ndash;18 month regulatory moat for EU market access.</p>
+        </div>
+
+        <div class="page-footer">
+            <span>&copy; 2026 MB Software Studio LLC</span>
+            <span><a href="https://cleanwalkerrobotics.com">cleanwalkerrobotics.com</a></span>
+            <span>Page 5</span>
+        </div>
+    </div>
+
+    <!-- PAGE 6: ECONOMICS + PILOT + ABOUT -->
+    <div class="page">
+        <div class="page-header">
+            <div class="page-header-logo">Clean<span>Walker</span> Robotics</div>
+            <div class="page-header-title">Technical White Paper &mdash; Autonomous Litter Collection</div>
+        </div>
+
+        <h1><span class="section-num">6</span> Economic Analysis</h1>
+
+        <h3>Total Cost of Ownership Comparison</h3>
+        <table>
+            <thead>
+                <tr><th>Metric</th><th>Manual Labor (per FTE)</th><th>CW-1 (per unit, fleet scale)</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Annual cost</td><td>$55,000&ndash;$85,000</td><td>Contact Sales</td></tr>
+                <tr><td>Daily operating hours</td><td>6&ndash;8 (single shift)</td><td>16&ndash;20 (with recharge)</td></tr>
+                <tr><td>Area coverage per day</td><td>2&ndash;4 hectares</td><td>4&ndash;8 hectares</td></tr>
+                <tr><td>Night / early morning</td><td>Limited (overtime rates)</td><td>Standard (no premium)</td></tr>
+                <tr><td>Rain operation</td><td>Reduced staffing</td><td>Normal (IP65)</td></tr>
+                <tr><td>Data collection</td><td>None</td><td>Continuous heatmaps &amp; analytics</td></tr>
+                <tr><td>Consistency</td><td>Variable</td><td>Algorithmic coverage</td></tr>
+            </tbody>
+        </table>
+
+        <p>Each CW-1 provides coverage equivalent to 1.5&ndash;2.5 FTEs of manual labor. At fleet scale (100+ units), hardware cost per unit drops below $8,500 with annual operating costs of $2,500&ndash;$4,000 per unit. Total cost of ownership represents a <strong>40&ndash;60% reduction</strong> versus equivalent manual labor. Detailed pricing is available through CleanWalker's sales team.</p>
+
+        <div class="stat-grid">
+            <div class="stat-item">
+                <div class="number">1.5&ndash;2.5x</div>
+                <div class="label">FTE Offset per Unit</div>
+            </div>
+            <div class="stat-item">
+                <div class="number">40&ndash;60%</div>
+                <div class="label">Cost Reduction at Scale</div>
+            </div>
+            <div class="stat-item">
+                <div class="number">16&ndash;20h</div>
+                <div class="label">Daily Operating Hours</div>
+            </div>
+            <div class="stat-item">
+                <div class="number">RaaS</div>
+                <div class="label">Zero CAPEX Model</div>
+            </div>
+        </div>
+
+        <h1 style="margin-top: 14px;"><span class="section-num">7</span> Pilot Program</h1>
+
+        <p>CleanWalker offers structured 6-month pilots deploying 5&ndash;10 units in a defined zone (park, downtown, campus, waterfront). Pilots are evaluated against agreed KPIs: collection rate, area coverage, uptime, detection accuracy, grasp success rate, and safety incidents (target: zero). The pilot timeline spans approximately 7 weeks from contract to autonomous operations.</p>
+
+        <table>
+            <thead>
+                <tr><th>Phase</th><th>Duration</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Site Assessment</td><td>2 weeks</td></tr>
+                <tr><td>Infrastructure &amp; Deployment</td><td>3 weeks</td></tr>
+                <tr><td>Autonomous Operations</td><td>5 months</td></tr>
+                <tr><td>Review &amp; Expansion Planning</td><td>2 weeks</td></tr>
+            </tbody>
+        </table>
+
+        <h1 style="margin-top: 14px;"><span class="section-num">8</span> About CleanWalker Robotics</h1>
+
+        <p>CleanWalker Robotics develops autonomous robotic systems for outdoor litter collection in public spaces. Founded with the mission of making cities cleaner, quieter, and more sustainable, the company combines expertise in quadrupedal robotics, computer vision, and fleet operations to address the growing gap between municipal cleanliness demands and available labor. Our technology is built on open-source foundations (ROS 2, NVIDIA Isaac) and designed for the European regulatory environment from day one.</p>
+
+        <!-- CTA -->
+        <div class="cta">
+            <div class="cta-text">
+                <strong>Ready to explore autonomous litter collection?</strong>
+                Learn more at <a href="https://cleanwalkerrobotics.com">cleanwalkerrobotics.com</a>
+            </div>
+            <div class="cta-contact">
+                <strong>Maurits Bos</strong>
+                Founder &amp; CEO<br>
+                <a href="mailto:walker@cleanwalkerrobotics.com">walker@cleanwalkerrobotics.com</a><br>
+                <a href="https://cleanwalkerrobotics.com">cleanwalkerrobotics.com</a>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span>&copy; 2026 MB Software Studio LLC. All rights reserved.</span>
+            <span><a href="https://cleanwalkerrobotics.com">cleanwalkerrobotics.com</a></span>
+            <span>Page 6</span>
+        </div>
+    </div>
+
+</body>
+</html>
