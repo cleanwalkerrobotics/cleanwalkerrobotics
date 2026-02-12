@@ -2,6 +2,9 @@
 
 ## 2026-02-12
 
+### Website Polish & Performance Wave 2 (cw-software) — COMPLETED
+| 2026-02-12 16:00 | cw-software | Custom error pages, next/font, skip-to-content, FAQ a11y, OG metadata, email signature | fad752f |
+
 ### Sales Materials Professionalism Upgrade (cw-bizdev) — COMPLETED
 - **Task:** Convert 13 municipality-specific markdown one-pagers to branded HTML documents
 - **Deliverables:** HTML template (docs/sales/templates/one-pager-template.html), 13 HTML one-pagers (docs/sales/one-pagers/html/), PDF generation script (scripts/generate-pdfs.sh)
