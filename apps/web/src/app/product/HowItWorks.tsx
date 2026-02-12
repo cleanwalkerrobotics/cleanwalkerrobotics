@@ -10,7 +10,7 @@ const steps = [
 		number: "01",
 		label: "DETECT",
 		title: "AI Identifies Litter",
-		desc: "YOLO-based vision scans the environment in real-time, detecting 50+ litter types — bottles, cans, wrappers, cigarette butts, and more.",
+		desc: "AI-powered vision scans the environment in real-time, detecting 50+ litter types — bottles, cans, wrappers, cigarette butts, and more.",
 	},
 	{
 		number: "02",

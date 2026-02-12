@@ -110,3 +110,4 @@ Unregistered demos will fail the prebuild check.
 - Run the build before pushing when possible (`cd apps/web && npx next build`)
 - Deploy to Vercel after website changes: `vercel --yes --prod --token "$VERCEL_TOKEN"` from repo root
 - VERCEL_TOKEN is set in the shell environment. If not available, skip deploy and note it in your completion message.
+- After any commit that changes OG images or metadata, run `node scripts/invalidate-og-cache.mjs` to refresh social platform caches

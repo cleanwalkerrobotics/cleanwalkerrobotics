@@ -15,10 +15,10 @@ const techBadges = [
 
 const featuredDemos = [
 	{
-		title: "AI Litter Detection",
-		desc: "See our YOLO model detect 50+ litter types in real-time.",
+		title: "Real-Time AI Litter Detection",
+		desc: "See our AI vision system detect 50+ litter types in real-time.",
 		href: "/demos/litter-detection",
-		tags: ["Computer Vision", "YOLO"],
+		tags: ["Computer Vision", "Real-Time"],
 	},
 	{
 		title: "3D Robot Viewer",

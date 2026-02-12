@@ -19,7 +19,7 @@ const PHASES: Phase[] = [
 		id: "detect",
 		label: "Detect",
 		description:
-			"YOLO v3.2 identifies a plastic bottle at 2.3m — 97% confidence. Bounding box locked, classification confirmed against 50+ litter categories.",
+			"AI vision identifies a plastic bottle at 2.3m — 97% confidence. Bounding box locked, classification confirmed against 50+ litter categories.",
 		durationMs: 2500,
 	},
 	{

@@ -26,13 +26,13 @@ const demos = [
 		tags: ["Three.js", "URDF", "3D Model"],
 	},
 	{
-		title: "AI Litter Detection",
+		title: "Real-Time AI Litter Detection",
 		status: "live",
 		slug: "litter-detection",
 		description:
-			"Our YOLO-based perception system identifies and classifies 50+ types of litter in real-time — bottles, cans, wrappers, cigarette butts, and more. Works in all lighting conditions.",
-		placeholder: "Upload an image to see our AI detect litter in real-time",
-		tags: ["Computer Vision", "YOLO", "Real-Time"],
+			"Our perception system identifies and classifies 50+ types of litter in real-time — bottles, cans, wrappers, cigarette butts, and more. Runs entirely in your browser, no server needed.",
+		placeholder: "Upload an image or use your camera to see AI detection live",
+		tags: ["Computer Vision", "Real-Time", "On-Device AI"],
 	},
 {
 		title: "Quadrupedal Locomotion",
@@ -95,7 +95,7 @@ const demos = [
 		description:
 			"Watch a CW-1 robot autonomously patrol a park, detect and collect litter, fill its bag, and return to the dock for a bag swap. The full operational cycle, visualized.",
 		placeholder: "Live simulation — autonomous litter collection in a park",
-		tags: ["Simulation", "Canvas 2D", "Autonomy"],
+		tags: ["Simulation", "Real-Time", "Autonomy"],
 	},
 ];
 

@@ -177,7 +177,7 @@ export default function AboutPage() {
 							</h3>
 							<p className="mt-3 leading-relaxed text-gray-600">
 								Stereo depth cameras (OAK-D Pro) and LiDAR provide rich 3D
-								environmental understanding. Our custom YOLO-based detection model
+								environmental understanding. Our custom AI detection model
 								identifies 50+ litter types in real-time, continuously improving
 								through OTA model updates.
 							</p>

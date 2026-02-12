@@ -1184,7 +1184,7 @@ export default function SimulationPage() {
 				<div className="border-t border-white/5 pt-6 text-center">
 					<p className="font-mono text-[10px] text-gray-600">
 						Simplified simulation of CleanWalker CW-1 autonomous litter
-						collection. In production, the robot uses YOLO-based computer
+						collection. In production, the robot uses AI-powered computer
 						vision, LiDAR SLAM navigation, and adaptive gait control for
 						all-terrain operation.
 					</p>

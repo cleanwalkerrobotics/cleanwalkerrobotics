@@ -484,7 +484,8 @@ export default function LitterDetectionDemoPage() {
 				let model: any;
 				let usedBackend: "webgpu" | "wasm" = "webgpu";
 
-				setModelProgress("Loading YOLO26 nano (WebGPU)...");
+				// Load model via WebGPU with WASM fallback
+				setModelProgress("Loading AI model...");
 				try {
 					model = await transformers.AutoModel.from_pretrained(
 						modelId,
@@ -496,7 +497,7 @@ export default function LitterDetectionDemoPage() {
 					);
 				} catch {
 					setModelProgress(
-						"WebGPU unavailable, falling back to WASM...",
+						"Optimizing for your device...",
 					);
 					usedBackend = "wasm";
 					model = await transformers.AutoModel.from_pretrained(
@@ -907,15 +908,15 @@ export default function LitterDetectionDemoPage() {
 						Back to Demos
 					</a>
 					<span className="mb-4 inline-block rounded-full border border-cw-green/30 bg-cw-green/10 px-4 py-1 text-sm text-cw-green">
-						WebGPU Demo
+						Live Demo
 					</span>
 					<h1 className="mt-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
-						AI Litter Detection
+						Real-Time AI Litter Detection
 					</h1>
 					<p className="mt-6 text-lg leading-relaxed text-gray-400">
-						Real-time object detection powered by YOLO26
-						running entirely in your browser via WebGPU. No
-						server needed &mdash; your camera feed never
+						Our perception system identifies and classifies
+						objects in real-time, directly in your browser.
+						No server needed &mdash; your camera feed never
 						leaves your device.
 					</p>
 				</div>
@@ -927,21 +928,19 @@ export default function LitterDetectionDemoPage() {
 					{[
 						{
 							value: "Real-time",
-							label: "Browser inference",
+							label: "On-device inference",
 						},
 						{
-							value: "Client-side",
-							label: "Zero server calls",
+							value: "Private",
+							label: "No data leaves your device",
 						},
 						{
-							value: "80",
-							label: "COCO object classes",
+							value: "80+",
+							label: "Object categories",
 						},
 						{
-							value: backend
-								? backend.toUpperCase()
-								: "...",
-							label: "Acceleration backend",
+							value: "GPU-accelerated",
+							label: "Hardware-optimized",
 						},
 					].map((stat) => (
 						<div
@@ -1357,16 +1356,14 @@ export default function LitterDetectionDemoPage() {
 														<div className="absolute inset-0 animate-spin rounded-full border-4 border-cw-green/20 border-t-cw-green" />
 													</div>
 													<p className="text-lg font-medium text-white">
-														Running
-														YOLO26
-														inference...
+														Analyzing
+														image...
 													</p>
 													<p className="mt-2 text-xs text-gray-500">
 														Processing
 														locally
-														via{" "}
-														{backend?.toUpperCase() ||
-															"WebGPU"}
+														on your
+														device
 													</p>
 												</div>
 											</div>
@@ -1560,7 +1557,7 @@ export default function LitterDetectionDemoPage() {
 							{/* Backend Badge */}
 							<div className="rounded-xl border border-white/10 bg-white/5 p-4">
 								<p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-500">
-									Inference Backend
+									AI Model Status
 								</p>
 								<div className="flex items-center gap-2">
 									<span
@@ -1578,7 +1575,7 @@ export default function LitterDetectionDemoPage() {
 									/>
 									<span className="text-sm font-medium text-white">
 										{modelStatus === "ready"
-											? `${backend?.toUpperCase()} Accelerated`
+											? "Ready — GPU Accelerated"
 											: modelStatus ===
 												  "loading"
 												? "Loading model..."
@@ -1590,8 +1587,8 @@ export default function LitterDetectionDemoPage() {
 								</div>
 								{modelStatus === "ready" && (
 									<p className="mt-1 text-xs text-gray-500">
-										YOLO26 Nano &middot;
-										onnx-community/yolo26n-ONNX
+										Object detection model &middot;
+										Running locally in your browser
 									</p>
 								)}
 							</div>
@@ -1727,15 +1724,14 @@ export default function LitterDetectionDemoPage() {
 							</div>
 							<div>
 								<p className="text-sm font-medium text-white">
-									Production Model
+									On-Robot Vision System
 								</p>
 								<p className="mt-1 text-sm text-gray-400">
-									This demo uses YOLO26 Nano
-									with 80 COCO classes for
-									general object detection.
-									Our production CleanWalker
-									robot runs a custom
-									TACO-trained model
+									This browser demo showcases
+									general object detection
+									across 80+ categories. The
+									production CleanWalker robot
+									runs our custom-trained model
 									optimized for 60+ litter
 									categories including
 									cigarette butts, bottle

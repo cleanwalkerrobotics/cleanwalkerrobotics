@@ -2,6 +2,10 @@
 
 ## 2026-02-12
 
+### Demo Rebrand + OG Cache Script (cw-software) — COMPLETED
+
+| 2026-02-12 | cw-software | Rebrand litter detection demo (remove WebGPU/YOLO/ONNX from UI), tone down tech branding across all demos + homepage + product + about pages, create OG cache invalidation script, add post-deploy docs to CLAUDE.md | pending |
+
 ### Technical White Paper (cw-research) — COMPLETED
 
 | 2026-02-12 16:30 | cw-research | Technical white paper: autonomous quadrupedal litter collection (3,587 words, branded HTML template) | de9f4dc |
