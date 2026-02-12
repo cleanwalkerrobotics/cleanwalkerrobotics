@@ -1,0 +1,68 @@
+{
+  "$schema": "Demo registry — every demo directory MUST have an entry here. Run `node scripts/check-demo-registry.mjs` to validate.",
+  "demos": [
+    {
+      "id": "3d-robot-viewer",
+      "name": "3D Robot Viewer",
+      "purpose": "Interactive 3D visualization of the CW-1 robot model from URDF",
+      "status": "active",
+      "added": "2026-02-10"
+    },
+    {
+      "id": "autonomous-ops",
+      "name": "24/7 Autonomous Operation",
+      "purpose": "Time-lapse simulation of a full day of autonomous park cleaning",
+      "status": "active",
+      "added": "2026-02-09"
+    },
+    {
+      "id": "cost-calculator",
+      "name": "Cost Savings Calculator",
+      "purpose": "Interactive ROI calculator for facility deployment cost analysis",
+      "status": "active",
+      "added": "2026-02-11"
+    },
+    {
+      "id": "fleet-dashboard",
+      "name": "Fleet Dashboard",
+      "purpose": "Real-time fleet management dashboard with map and activity feed",
+      "status": "active",
+      "added": "2026-02-09"
+    },
+    {
+      "id": "litter-detection",
+      "name": "AI Litter Detection",
+      "purpose": "Client-side YOLO-based litter detection on images and webcam",
+      "status": "active",
+      "added": "2026-02-09"
+    },
+    {
+      "id": "pick-and-compact",
+      "name": "Pick & Compact",
+      "purpose": "Simulation of the full litter collection and bag compaction cycle",
+      "status": "active",
+      "added": "2026-02-09"
+    },
+    {
+      "id": "quadrupedal-locomotion",
+      "name": "Quadrupedal Locomotion",
+      "purpose": "Physics simulation of terrain traversal across multiple surface types",
+      "status": "active",
+      "added": "2026-02-09"
+    },
+    {
+      "id": "route-planning",
+      "name": "Route Planning",
+      "purpose": "Interactive route planning with multiple coverage strategies and fleet sizes",
+      "status": "active",
+      "added": "2026-02-11"
+    },
+    {
+      "id": "simulation",
+      "name": "Robot Simulation",
+      "purpose": "Full autonomous patrol cycle with litter collection, bag fill, and dock return",
+      "status": "active",
+      "added": "2026-02-11"
+    }
+  ]
+}

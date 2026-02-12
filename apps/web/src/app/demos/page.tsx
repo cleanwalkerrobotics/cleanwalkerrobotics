@@ -34,16 +34,7 @@ const demos = [
 		placeholder: "Upload an image to see our AI detect litter in real-time",
 		tags: ["Computer Vision", "YOLO", "Real-Time"],
 	},
-	{
-		title: "Autonomous Navigation",
-		status: "live",
-		slug: "autonomous-navigation",
-		description:
-			"Watch CleanWalker navigate complex park environments — avoiding pedestrians, handling terrain changes, and optimizing coverage routes. LiDAR + visual SLAM fusion.",
-		placeholder: "Simulation demo — autonomous park navigation with obstacle avoidance",
-		tags: ["SLAM", "Path Planning", "LiDAR"],
-	},
-	{
+{
 		title: "Quadrupedal Locomotion",
 		status: "live",
 		slug: "quadrupedal-locomotion",
