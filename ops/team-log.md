@@ -2,6 +2,12 @@
 
 ## 2026-02-12
 
+### Sales Materials Professionalism Upgrade (cw-bizdev) — COMPLETED
+- **Task:** Convert 13 municipality-specific markdown one-pagers to branded HTML documents
+- **Deliverables:** HTML template (docs/sales/templates/one-pager-template.html), 13 HTML one-pagers (docs/sales/one-pagers/html/), PDF generation script (scripts/generate-pdfs.sh)
+- **QA:** All 13 files verified — no pricing leaks, correct contact info (walker@cleanwalkerrobotics.com), pilot URLs, city-specific data matches markdown sources, consistent branding (#22c55e accent, CleanWalker Robotics logo)
+- **Note:** No PDF tool installed (wkhtmltopdf/chromium not available) — script documents installation steps
+
 ### Website Professionalism Overhaul (cw-software) — COMPLETED
 - **Task:** Add legal pages, footer updates, QA audit, and bug fixes for professional website
 - **Files:** apps/web/src/app/privacy/page.tsx (new), apps/web/src/app/terms/page.tsx (new), apps/web/src/app/icon.svg (new), apps/web/src/app/layout.tsx, apps/web/src/app/sitemap.ts, apps/web/src/app/product/page.tsx, apps/web/src/app/page.tsx, CODEBASE.md

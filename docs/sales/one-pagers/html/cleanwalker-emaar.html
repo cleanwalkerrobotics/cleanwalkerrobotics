@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanWalker Robotics — Emaar Properties</title>
+    <style>
+        /* Reset & Base */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        @page { size: A4; margin: 0; }
+        html, body { width: 100%; height: 100%; }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 11px;
+            line-height: 1.5;
+            color: #1a1a1a;
+            background: #ffffff;
+        }
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            max-height: 297mm;
+            margin: 0 auto;
+            padding: 20mm 22mm 15mm 22mm;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #22c55e;
+            margin-bottom: 14px;
+        }
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            letter-spacing: -0.3px;
+        }
+        .logo span {
+            color: #22c55e;
+        }
+        .partner {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            text-align: right;
+        }
+
+        /* Subtitle */
+        .subtitle {
+            font-size: 13px;
+            font-weight: 600;
+            color: #22c55e;
+            margin-bottom: 14px;
+            letter-spacing: 0.2px;
+        }
+
+        /* Section Headers */
+        h2 {
+            font-size: 12px;
+            font-weight: 700;
+            color: #111827;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1.5px solid #e5e7eb;
+        }
+        h2 .accent {
+            color: #22c55e;
+        }
+
+        /* Content */
+        .section {
+            margin-bottom: 12px;
+        }
+        .section p {
+            font-size: 10.5px;
+            line-height: 1.55;
+            color: #374151;
+        }
+        .section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .section ul li {
+            font-size: 10.5px;
+            line-height: 1.5;
+            color: #374151;
+            padding: 2px 0 2px 14px;
+            position: relative;
+        }
+        .section ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+        }
+        .section ul li strong {
+            color: #111827;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 6px;
+        }
+        th {
+            background: #f0fdf4;
+            color: #111827;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 6px 10px;
+            text-align: left;
+            border-bottom: 2px solid #22c55e;
+        }
+        td {
+            font-size: 10.5px;
+            color: #374151;
+            padding: 5px 10px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Value Prop */
+        .value-prop {
+            background: #f0fdf4;
+            border-left: 3px solid #22c55e;
+            padding: 10px 14px;
+            margin-top: 8px;
+            border-radius: 0 4px 4px 0;
+        }
+        .value-prop p {
+            font-size: 10.5px;
+            line-height: 1.55;
+            color: #374151;
+        }
+
+        /* Economics mini-grid */
+        .econ-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .econ-item {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 8px 10px;
+            text-align: center;
+        }
+        .econ-item .number {
+            font-size: 16px;
+            font-weight: 700;
+            color: #22c55e;
+        }
+        .econ-item .label {
+            font-size: 9px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-top: 2px;
+        }
+
+        /* CTA */
+        .cta {
+            background: #111827;
+            color: #ffffff;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cta-text {
+            font-size: 11px;
+        }
+        .cta-text strong {
+            font-size: 12px;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .cta-text a {
+            color: #22c55e;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .cta-contact {
+            text-align: right;
+            font-size: 10px;
+            line-height: 1.6;
+        }
+        .cta-contact a {
+            color: #22c55e;
+            text-decoration: none;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding-top: 8px;
+            margin-top: 8px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 9px;
+            color: #9ca3af;
+        }
+        .footer a {
+            color: #22c55e;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="logo">Clean<span>Walker</span> Robotics</div>
+            <div class="partner">Emaar Properties</div>
+        </div>
+
+        <!-- SUBTITLE -->
+        <div class="subtitle">Autonomous Litter Collection &mdash; Premium Outdoor Spaces, Maintained Autonomously</div>
+
+        <!-- THE CHALLENGE -->
+        <div class="section">
+            <h2><span class="accent">01</span> &mdash; The Challenge</h2>
+            <p>Emaar manages some of the world's most prestigious outdoor spaces &mdash; Downtown Dubai around Burj Khalifa, Dubai Mall surrounds, Dubai Marina, and Arabian Ranches communities spanning 50,000+ homes across 10+ master-planned developments. With 141 million sq ft of new land acquired in 2024 and AED 35.5 billion in revenue (+33% YoY), the portfolio is scaling fast. Yet outdoor litter collection in these premium environments still relies on manual labour &mdash; expensive, inconsistent, and difficult to staff at the quality Emaar's brand demands. After winning "Sustainable FM Organization of the Year" (MENA Green Building Awards, November 2024), Emaar is positioned to lead on the next generation of sustainable facilities management.</p>
+        </div>
+
+        <!-- OUR SOLUTION -->
+        <div class="section">
+            <h2><span class="accent">02</span> &mdash; Our Solution</h2>
+            <p style="margin-bottom: 4px;">CleanWalker is the world's first commercial quadrupedal litter-collecting robot, engineered for Gulf premium property environments:</p>
+            <ul>
+                <li><strong>AI-powered detection</strong> across 20+ litter categories (25,000+ real-world images)</li>
+                <li><strong>Gulf heat tolerance</strong> &mdash; operates up to 45&deg;C with multi-shift capability (20+ hours/day)</li>
+                <li><strong>Four-legged locomotion</strong> navigates landscaped pathways, grass, gravel, sand, pool deck surrounds</li>
+                <li><strong>Silent operation</strong> (&lt;55 dB) suitable for residential communities and retail promenades</li>
+                <li><strong>Fleet dashboard</strong> with real-time monitoring and litter composition analytics</li>
+            </ul>
+            <p style="margin-top: 4px; font-size: 10px; color: #6b7280;">Collected waste is bagged for existing facilities collection routes &mdash; no new infrastructure required.</p>
+        </div>
+
+        <!-- PILOT PROPOSAL -->
+        <div class="section">
+            <h2><span class="accent">03</span> &mdash; Pilot Proposal &mdash; 10 Units, 6 Months</h2>
+            <p style="margin-bottom: 6px;"><strong>Deployment zones:</strong> Downtown Dubai Boulevard, Dubai Marina Walk, and one Arabian Ranches community</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>KPI</th>
+                        <th>Target</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Litter items collected per unit/day</td><td>Tracked &amp; reported weekly</td></tr>
+                    <tr><td>Coverage per shift</td><td>2,000&ndash;4,000 m&sup2;/hr per unit</td></tr>
+                    <tr><td>System uptime in Gulf conditions</td><td>&gt;90%</td></tr>
+                    <tr><td>Resident/guest satisfaction</td><td>Survey baseline + post-pilot</td></tr>
+                    <tr><td>Coverage hours vs. manual</td><td>20+ hrs/day autonomous vs. shift-limited manual</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- VALUE METRICS -->
+        <div class="section">
+            <h2><span class="accent">04</span> &mdash; Value Proposition</h2>
+            <div class="econ-grid">
+                <div class="econ-item">
+                    <div class="number">1.5&ndash;2.5</div>
+                    <div class="label">FTE offset per unit</div>
+                </div>
+                <div class="econ-item">
+                    <div class="number">40&ndash;60%</div>
+                    <div class="label">Cost reduction at scale</div>
+                </div>
+                <div class="econ-item">
+                    <div class="number">RaaS</div>
+                    <div class="label">Robot-as-a-Service model</div>
+                </div>
+                <div class="econ-item">
+                    <div class="number">Zero</div>
+                    <div class="label">Hardware ownership required</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STRATEGIC VALUE -->
+        <div class="section">
+            <div class="value-prop">
+                <p>A CleanWalker robot patrolling the Burj Khalifa boulevard is not just a cleaning solution &mdash; it is a global brand statement. Emaar's Innovation Challenge shows appetite for pioneering technologies. Deploying the world's first quadrupedal litter robot across Downtown Dubai would generate immediate international media coverage and position Emaar as the global leader in autonomous premium property maintenance.</p>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta">
+            <div class="cta-text">
+                <strong>We'd welcome a 20-minute call to discuss pilot scope, ECM integration, and deployment across Emaar communities.</strong>
+                Pilot details: <a href="https://cleanwalkerrobotics.com/pilot">cleanwalkerrobotics.com/pilot</a>
+            </div>
+            <div class="cta-contact">
+                <strong style="font-size: 11px;">Maurits Bos</strong>
+                Founder &amp; CEO<br>
+                <a href="mailto:walker@cleanwalkerrobotics.com">walker@cleanwalkerrobotics.com</a><br>
+                <a href="https://cleanwalkerrobotics.com">cleanwalkerrobotics.com</a>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <a href="https://cleanwalkerrobotics.com">cleanwalkerrobotics.com</a> &nbsp;|&nbsp;
+            <a href="mailto:walker@cleanwalkerrobotics.com">walker@cleanwalkerrobotics.com</a> &nbsp;|&nbsp;
+            MB Software Studio LLC
+        </div>
+    </div>
+</body>
+</html>
