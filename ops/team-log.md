@@ -249,6 +249,9 @@
 - **Note:** Session ran out of context (5%) before deploying to Vercel. Deployment pending.
 - **Comms issue:** No callback sent — caught by team-comms-optimizer at 02:46 UTC
 
+### macOS Apple Silicon Training Package (cw-research) — COMPLETED
+| 2026-02-12 | cw-research | macOS Apple Silicon training package for CW-1 locomotion: MuJoCo + PyTorch MPS. 8 files in ml/locomotion/macos/ — URDF-to-MJCF converter, Gymnasium env (48-obs/12-act, matching IsaacLab rewards), PPO training (SB3, [512,256,128]), play/export/render scripts. Targets M4 Max 32GB. | pending |
+
 ### Comms Optimizer Check — 2026-02-12 06:46 UTC
 - **cw-software** idle at prompt ~2h, no callback. Output captured, session killed.
 - Task was complete (codebase knowledge system, commits 7cbca05/d3e2a76). No new commits in last 2h.

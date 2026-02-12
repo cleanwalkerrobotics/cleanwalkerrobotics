@@ -1,0 +1,29 @@
+# CW-1 macOS Apple Silicon Training Dependencies
+# Tested on: macOS 14+, Apple M4 Max, Python 3.11+
+
+# Physics simulation
+mujoco>=3.1.0,<4.0
+
+# ML framework (MPS backend for Apple GPU)
+torch>=2.2.0,<3.0
+torchvision>=0.17.0,<1.0
+
+# RL training
+stable-baselines3>=2.3.0,<3.0
+gymnasium>=0.29.0,<1.0
+
+# ONNX export
+onnx>=1.15.0,<2.0
+onnxruntime>=1.17.0,<2.0
+
+# Monitoring & visualization
+tensorboard>=2.16.0,<3.0
+matplotlib>=3.8.0,<4.0
+
+# Video rendering
+imageio>=2.34.0,<3.0
+imageio-ffmpeg>=0.4.9,<1.0
+
+# Utilities
+numpy>=1.26.0,<2.0
+tqdm>=4.66.0,<5.0
