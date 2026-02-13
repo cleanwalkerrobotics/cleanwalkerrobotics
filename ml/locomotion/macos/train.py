@@ -96,8 +96,8 @@ def main():
         help="Checkpoint save directory"
     )
     parser.add_argument(
-        "--lr", type=float, default=1e-3,
-        help="Learning rate (default: 1e-3, matching Phase 1)"
+        "--lr", type=float, default=3e-4,
+        help="Learning rate (default: 3e-4, standard for PPO)"
     )
     parser.add_argument(
         "--batch-size", type=int, default=64,

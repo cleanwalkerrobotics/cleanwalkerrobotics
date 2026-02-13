@@ -202,44 +202,31 @@ def generate_scene_xml(urdf_path: Path) -> str:
 
 
 def build_standalone_mjcf(urdf_path: Path, output_path: Path) -> None:
-    """Build a standalone MJCF by compiling the URDF and adding scene elements.
+    """Build a standalone MJCF by validating the URDF then generating the training scene.
 
-    This approach compiles the URDF first, then wraps the robot model in a
-    complete scene. More reliable than <include> for complex URDFs.
+    The URDF-compiled model has a different structure than what the training
+    pipeline expects (no freejoint, *_joint suffix naming, no foot contact
+    geoms/sites, no parent body). We validate the URDF for correctness, then
+    generate the handcrafted MJCF which is purpose-built for locomotion training.
     """
     import mujoco
 
     print(f"Loading URDF: {urdf_path}")
 
-    # First, try direct URDF loading to validate
+    # Validate URDF by loading it
     try:
         model = mujoco.MjModel.from_xml_path(str(urdf_path))
-        print(f"  URDF loaded successfully: {model.nq} qpos, {model.nv} qvel, "
+        print(f"  URDF validated: {model.nq} qpos, {model.nv} qvel, "
               f"{model.nu} actuators, {model.njnt} joints")
     except Exception as e:
-        print(f"  Direct URDF loading failed: {e}")
-        print("  Generating MJCF from scratch using URDF specifications...")
-        xml = generate_handcrafted_mjcf()
-        with open(output_path, "w") as f:
-            f.write(xml)
-        print(f"  Wrote handcrafted MJCF to: {output_path}")
-        validate_model(output_path)
-        return
+        print(f"  URDF loading failed: {e}")
 
-    # Save compiled MJCF
-    tmp_compiled = SCRIPT_DIR / "_compiled_robot.xml"
-    mujoco.mj_saveLastXML(str(tmp_compiled), model)
-
-    # Read compiled XML and wrap in scene
-    with open(tmp_compiled) as f:
-        robot_xml = f.read()
-    tmp_compiled.unlink()
-
-    # Generate complete scene with the compiled robot
-    scene_xml = wrap_in_scene(robot_xml)
-
+    # Generate training-ready MJCF (the URDF-compiled model uses *_joint naming,
+    # lacks freejoint, foot contact sites, and body structure the env expects)
+    print("  Generating training-ready MJCF from CW-1 specifications...")
+    xml = generate_handcrafted_mjcf()
     with open(output_path, "w") as f:
-        f.write(scene_xml)
+        f.write(xml)
 
     print(f"  Wrote scene MJCF to: {output_path}")
     validate_model(output_path)
@@ -336,12 +323,13 @@ def generate_handcrafted_mjcf() -> str:
         <joint armature="0.01" damping="0.5" frictionloss="0.1"/>
         <geom friction="1.0 0.005 0.001" condim="3" conaffinity="1" contype="1"
               rgba="0.3 0.3 0.3 1"/>
-        <position kp="25" kv="0.5" ctrllimited="true"/>
+        <position kp="25" kv="0.5"/>
       </default>
 
       <visual>
         <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0.2 0.2 0.2"/>
         <rgba haze="0.15 0.25 0.35 1"/>
+        <global offwidth="1920" offheight="1080"/>
       </visual>
 
       <asset>
@@ -502,31 +490,31 @@ def generate_handcrafted_mjcf() -> str:
             </body>
           </body>
 
-          <!-- ============ ARM (5 DOF, fixed during locomotion) ============ -->
+          <!-- ============ ARM (5 DOF, heavily damped during locomotion) ============ -->
           <body name="arm_turret" pos="0.10 0 0.06">
             <joint name="arm_turret_yaw" type="hinge" axis="0 0 1"
-                   range="-3.1416 3.1416" damping="2.0"/>
+                   range="-3.1416 3.1416" damping="20.0"/>
             <inertial pos="0 0 0.03" mass="0.3" diaginertia="0.0003 0.0003 0.0003"/>
             <geom name="arm_turret_geom" type="cylinder" size="0.04 0.03"
                   material="arm_mat"/>
 
             <body name="arm_upper" pos="0 0 0.06">
               <joint name="arm_shoulder_pitch" type="hinge" axis="0 1 0"
-                     range="-0.7854 3.1416" damping="2.0"/>
+                     range="-0.7854 3.1416" damping="20.0"/>
               <inertial pos="0 0 0.09" mass="0.3" diaginertia="0.001 0.001 0.0002"/>
               <geom name="arm_upper_geom" type="capsule" fromto="0 0 0 0 0 0.18"
                     size="0.015" material="arm_mat"/>
 
               <body name="arm_forearm" pos="0 0 0.18">
                 <joint name="arm_elbow_pitch" type="hinge" axis="0 1 0"
-                       range="0 2.618" damping="2.0"/>
+                       range="0 2.618" damping="20.0"/>
                 <inertial pos="0 0 0.09" mass="0.3" diaginertia="0.001 0.001 0.0002"/>
                 <geom name="arm_forearm_geom" type="capsule" fromto="0 0 0 0 0 0.18"
                       size="0.012" material="arm_mat"/>
 
                 <body name="arm_wrist" pos="0 0 0.18">
                   <joint name="arm_wrist_pitch" type="hinge" axis="0 1 0"
-                         range="-1.5708 1.5708" damping="2.0"/>
+                         range="-1.5708 1.5708" damping="20.0"/>
                   <inertial pos="0 0 0.025" mass="0.15"
                             diaginertia="0.0001 0.0001 0.0001"/>
                   <geom name="arm_wrist_geom" type="cylinder" size="0.01 0.025"
@@ -534,7 +522,7 @@ def generate_handcrafted_mjcf() -> str:
 
                   <body name="arm_gripper" pos="0 0 0.05">
                     <joint name="arm_gripper_joint" type="hinge" axis="0 1 0"
-                           range="0 1.0472" damping="2.0"/>
+                           range="0 1.0472" damping="20.0"/>
                     <inertial pos="0 0 0.02" mass="0.15"
                               diaginertia="0.0001 0.0001 0.0001"/>
                     <geom name="arm_gripper_geom" type="box" size="0.04 0.015 0.05"
@@ -545,7 +533,7 @@ def generate_handcrafted_mjcf() -> str:
             </body>
           </body>
 
-          <!-- ============ BAG FRAME (1 DOF) ============ -->
+          <!-- ============ BAG FRAME (1 DOF, heavily damped) ============ -->
           <body name="bag_mount" pos="-0.15 0 0.06">
             <inertial pos="0 0 0" mass="0.2" diaginertia="0.0002 0.0002 0.0002"/>
             <geom name="bag_mount_geom" type="cylinder" size="0.03 0.02"
@@ -553,7 +541,7 @@ def generate_handcrafted_mjcf() -> str:
 
             <body name="bag_frame" pos="0 0 0.02">
               <joint name="bag_frame_hinge" type="hinge" axis="0 1 0"
-                     range="0 2.3562" damping="2.0"/>
+                     range="0 2.3562" damping="20.0"/>
               <inertial pos="0 0 0.05" mass="0.3" diaginertia="0.001 0.001 0.0002"/>
               <geom name="bag_frame_geom" type="box" size="0.11 0.075 0.01"
                     pos="0 0 0.05" rgba="0.4 0.35 0.3 1"/>

@@ -188,8 +188,9 @@ class CW1LocomotionEnv(gym.Env):
         self._foot_contact_time = np.zeros(4, dtype=np.float32)
         self._foot_air_time = np.zeros(4, dtype=np.float32)
 
-        # Original mass for randomization
+        # Original values for domain randomization
         self._default_body_mass = self.model.body_mass.copy()
+        self._default_geom_friction = self.model.geom_friction.copy()
 
         # Renderer
         self._renderer = None
@@ -279,14 +280,15 @@ class CW1LocomotionEnv(gym.Env):
             self.np_random.uniform(*self.cmd_yaw_range),
         ], dtype=np.float32)
 
-        # Domain randomization
+        # Domain randomization (reset to defaults first)
         if self.randomize_friction:
+            self.model.geom_friction[:] = self._default_geom_friction
             scale = self.np_random.uniform(*self.friction_range)
             self.model.geom_friction[:, 0] *= scale
 
         if self.randomize_mass:
-            delta = self.np_random.uniform(*self.mass_range)
             self.model.body_mass[:] = self._default_body_mass
+            delta = self.np_random.uniform(*self.mass_range)
             self.model.body_mass[self.body_id] += delta
 
         # Step once to settle
@@ -317,14 +319,23 @@ class CW1LocomotionEnv(gym.Env):
 
         self._step_count += 1
 
+        # NaN guard — terminate immediately if simulation went unstable
+        if not np.isfinite(self.data.qpos).all() or \
+           not np.isfinite(self.data.qvel).all():
+            obs = np.zeros(self.n_obs, dtype=np.float32)
+            self._prev_action = action.copy()
+            return obs, 0.0, True, False, {"unstable": True}
+
         # Update foot contact tracking
         self._update_foot_contacts()
 
-        # Compute observation
+        # Compute observation (clip to prevent extreme values)
         obs = self._get_obs()
+        obs = np.clip(obs, -100.0, 100.0)
 
-        # Compute reward
+        # Compute reward (clip to prevent value function explosion)
         reward, reward_info = self._compute_reward(action)
+        reward = float(np.clip(reward, -10.0, 10.0))
 
         # Check termination
         terminated = self._check_termination()
