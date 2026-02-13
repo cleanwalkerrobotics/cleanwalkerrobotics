@@ -10,6 +10,10 @@
 
 | 2026-02-13 | cw-bizdev | SRTIP SAIA application polished: added executive summary, integrated industrial-grade cost data, removed all explicit per-unit pricing (ROI framing only), strengthened Sharjah sections (DARE 2.0 MoU, BEEAH), added 12-month milestones timeline, added SAIA evaluation criteria alignment, polished team section. | 419d868 |
 
+### WBSO Application Industrial Cost Update (bizdev) — COMPLETED
+
+| 2026-02-13 | bizdev | WBSO application updated with industrial-grade cost data: added WP5 (Industrial Hardening), TRL progression section (TRL 2-3→5-6), rewrote R&D cost section with €48K industrial prototype data, added actuator transition R&D (€32-38K), total eligible costs €125K-€184K (up from €53K-€111K), WBSO benefit €62K-€92K (up from €48K). Removed competitor brand references, strengthened technical uncertainties with real component data. | PENDING |
+
 ## 2026-02-12
 
 ### Industrial-Grade Cost Analysis (research) — COMPLETED
