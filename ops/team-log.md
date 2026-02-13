@@ -261,3 +261,8 @@
 - **cw-research** idle at prompt, no callback. macOS training package complete (commit 5bf3613, logged earlier). Session killed.
 - 2nd comms failure — teams keep completing without calling back. CLAUDE.md callback instructions may need reinforcement.
 - team-status.json updated. No sessions running. Quiet hours (17:46 COT).
+
+### CAD Design Agent Pipeline (cad-generator) — COMPLETED
+| 2026-02-12 23:47 | cad-generator | Generated CW-1 Bag System Assembly CAD model (iteration 1): parametric CadQuery Python script with 11 components (roll dispenser housing, roll cylinder, mounting brackets, hinge assembly, support bars, folding frame, clip system). STEP (272KB) + STL (199KB) exports. Frame at 135° open position, 150mm wide × 220mm deep. Added .gitignore to exclude .venv from commits. | 64667fc |
+
+| 2026-02-13 | cad-generator | CW-1 Bag System iteration 2 — corrected all 6 critical issues from eval: (1) frame now continuous rectangular rim via sweep method with fallback, (2) roll housing now curved cradle with cylindrical cut, (3) hinge brackets now L-shaped via polyline profile, (4) servo clearance void implemented (15×15×30mm), (5) outer clips now use frame_width spacing (30mm) not roll_width (26mm), (6) overall depth positioning corrected. All fixes wrapped in try/except with fallbacks. | d9000f5 |
