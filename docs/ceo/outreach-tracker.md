@@ -119,3 +119,9 @@
 | 13 | Disney | Yalmaz Siddiqui | yalmaz.siddiqui@disney.com | 2026-02-14T14:00:00Z | Feb 14, 9AM EST | `2eaf03b6-e3ff-4b35-8554-f8433be0a460` | `cleanwalker-disney-siddiqui-2026-02-14` |
 
 All 10 emails scheduled via Resend API with idempotency keys. To cancel any: `curl -s -X POST -H "Authorization: Bearer $RESEND_API_KEY" https://api.resend.com/emails/{resend_id}/cancel`
+
+## Follow-Up Log
+
+| Date | Company | Action | Result | Next |
+|------|---------|--------|--------|------|
+| 2026-02-13 | Helsinki / Forum Virium | Aleksis Pillai replied (07:28 UTC, 28 min) | "Sounds very interesting... curious to know more" — open call closed but interested | Reply sent 17:20 UTC with one-pager + demos link. Monitor for response. |
