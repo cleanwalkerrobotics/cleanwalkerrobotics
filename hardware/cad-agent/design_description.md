@@ -1,74 +1,132 @@
-# Design Description: CW-1 Bag System Assembly
+# Leg Module Design Description — Front-Left (FL) Leg
 
 ## Overview
-The bag dispensing and collection system for the CleanWalker CW-1 quadrupedal litter robot. This is the most innovative subsystem — a folding frame with bag roll dispenser and gravity-powered bag sealing. Only ONE moving part (the folding frame).
 
-**Source:** Full robot spec at `docs/design/robot-design-spec.md`, Section 6.
+One complete front-left leg assembly for the CW-1 quadrupedal robot. 3 degrees of freedom: hip abduction/adduction (yaw), hip flexion/extension (pitch), and knee flexion/extension (pitch). The front-left leg is the reference design; all other legs are mirrored/rotated copies.
 
-## Context
-This mounts on the rear half of the robot's flat back surface. The robot body is ~600mm long × 150mm wide × 120mm tall. The arm turret occupies the front-center of the back. This system occupies the rear ~300mm of the back surface.
+## Reference Data (from URDF: cleanwalker_cw1.urdf)
 
-## Components
+### Coordinate Convention
+- X = forward, Y = left, Z = up
+- Leg mounts at body position: X=+250mm, Y=+75mm, Z=0mm (front-left corner)
 
-### 1. Bag Roll Dispenser
-- **Position:** Center of robot's back, behind the arm mount area
-- **Orientation:** Cylinder axis runs LEFT-TO-RIGHT (orthogonal to robot's front-to-back axis)
-- **Roll cylinder:** Ø80mm × 130mm wide (slightly narrower than 150mm body width)
-- **Housing:** Shallow cradle/recess, sits LOW and CLOSE to the body surface (not elevated)
-- **Material appearance:** Black anodized aluminum cylindrical housing
-- **Mounting:** Two side brackets (3mm thick aluminum) supporting the roll axis, bolted to the body top surface
-- **The front edge of the roll area** = inner clip line where bag opening front edge attaches
+### Joint Specifications
 
-### 2. Folding Bag Frame
-- **Type:** Rectangular rim frame made of Ø10mm circular cross-section metal tubing
-- **Frame dimensions:** 150mm wide (matches body) × 220mm deep (front-to-back)
-- **Material:** Dark grey/black metal (aluminum tube, anodized)
-- **Hinge point:** Single-axis hinge at the REAR EDGE of the body top surface
-- **Two support bars:** Connect frame to hinge point, ~10mm diameter, 80mm long each
-- **Hinge mechanism:** Pin hinge with 2mm diameter pin, housed in a 15mm wide bracket on each side
+| Joint | Type | Axis | Lower Limit | Upper Limit | Effort Limit | Actuator |
+|-------|------|------|-------------|-------------|--------------|----------|
+| Hip yaw (abduction) | Revolute | Z (vertical) | -28.6° (-0.4993 rad) | +28.6° (+0.4993 rad) | 30 Nm | CubeMars AK60-6 |
+| Hip pitch (swing) | Revolute | Y (lateral) | -90° (-1.5708 rad) | +90° (+1.5708 rad) | 30 Nm | CubeMars AK70-10 |
+| Knee pitch (bend) | Revolute | Y (lateral) | -5.7° (-0.0995 rad) | +149° (+2.6005 rad) | 30 Nm | CubeMars AK70-10 |
 
-#### Open Position (model this as default)
-- Frame extends backward and upward from rear edge at 135° angle to body surface
-- i.e., 45° past vertical, angling upward and rearward
-- Frame outer rim is approximately 220mm behind and 220mm above the body rear edge
+### Link Specifications
 
-#### Clip System
-- **Inner clip line:** Along the front edge of the roll dispenser area — a 130mm wide rail with spring clips (4× small spring clips, 20mm wide each, spaced evenly)
-- **Outer clip line:** Along the far rim of the folding frame — matching 4× spring clips
-- Clips are simple leaf-spring type, 2mm thick spring steel, 20mm × 8mm each
+| Link | Mass | Geometry | Dimensions | Material Color |
+|------|------|----------|------------|----------------|
+| Hip (actuator housing) | 0.4 kg | Cylinder | R=25mm, L=50mm, axis along Y | Dark grey |
+| Thigh (upper leg) | 0.5 kg | Box (URDF) / Structural tube (CAD) | 40×40×200mm cross-section, 200mm long along Z | Olive green |
+| Calf (lower leg) | 0.2 kg | Cylinder | R=15mm, L=200mm, along Z | Olive green |
+| Foot | 0.1 kg | Sphere | R=25mm | Black rubber |
 
-### 3. Hinge Assembly
-- **Location:** Rear edge of body top surface, centered
-- **Type:** Single-axis pin hinge
-- **Pin:** Ø4mm × 160mm (spanning body width)
-- **Brackets:** 2× L-shaped mounting brackets, 3mm aluminum, 25mm × 20mm footprint
-- **Actuator space:** 15mm × 15mm × 30mm void on left side for micro servo (not modeled, just leave clearance)
+**Total leg mass: 1.2 kg**
 
-## Assembly Relationships
-- Roll dispenser is ~150mm from the body's rear edge (centered front-to-back in the rear half)
-- Hinge brackets are at the rear edge, 30mm from each side
-- When frame is open (135°), bag hangs between inner clip line (at roll) and outer clip line (at frame rim)
-- The ~220mm separation between clip lines holds the bag opening wide
+## Actuator Specifications
 
-## Dimensions Summary
-| Parameter | Value |
-|---|---|
-| Overall width | 150mm |
-| Overall depth (roll to frame tip, open) | ~370mm |
-| Overall height (frame open) | ~280mm above body surface |
-| Roll diameter | 80mm |
-| Roll width | 130mm |
-| Frame tube diameter | 10mm |
-| Frame depth | 220mm |
-| Frame open angle | 135° from body surface |
-| Clip count | 4× inner + 4× outer |
-| Hinge pin diameter | 4mm |
-| Material thickness (brackets) | 3mm |
+### CubeMars AK70-10 (Hip pitch, Knee pitch) — 2 per leg
+- Outer diameter: ~98mm (housing)
+- Length: ~48mm (axial)
+- Mass: ~500g
+- Peak torque: 24.8 Nm
+- Voltage: 48V
+- Interface: CAN bus
+- Mounting: 4× M4 bolts on 76mm bolt circle
 
-## Notes
-- All dimensions in millimeters
-- Model in the OPEN position (135° frame angle) as default
-- Suitable for CNC machining — no undercuts in bracket/housing parts
-- The bag itself is NOT modeled — just the mechanical hardware
-- Leave clearance void for servo actuator at hinge (don't model the servo)
-- The body surface is NOT part of this model — assume flat mounting plane at Z=0
+### CubeMars AK60-6 (Hip yaw) — 1 per leg
+- Outer diameter: ~76mm (housing)
+- Length: ~38mm (axial)
+- Mass: ~305g
+- Peak torque: 9 Nm
+- Voltage: 24V
+- Interface: CAN bus
+- Mounting: 4× M3 bolts on 58mm bolt circle
+
+## Detailed Geometry
+
+### 1. Hip Mounting Plate
+- **Purpose:** Attaches leg assembly to body chassis at front-left corner
+- **Shape:** Rectangular plate, 80mm wide × 60mm deep × 5mm thick
+- **Material:** 6061-T6 aluminum
+- **Mounting holes:** 4× M5 clearance holes at corners (6mm diameter), 65mm × 45mm bolt pattern
+- **Center hole:** 30mm diameter for cable pass-through (power + CAN bus)
+- **Position:** Centered at body attachment point (X=250, Y=75, Z=0 from body center)
+
+### 2. Hip Yaw Assembly
+- **Actuator:** AK60-6 mounted vertically on the hip mounting plate
+- **Housing:** Cylindrical shell, OD=82mm, ID=77mm, height=45mm (encloses AK60-6)
+- **Axis:** Z (vertical) — rotates the entire leg left/right for abduction/adduction
+- **Rotation range:** ±28.6°
+- **Output:** The actuator output shaft connects to the hip pitch bracket below
+
+### 3. Hip Pitch Assembly
+- **Actuator:** AK70-10 mounted horizontally, axis along Y (lateral)
+- **Housing:** Cylindrical shell, OD=104mm, ID=99mm, height=55mm
+- **Position:** Offset 35mm outward (Y direction) from hip yaw axis
+- **Axis:** Y (lateral) — swings upper leg forward/backward
+- **Rotation range:** ±90°
+- **Bracket:** U-shaped bracket connecting hip yaw output to hip pitch motor, 3mm thick aluminum
+
+### 4. Upper Leg (Thigh)
+- **Structure:** Two parallel structural tubes (TUBE METHOD), 15mm OD × 12mm ID, 200mm long
+- **Tube spacing:** 30mm center-to-center (straddle the actuator output)
+- **Cross braces:** 2× horizontal tubes at 1/3 and 2/3 length, same diameter, connecting the parallel tubes
+- **LED strip channel:** Flat face on the outward side, 15mm wide × 2mm deep groove for LED strip
+- **Top end:** Connects to hip pitch output shaft
+- **Bottom end:** Connects to knee pitch actuator housing
+- **Direction:** Extends downward (-Z) from hip pitch joint, 200mm total
+
+### 5. Knee Pitch Assembly
+- **Actuator:** AK70-10 mounted horizontally, axis along Y (lateral)
+- **Housing:** Cylindrical shell, OD=104mm, ID=99mm, height=55mm (same as hip pitch)
+- **Position:** At bottom of upper leg, 200mm below hip pitch axis
+- **Axis:** Y (lateral) — bends the knee
+- **Rotation range:** -5.7° to +149° (front leg: knee bends backward)
+
+### 6. Lower Leg (Calf)
+- **Structure:** Single structural tube, 30mm OD × 25mm ID, 200mm long
+- **Direction:** Extends downward (-Z) from knee joint
+- **Cable routing:** Internal bore (25mm ID) serves as cable routing channel for foot sensors
+
+### 7. Foot
+- **Shape:** Hemisphere + short cylinder, 25mm radius
+- **Material:** Black rubber (Shore A 60-70)
+- **Attachment:** Press-fit or M4 bolt into lower leg tube end
+- **Position:** At bottom of lower leg, 200mm below knee axis
+
+### 8. Cable Routing
+- **Path:** Cables enter at hip mounting plate center hole (30mm), route through hip yaw housing, along hip pitch bracket, through upper leg tube interior, through knee housing, down lower leg bore
+- **Cable types:** 48V power (2× 14AWG), CAN bus (2× twisted pair), encoder signals
+- **Channel dimensions:** Minimum 10mm × 10mm cross-section throughout path
+
+## Assembly Dimensions Summary
+
+| Measurement | Value |
+|-------------|-------|
+| Hip to knee (upper leg length) | 200mm |
+| Knee to foot (lower leg length) | 200mm |
+| Total leg length (hip to foot) | ~400mm + actuator housings |
+| Hip yaw housing diameter | 82mm |
+| Hip pitch housing diameter | 104mm |
+| Knee housing diameter | 104mm |
+| Mounting plate size | 80mm × 60mm × 5mm |
+| Upper leg cross-section | 30mm wide (tube spacing) × 40mm deep |
+| Lower leg diameter | 30mm OD |
+| Foot radius | 25mm |
+| Total leg mass | 1.2 kg |
+
+## Default Pose (for CAD model)
+
+Leg in nominal standing position:
+- Hip yaw: 0° (centered)
+- Hip pitch: 0° (vertical)
+- Knee pitch: 0° (straight — thigh and calf aligned vertically)
+
+This gives a straight-leg pose where the total height from mounting plate to foot = ~455mm (5mm plate + 45mm hip yaw + 55mm hip pitch + 200mm thigh + 55mm knee + 200mm calf + 25mm foot radius).

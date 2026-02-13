@@ -1,25 +1,18 @@
-# Iteration Log
+# Iteration Log — CW-1 Front-Left Leg Module
 
-<!-- This file is updated by the lead agent after each iteration cycle -->
+Component: Front-Left (FL) Leg Assembly
+Started: 2026-02-13
 
-## Iteration 1 — FAIL
-Score: 68% (17/25)
-Key issues:
-- Frame tubes disconnected at corners (not a continuous rectangular rim)
-- Roll housing is rectangular box, not curved cradle
-- Hinge brackets are rectangular blocks, not L-shaped
-- Servo clearance void missing (parameters defined but unused)
-- Outer clip spacing uses roll_width instead of frame_width
-- Overall depth ~410mm vs expected ~370mm (frame positioned past support bar endpoints)
-- Frame front cross-tube poorly visible/connected
-
-## Iteration 2 — FAIL (REGRESSION)
-Score: 28% (7/25)
-Key issues:
-- CRITICAL: frame_path.sweep(frame_profile) created a SOLID SLAB instead of tubular rim — obscured all other components
-- Support bars double-positioned: sketched at Y=hinge_y, rotated around origin, then translated by hinge_y again
-- tube_overlap parameter extended frame dimensions beyond spec (160mm x 230mm instead of 150mm x 220mm)
-- Overall depth ballooned to 466mm (vs 370mm target)
-- Servo clearance void center at X=-52.5 falls OUTSIDE the bracket
-- Hinge bracket holes drilled through top Z face instead of through Y direction for horizontal pin
-- What worked: outer clip spacing fix (frame_width), roll housing curved cradle code, L-shaped bracket code structure
+## Iteration 1 — PASS
+Score: 85% (17/20)
+Key results:
+- All major components present: mounting plate, hip yaw housing, hip pitch housing, upper leg tubes with cross braces, knee housing, lower leg tube, foot sphere
+- Body plate reference included
+- Assembly uses cq.Assembly() with 9 named components
+- Bounding box: 104 × 132.5 × 480mm
+- Total height: 475mm (4.4% above 455mm target, within tolerance)
+- 11/11 components individually watertight
+Minor issues noted (not blocking):
+- hip_pitch_lateral_offset parameter defined but unused (cosmetic positioning)
+- U-bracket is flat plate rather than true U-shape
+- Height could be closer to 455mm target

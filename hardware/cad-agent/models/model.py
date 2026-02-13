@@ -1,8 +1,7 @@
 """
-CAD Model: CW-1 Bag System Assembly — COMPLETE REBUILD
-Description: Full bag system with 600mm body plate, arm turret stub,
-             roll dispenser, folding frame at 135deg, and clip system
-Iteration: 5 (full rebuild)
+CAD Model: CW-1 Front-Left Leg Module
+Description: 3-DOF leg with hip yaw, hip pitch, knee pitch actuators
+Iteration: 1
 """
 import cadquery as cq
 import math
@@ -11,360 +10,331 @@ import math
 # PARAMETERS (all dimensions in mm)
 # ============================================================
 
-# Body plate (full-length robot body reference)
-body_length = 600.0
-body_width = 150.0
+# Body mounting plate
+body_plate_width = 100.0
+body_plate_depth = 100.0
 body_plate_thickness = 5.0
 
-# Arm turret stub (front-center mounting context)
-turret_diameter = 80.0
-turret_height = 50.0
-turret_y = 100.0
+# Hip mounting plate
+hip_plate_width = 80.0
+hip_plate_depth = 60.0
+hip_plate_thickness = 5.0
+hip_plate_bolt_pattern_width = 65.0
+hip_plate_bolt_pattern_depth = 45.0
+hip_plate_bolt_hole_diameter = 6.0  # M5 clearance
+hip_plate_cable_hole_diameter = 30.0
 
-# Bag roll dispenser
-roll_diameter = 80.0
-roll_width = 130.0
-roll_housing_height = 15.0
-roll_housing_wall = 3.0
-roll_center_y = 450.0  # Centered on rear half (300-600)
+# Hip yaw actuator (AK60-6)
+hip_yaw_outer_diameter = 82.0
+hip_yaw_inner_diameter = 77.0
+hip_yaw_height = 45.0
 
-# Roll side brackets
-roll_bracket_thickness = 3.0
-roll_bracket_height = 25.0
-roll_bracket_width = 20.0
+# Hip pitch actuator (AK70-10)
+hip_pitch_outer_diameter = 104.0
+hip_pitch_inner_diameter = 99.0
+hip_pitch_housing_length = 55.0
+hip_pitch_lateral_offset = 35.0  # Y offset from yaw axis
 
-# Folding frame (TUBE METHOD: 4 cylinders + union, NEVER sweep)
-frame_tube_diameter = 10.0
-frame_width = 150.0
-frame_depth = 220.0
-frame_angle_deg = 135.0
+# U-bracket connecting yaw to pitch
+bracket_thickness = 3.0
+bracket_width = 40.0
+bracket_height = 60.0
 
-# Support bars (hinge to frame)
-support_bar_diameter = 10.0
-support_bar_length = 91.0
+# Upper leg (thigh) - parallel tubes
+upper_leg_tube_outer_diameter = 15.0
+upper_leg_tube_inner_diameter = 12.0
+upper_leg_tube_spacing = 30.0  # center-to-center
+upper_leg_length = 200.0
+upper_leg_cross_brace_positions = [upper_leg_length / 3, 2 * upper_leg_length / 3]
 
-# Hinge assembly
-hinge_y = 600.0
-hinge_bracket_height = 15.0
-hinge_bracket_width = 25.0
-hinge_bracket_depth = 20.0
-hinge_bracket_thickness = 3.0
-hinge_bracket_foot_height = 3.0
-hinge_bracket_spacing = 30.0
-hinge_pin_diameter = 4.0
-hinge_pin_length = 160.0
+# Knee pitch actuator (AK70-10)
+knee_pitch_outer_diameter = 104.0
+knee_pitch_inner_diameter = 99.0
+knee_pitch_housing_length = 55.0
 
-# Servo clearance
-servo_clearance_width = 15.0
-servo_clearance_depth = 15.0
-servo_clearance_height = 30.0
+# Lower leg (calf)
+lower_leg_outer_diameter = 30.0
+lower_leg_inner_diameter = 25.0
+lower_leg_length = 200.0
 
-# Clip system
-clip_count = 4
-clip_width = 20.0
-clip_height = 8.0
-clip_thickness = 2.0
-clip_standoff = 3.0
+# Foot
+foot_radius = 25.0
 
-# ============================================================
-# DIMENSION CHECK
-# ============================================================
-# Body plate:  Y=0..600, X=-75..75, Z=-5..0
-# Turret:      Y=100, Z=0..50, diameter 80mm
-# Roll center: Y=450, diameter 80mm -> Y extent ~410..490
-# Hinge:       Y=600, Z=0..15 (bracket height)
-# Rotation:    135deg - 90deg = 45deg tilt
-# Bar end Y:   600 + 91*cos(45deg) = 664
-# Bar end Z:   15 + 91*sin(45deg) = 79
-# Frame back Y: 664 + 220*cos(45deg) = 820 -> 220mm behind rear edge OK
-# Frame back Z: 79 + 220*sin(45deg) = 235 -> ~235mm above body surface
-# Width: 150mm (body/frame), 160mm (hinge pin)
+# Z-stack positions (measuring from body interface at Z=0, downward is negative)
+z_body_interface = 0.0
+z_mounting_plate_bottom = z_body_interface - hip_plate_thickness
+z_hip_yaw_top = z_mounting_plate_bottom
+z_hip_yaw_bottom = z_hip_yaw_top - hip_yaw_height
+z_hip_pitch_axis = z_hip_yaw_bottom
+z_knee_axis = z_hip_pitch_axis - upper_leg_length
+z_foot_center = z_knee_axis - lower_leg_length
+z_foot_bottom = z_foot_center - foot_radius
 
 # ============================================================
 # CONSTRUCTION
 # ============================================================
 
-# Step 1: Body plate (600x150mm reference surface)
+# Body plate (reference mounting surface)
 body_plate = (
     cq.Workplane("XY")
-    .move(0, body_length / 2)
-    .rect(body_width, body_length)
-    .extrude(-body_plate_thickness)
+    .box(body_plate_width, body_plate_depth, body_plate_thickness, centered=(True, True, False))
+    .translate((0, 0, -body_plate_thickness))
 )
 
-# Step 2: Arm turret stub (front-center context)
-turret = (
+# Hip mounting plate with bolt holes and cable pass-through
+hip_mounting_plate = (
     cq.Workplane("XY")
-    .move(0, turret_y)
-    .circle(turret_diameter / 2)
-    .extrude(turret_height)
+    .box(hip_plate_width, hip_plate_depth, hip_plate_thickness, centered=(True, True, False))
+    .translate((0, 0, z_body_interface))
 )
 
-# Step 3: Roll housing (curved cradle)
-try:
-    roll_housing = (
-        cq.Workplane("XY")
-        .move(0, roll_center_y)
-        .rect(roll_width + 2 * roll_housing_wall, roll_diameter / 2 + 2 * roll_housing_wall)
-        .extrude(roll_housing_height)
-    )
-    cradle_cutter = (
-        cq.Workplane("YZ")
-        .move(roll_center_y, roll_housing_height + roll_diameter / 2 - roll_housing_wall)
-        .circle(roll_diameter / 2 + 0.5)
-        .extrude(roll_width)
-        .translate((-roll_width / 2, 0, 0))
-    )
-    roll_housing = roll_housing.cut(cradle_cutter)
-except Exception as e:
-    print(f"Warning: Roll housing error: {e}")
-    roll_housing = (
-        cq.Workplane("XY")
-        .move(0, roll_center_y)
-        .rect(roll_width + 2 * roll_housing_wall, roll_diameter / 2 + roll_housing_wall)
-        .extrude(roll_housing_height)
-    )
-
-# Step 4: Roll cylinder (bag roll itself)
-roll_cylinder = (
-    cq.Workplane("YZ")
-    .move(roll_center_y, roll_housing_height + roll_diameter / 2)
-    .circle(roll_diameter / 2)
-    .extrude(roll_width)
-    .translate((-roll_width / 2, 0, 0))
+# Add bolt holes at corners
+hip_mounting_plate = (
+    hip_mounting_plate
+    .faces(">Z")
+    .workplane()
+    .pushPoints([
+        (hip_plate_bolt_pattern_width / 2, hip_plate_bolt_pattern_depth / 2),
+        (-hip_plate_bolt_pattern_width / 2, hip_plate_bolt_pattern_depth / 2),
+        (hip_plate_bolt_pattern_width / 2, -hip_plate_bolt_pattern_depth / 2),
+        (-hip_plate_bolt_pattern_width / 2, -hip_plate_bolt_pattern_depth / 2),
+    ])
+    .hole(hip_plate_bolt_hole_diameter)
 )
 
-# Step 5: Roll side brackets
-left_roll_bracket = (
+# Central cable pass-through hole
+hip_mounting_plate = (
+    hip_mounting_plate
+    .faces(">Z")
+    .workplane()
+    .hole(hip_plate_cable_hole_diameter)
+)
+
+# Hip yaw housing (cylindrical shell)
+hip_yaw_outer = (
     cq.Workplane("XY")
-    .move(-(roll_width / 2 + roll_housing_wall + roll_bracket_thickness / 2), roll_center_y)
-    .rect(roll_bracket_thickness, roll_bracket_width)
-    .extrude(roll_bracket_height)
+    .circle(hip_yaw_outer_diameter / 2)
+    .extrude(-hip_yaw_height)
+    .translate((0, 0, z_hip_yaw_top))
 )
-right_roll_bracket = (
+
+hip_yaw_inner = (
     cq.Workplane("XY")
-    .move((roll_width / 2 + roll_housing_wall + roll_bracket_thickness / 2), roll_center_y)
-    .rect(roll_bracket_thickness, roll_bracket_width)
-    .extrude(roll_bracket_height)
+    .circle(hip_yaw_inner_diameter / 2)
+    .extrude(-hip_yaw_height - 1)  # Slightly longer for clean cut
+    .translate((0, 0, z_hip_yaw_top))
 )
 
-# Step 6: Hinge brackets (L-shaped profile)
-try:
-    left_hinge_bracket = (
-        cq.Workplane("XZ")
-        .move(-(body_width / 2 - hinge_bracket_spacing), 0)
-        .polyline([
-            (0, 0),
-            (hinge_bracket_width, 0),
-            (hinge_bracket_width, hinge_bracket_foot_height),
-            (hinge_bracket_thickness, hinge_bracket_foot_height),
-            (hinge_bracket_thickness, hinge_bracket_height),
-            (0, hinge_bracket_height),
-        ])
-        .close()
-        .extrude(hinge_bracket_depth)
-        .translate((0, hinge_y - hinge_bracket_depth / 2, 0))
-    )
-except Exception as e:
-    print(f"Warning: Left hinge bracket error: {e}")
-    left_hinge_bracket = (
-        cq.Workplane("XY")
-        .move(-(body_width / 2 - hinge_bracket_spacing), hinge_y)
-        .rect(hinge_bracket_width, hinge_bracket_depth)
-        .extrude(hinge_bracket_height)
-    )
+hip_yaw_housing = hip_yaw_outer.cut(hip_yaw_inner)
 
-try:
-    right_hinge_bracket = (
-        cq.Workplane("XZ")
-        .move((body_width / 2 - hinge_bracket_spacing), 0)
-        .polyline([
-            (0, 0),
-            (-hinge_bracket_width, 0),
-            (-hinge_bracket_width, hinge_bracket_foot_height),
-            (-hinge_bracket_thickness, hinge_bracket_foot_height),
-            (-hinge_bracket_thickness, hinge_bracket_height),
-            (0, hinge_bracket_height),
-        ])
-        .close()
-        .extrude(hinge_bracket_depth)
-        .translate((0, hinge_y - hinge_bracket_depth / 2, 0))
-    )
-except Exception as e:
-    print(f"Warning: Right hinge bracket error: {e}")
-    right_hinge_bracket = (
-        cq.Workplane("XY")
-        .move((body_width / 2 - hinge_bracket_spacing), hinge_y)
-        .rect(hinge_bracket_width, hinge_bracket_depth)
-        .extrude(hinge_bracket_height)
-    )
-
-# Step 6b: Servo clearance void
-try:
-    servo_void = (
-        cq.Workplane("XY")
-        .move(-(body_width / 2 - hinge_bracket_spacing) + servo_clearance_width / 2, hinge_y)
-        .rect(servo_clearance_width, servo_clearance_depth)
-        .extrude(servo_clearance_height)
-    )
-    left_hinge_bracket = left_hinge_bracket.cut(servo_void)
-except Exception as e:
-    print(f"Warning: Servo void cut failed: {e}")
-
-# Step 7: Hinge pin
-hinge_pin = (
-    cq.Workplane("YZ")
-    .move(hinge_y, hinge_bracket_height)
-    .circle(hinge_pin_diameter / 2)
-    .extrude(hinge_pin_length)
-    .translate((-hinge_pin_length / 2, 0, 0))
-)
-
-# Step 8: Support bars (build at origin -> rotate -> translate ONCE)
-frame_angle_rad = math.radians(frame_angle_deg)
-rot_angle = frame_angle_deg - 90  # 45 degrees
-
-support_bar_end_y = hinge_y + support_bar_length * math.cos(frame_angle_rad - math.pi / 2)
-support_bar_end_z = hinge_bracket_height + support_bar_length * math.sin(frame_angle_rad - math.pi / 2)
-
-left_support_bar = (
-    cq.Workplane("XY")
-    .move(-frame_width / 4, 0)
-    .circle(support_bar_diameter / 2)
-    .extrude(support_bar_length)
-    .rotate((0, 0, 0), (1, 0, 0), rot_angle)
-    .translate((0, hinge_y, hinge_bracket_height))
-)
-
-right_support_bar = (
-    cq.Workplane("XY")
-    .move(frame_width / 4, 0)
-    .circle(support_bar_diameter / 2)
-    .extrude(support_bar_length)
-    .rotate((0, 0, 0), (1, 0, 0), rot_angle)
-    .translate((0, hinge_y, hinge_bracket_height))
-)
-
-# Step 9: Folding frame rim — TUBE METHOD (4 cylinders + union, NEVER sweep)
-frame_attach_y = support_bar_end_y
-frame_attach_z = support_bar_end_z
-
-r = frame_tube_diameter / 2
-
-# Front tube (width-spanning at near edge)
-frame_front = (
+# U-bracket connecting hip yaw to hip pitch
+# Simple vertical plate with offset for hip pitch motor
+u_bracket = (
     cq.Workplane("XZ")
-    .move(-frame_width / 2 - r, 0)
-    .circle(r)
-    .extrude(frame_width + 2 * r)
+    .center(0, z_hip_pitch_axis)
+    .rect(bracket_width, bracket_height)
+    .extrude(bracket_thickness)
+    .translate((0, -bracket_thickness / 2, 0))
 )
 
-# Back tube (width-spanning at far edge)
-frame_back = (
+# Hip pitch housing (cylindrical shell, oriented along Y axis)
+# Build at origin along Y, then translate to position
+hip_pitch_outer = (
     cq.Workplane("XZ")
-    .move(-frame_width / 2 - r, 0)
-    .circle(r)
-    .extrude(frame_width + 2 * r)
-    .translate((0, frame_depth, 0))
+    .circle(hip_pitch_outer_diameter / 2)
+    .extrude(hip_pitch_housing_length)
+    .translate((0, -hip_pitch_housing_length / 2, z_hip_pitch_axis))
 )
 
-# Left tube (depth-spanning)
-frame_left = (
+hip_pitch_inner = (
+    cq.Workplane("XZ")
+    .circle(hip_pitch_inner_diameter / 2)
+    .extrude(hip_pitch_housing_length + 1)
+    .translate((0, -hip_pitch_housing_length / 2 - 0.5, z_hip_pitch_axis))
+)
+
+hip_pitch_housing = hip_pitch_outer.cut(hip_pitch_inner)
+
+# Upper leg - two parallel tubes with cross braces
+# Tube 1: at X = +upper_leg_tube_spacing/2
+upper_leg_tube1_outer = (
     cq.Workplane("XY")
-    .move(-frame_width / 2, -r)
-    .circle(r)
-    .extrude(frame_depth + 2 * r)
+    .workplane(offset=z_hip_pitch_axis)
+    .circle(upper_leg_tube_outer_diameter / 2)
+    .extrude(-upper_leg_length)
+    .translate((upper_leg_tube_spacing / 2, 0, 0))
 )
 
-# Right tube (depth-spanning)
-frame_right = (
+upper_leg_tube1_inner = (
     cq.Workplane("XY")
-    .move(frame_width / 2, -r)
-    .circle(r)
-    .extrude(frame_depth + 2 * r)
+    .workplane(offset=z_hip_pitch_axis)
+    .circle(upper_leg_tube_inner_diameter / 2)
+    .extrude(-upper_leg_length - 1)
+    .translate((upper_leg_tube_spacing / 2, 0, 0))
 )
 
-# Union all 4 tubes — solid corner joints from overlap
-frame = frame_front.union(frame_back).union(frame_left).union(frame_right)
+upper_leg_tube1 = upper_leg_tube1_outer.cut(upper_leg_tube1_inner)
 
-# Rotate to open position and translate to support bar endpoints
-frame = (
-    frame
-    .rotate((0, 0, 0), (1, 0, 0), rot_angle)
-    .translate((0, frame_attach_y, frame_attach_z))
+# Tube 2: at X = -upper_leg_tube_spacing/2
+upper_leg_tube2_outer = (
+    cq.Workplane("XY")
+    .workplane(offset=z_hip_pitch_axis)
+    .circle(upper_leg_tube_outer_diameter / 2)
+    .extrude(-upper_leg_length)
+    .translate((-upper_leg_tube_spacing / 2, 0, 0))
 )
 
-# Step 10: Inner clip line (at roll front edge)
-inner_clip_spacing = roll_width / (clip_count + 1)
-inner_clips = None
-for i in range(clip_count):
-    x_pos = -roll_width / 2 + inner_clip_spacing * (i + 1)
-    clip = (
-        cq.Workplane("XY")
-        .move(x_pos, roll_center_y - roll_diameter / 2 - roll_housing_wall)
-        .rect(clip_width, clip_thickness)
-        .extrude(clip_height)
-        .translate((0, 0, clip_standoff))
-    )
-    if inner_clips is None:
-        inner_clips = clip
-    else:
-        inner_clips = inner_clips.union(clip)
+upper_leg_tube2_inner = (
+    cq.Workplane("XY")
+    .workplane(offset=z_hip_pitch_axis)
+    .circle(upper_leg_tube_inner_diameter / 2)
+    .extrude(-upper_leg_length - 1)
+    .translate((-upper_leg_tube_spacing / 2, 0, 0))
+)
 
-# Step 11: Outer clip line (at frame far rim — spacing per frame_width, NOT roll_width)
-frame_back_y = frame_attach_y + frame_depth * math.cos(frame_angle_rad - math.pi / 2)
-frame_back_z = frame_attach_z + frame_depth * math.sin(frame_angle_rad - math.pi / 2)
+upper_leg_tube2 = upper_leg_tube2_outer.cut(upper_leg_tube2_inner)
 
-outer_clip_spacing = frame_width / (clip_count + 1)
-outer_clips = None
-for i in range(clip_count):
-    x_pos = -frame_width / 2 + outer_clip_spacing * (i + 1)
-    clip = (
-        cq.Workplane("XY")
-        .move(x_pos, 0)
-        .rect(clip_width, clip_thickness)
-        .extrude(clip_height)
-        .rotate((0, 0, 0), (1, 0, 0), rot_angle)
-        .translate((0, frame_back_y, frame_back_z))
-    )
-    if outer_clips is None:
-        outer_clips = clip
-    else:
-        outer_clips = outer_clips.union(clip)
+# Cross braces (horizontal tubes along X direction connecting the two vertical tubes)
+cross_brace1_outer = (
+    cq.Workplane("YZ")
+    .workplane(offset=-upper_leg_tube_spacing / 2)
+    .circle(upper_leg_tube_outer_diameter / 2)
+    .extrude(upper_leg_tube_spacing)
+    .translate((0, 0, z_hip_pitch_axis - upper_leg_cross_brace_positions[0]))
+)
+
+cross_brace1_inner = (
+    cq.Workplane("YZ")
+    .workplane(offset=-upper_leg_tube_spacing / 2 - 0.5)
+    .circle(upper_leg_tube_inner_diameter / 2)
+    .extrude(upper_leg_tube_spacing + 1)
+    .translate((0, 0, z_hip_pitch_axis - upper_leg_cross_brace_positions[0]))
+)
+
+cross_brace1 = cross_brace1_outer.cut(cross_brace1_inner)
+
+cross_brace2_outer = (
+    cq.Workplane("YZ")
+    .workplane(offset=-upper_leg_tube_spacing / 2)
+    .circle(upper_leg_tube_outer_diameter / 2)
+    .extrude(upper_leg_tube_spacing)
+    .translate((0, 0, z_hip_pitch_axis - upper_leg_cross_brace_positions[1]))
+)
+
+cross_brace2_inner = (
+    cq.Workplane("YZ")
+    .workplane(offset=-upper_leg_tube_spacing / 2 - 0.5)
+    .circle(upper_leg_tube_inner_diameter / 2)
+    .extrude(upper_leg_tube_spacing + 1)
+    .translate((0, 0, z_hip_pitch_axis - upper_leg_cross_brace_positions[1]))
+)
+
+cross_brace2 = cross_brace2_outer.cut(cross_brace2_inner)
+
+# Combine upper leg components
+upper_leg = upper_leg_tube1.union(upper_leg_tube2).union(cross_brace1).union(cross_brace2)
+
+# Knee pitch housing (cylindrical shell, oriented along Y axis)
+knee_pitch_outer = (
+    cq.Workplane("XZ")
+    .circle(knee_pitch_outer_diameter / 2)
+    .extrude(knee_pitch_housing_length)
+    .translate((0, -knee_pitch_housing_length / 2, z_knee_axis))
+)
+
+knee_pitch_inner = (
+    cq.Workplane("XZ")
+    .circle(knee_pitch_inner_diameter / 2)
+    .extrude(knee_pitch_housing_length + 1)
+    .translate((0, -knee_pitch_housing_length / 2 - 0.5, z_knee_axis))
+)
+
+knee_pitch_housing = knee_pitch_outer.cut(knee_pitch_inner)
+
+# Lower leg (single tube)
+lower_leg_outer = (
+    cq.Workplane("XY")
+    .workplane(offset=z_knee_axis)
+    .circle(lower_leg_outer_diameter / 2)
+    .extrude(-lower_leg_length)
+)
+
+lower_leg_inner = (
+    cq.Workplane("XY")
+    .workplane(offset=z_knee_axis)
+    .circle(lower_leg_inner_diameter / 2)
+    .extrude(-lower_leg_length - 1)
+)
+
+lower_leg = lower_leg_outer.cut(lower_leg_inner)
+
+# Foot (sphere)
+foot = (
+    cq.Workplane("XY")
+    .sphere(foot_radius)
+    .translate((0, 0, z_foot_center))
+)
+
+# ============================================================
+# DIMENSION CHECK
+# ============================================================
+# Expected bounding box:
+# X: ±(max of: hip_plate_width/2=40, upper_leg_tube_spacing/2 + tube_radius = 15+7.5 = 22.5,
+#     knee_diameter/2 = 52, lower_leg_diameter/2 = 15, foot_radius = 25)
+#   = ±52mm (from knee/hip pitch housings)
+# Y: ±(max of: hip_plate_depth/2=30, hip_pitch_housing_length/2=27.5, knee_housing_length/2=27.5)
+#   = ±30mm (from hip plate depth)
+# Z: from z_body_interface (0) to z_foot_bottom
+#   = 0 to z_foot_bottom
+
+expected_x_extent = max(
+    hip_plate_width / 2,
+    upper_leg_tube_spacing / 2 + upper_leg_tube_outer_diameter / 2,
+    hip_pitch_outer_diameter / 2,
+    knee_pitch_outer_diameter / 2,
+    lower_leg_outer_diameter / 2,
+    foot_radius
+)
+
+expected_y_extent = max(
+    hip_plate_depth / 2,
+    hip_pitch_housing_length / 2,
+    knee_pitch_housing_length / 2
+)
+
+expected_z_min = z_foot_bottom
+expected_z_max = z_body_interface
+
+print(f"Expected X extent: ±{expected_x_extent:.1f} mm")
+print(f"Expected Y extent: ±{expected_y_extent:.1f} mm")
+print(f"Expected Z range: {expected_z_min:.1f} to {expected_z_max:.1f} mm")
+print(f"Expected total height: {abs(expected_z_min - expected_z_max):.1f} mm")
+print(f"Target total height: ~455 mm")
+
+total_height = abs(z_foot_bottom - z_body_interface)
+if abs(total_height - 455) > 45:  # Allow 10% tolerance
+    print(f"WARNING: Height mismatch - got {total_height:.1f} mm, expected ~455 mm")
 
 # ============================================================
 # ASSEMBLY
 # ============================================================
-
 assy = cq.Assembly()
-assy.add(body_plate, name="body_plate", color=cq.Color(0.23, 0.29, 0.25))
-assy.add(turret, name="arm_turret", color=cq.Color(0.2, 0.2, 0.2))
-assy.add(roll_housing, name="roll_housing", color=cq.Color(0.15, 0.15, 0.15))
-assy.add(roll_cylinder, name="roll_cylinder", color=cq.Color(0.4, 0.4, 0.4))
-assy.add(left_roll_bracket, name="left_roll_bracket", color=cq.Color(0.2, 0.2, 0.2))
-assy.add(right_roll_bracket, name="right_roll_bracket", color=cq.Color(0.2, 0.2, 0.2))
-assy.add(left_hinge_bracket, name="left_hinge_bracket", color=cq.Color(0.2, 0.2, 0.2))
-assy.add(right_hinge_bracket, name="right_hinge_bracket", color=cq.Color(0.2, 0.2, 0.2))
-assy.add(hinge_pin, name="hinge_pin", color=cq.Color(0.6, 0.6, 0.6))
-assy.add(left_support_bar, name="left_support_bar", color=cq.Color(0.25, 0.25, 0.25))
-assy.add(right_support_bar, name="right_support_bar", color=cq.Color(0.25, 0.25, 0.25))
-assy.add(frame, name="frame", color=cq.Color(0.25, 0.25, 0.25))
-assy.add(inner_clips, name="inner_clips", color=cq.Color(0.6, 0.6, 0.6))
-assy.add(outer_clips, name="outer_clips", color=cq.Color(0.6, 0.6, 0.6))
+
+# Add all components with descriptive names
+assy.add(body_plate, name="body_plate", color=cq.Color("gray"))
+assy.add(hip_mounting_plate, name="hip_mounting_plate", color=cq.Color("white"))
+assy.add(hip_yaw_housing, name="hip_yaw_housing", color=cq.Color("blue"))
+assy.add(u_bracket, name="u_bracket", color=cq.Color("gray"))
+assy.add(hip_pitch_housing, name="hip_pitch_housing", color=cq.Color("blue"))
+assy.add(upper_leg, name="upper_leg", color=cq.Color("orange"))
+assy.add(knee_pitch_housing, name="knee_pitch_housing", color=cq.Color("blue"))
+assy.add(lower_leg, name="lower_leg", color=cq.Color("yellow"))
+assy.add(foot, name="foot", color=cq.Color("black"))
 
 # ============================================================
 # EXPORT
 # ============================================================
-
-assy.save("models/model.step")
+assy.save("/home/deploy/cleanwalkerrobotics/hardware/cad-agent/models/model.step")
 compound = assy.toCompound()
-cq.exporters.export(compound, "models/model.stl")
-
+cq.exporters.export(compound, "/home/deploy/cleanwalkerrobotics/hardware/cad-agent/models/model.stl")
 print("Export complete: models/model.step, models/model.stl")
-print("COMPLETE REBUILD — Full bag system with 600mm body plate")
-print(f"  Body plate: {body_length}x{body_width}mm")
-print(f"  Arm turret: dia {turret_diameter}mm at Y={turret_y}")
-print(f"  Roll: dia {roll_diameter}mm centered at Y={roll_center_y}")
-print(f"  Frame: {frame_depth}mm deep, dia {frame_tube_diameter}mm tube (4-cyl union)")
-print(f"  Frame tip: ~{frame_back_y - hinge_y:.0f}mm behind, ~{frame_back_z:.0f}mm above rear edge")
-print(f"  Angle: {frame_angle_deg} deg from body surface")
