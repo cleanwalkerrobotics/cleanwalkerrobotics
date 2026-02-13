@@ -136,3 +136,41 @@ When complete, summarize:
 - Always log iterations
 - Never skip the visual evaluation step
 - If dependencies are missing, run setup.sh before proceeding
+
+## CadQuery Guardrails (MANDATORY — learned from bag system iterations)
+
+Read `prompts/cadquery-patterns.md` for the full reference. These are the non-negotiable rules:
+
+### Code Generation Rules
+
+1. **NEVER use `sweep()` on a closed wire path.** CadQuery fills the interior, creating a solid slab instead of a pipe. For tubular frames, use individual cylinder extrusions + union. See `prompts/cadquery-patterns.md` for the correct pattern.
+
+2. **Build at origin → rotate → translate ONCE.** Never `.move()` to an offset coordinate and then `.rotate()` around the global origin — this applies the offset twice (double-offset bug). Always sketch at Y=0, Z=0 with only lateral (X) offset, then rotate, then translate to the final position.
+
+3. **Every parameter must be used.** If a parameter is defined in the PARAMETERS section, it MUST be referenced in the CONSTRUCTION section. Unused parameters = missing features. The cad-executor should flag unused parameters.
+
+4. **Include a DIMENSION CHECK comment block** before the ASSEMBLY section. Compute expected bounding box from parameters (front extent, rear extent, height, width) and compare to the spec target. If off by more than 10%, adjust parameters before executing.
+
+5. **Include a body plate** for any component that mounts to the robot body. A 5mm-thick reference plate below Z=0 provides visual context in renders and helps the evaluator assess positioning.
+
+6. **Compute spacing variables per target width.** Never reuse a spacing variable computed for one rail width on a different-width rail. E.g., inner clip spacing (roll_width) ≠ outer clip spacing (frame_width).
+
+7. **Verify boolean cuts overlap.** Before `A.cut(B)`, verify with coordinate math that A and B bounding boxes overlap. A cut on non-overlapping geometry silently does nothing.
+
+### Iteration Discipline Rules
+
+8. **When fixing evaluation failures, ONLY modify code for failing checks.** Do NOT refactor or restructure working code. Preserve what passed — regressions are the biggest time-waster.
+
+9. **One structural change per iteration.** Don't replace a working construction approach AND fix an unrelated issue simultaneously. If the frame construction works but has corner gaps, fix the corners — don't rebuild the frame from scratch with a different method.
+
+10. **Use try/except with simple fallbacks** for complex geometry (fillets, chamfers, polylines). Always `print()` the warning so it appears in the execution report. The fallback should produce simpler but valid geometry, not crash.
+
+### Assembly Rules
+
+11. **Use `cq.Assembly()`** for multi-component models. This preserves component identity and enables per-component color coding in STEP exports.
+
+12. **Assembly STL will not be watertight.** This is expected (each component is a separate shell). The mesh validator handles this — do not try to union all components into a single solid just to pass watertight checks.
+
+## Generator Context
+
+When invoking the `cad-generator` subagent, ALWAYS include the contents of `prompts/cadquery-patterns.md` in the prompt alongside the design description and evaluation feedback. This prevents the generator from falling into known pitfalls.

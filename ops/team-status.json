@@ -1,34 +1,33 @@
 {
-  "lastUpdated": "2026-02-12T22:46:00Z",
+  "lastUpdated": "2026-02-13T00:46:00Z",
   "teams": {
     "cw-software": {
       "status": "idle",
-      "lastTask": "Website polish wave 2: error pages, performance, a11y, OG metadata, email signature + branded HTML one-pagers + legal pages",
+      "lastTask": "Featured demos system + 3D viewer concept disclaimer",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-12T15:57:00Z"
+      "lastActive": "2026-02-13T00:28:00Z"
     },
     "cw-research": {
       "status": "idle",
-      "lastTask": "macOS Apple Silicon training package for CW-1 locomotion",
+      "lastTask": "Single-command ML training workflow with validation + upload",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-12T21:03:00Z",
-      "notes": "Commit 5bf3613. No callback sent — caught by comms optimizer. Session killed at 22:46 UTC."
+      "lastActive": "2026-02-13T00:00:00Z"
     },
     "cw-bizdev": {
       "status": "idle",
-      "lastTask": "Tier 2 outreach scheduled + Sheraa/Helsinki drafts",
+      "lastTask": "SRTIP SAIA application polish + outreach tracker update",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-11T12:00:00Z"
+      "lastActive": "2026-02-13T00:20:00Z"
     },
     "cw-hardware": {
       "status": "idle",
-      "lastTask": "CleanWalker CW-1 URDF v1.0",
+      "lastTask": "Bag system CAD iteration 3 — 23/25 PASS (92%)",
       "lastTaskResult": "completed",
-      "lastActive": "2026-02-11T01:00:00Z"
+      "lastActive": "2026-02-13T00:40:00Z"
     }
   },
   "activeSessions": 0,
-  "notes": "All idle. cw-research finished macOS training package (5bf3613) but didn't callback — 2nd comms failure. Tier 2 emails launch Feb 13. Quiet hours (17:46 COT).",
+  "notes": "12 commits in last 2h. All sessions completed and exited. CAD bag system at 92% pass rate (iter 3). Featured demos shipped. SRTIP polished. It's 00:46 UTC (19:46 COT) — late evening, no new spawns needed.",
   "autonomousOutreachApproved": true,
-  "keyDirective": "GO AUTONOMOUS — Monitor replies, Tier 2 scheduled Feb 13-14, simulation needs GPU"
+  "keyDirective": "GO AUTONOMOUS — Tier 2 emails launch Feb 13-14 via Resend scheduled_at. Next priorities: simulation GPU, Helsinki email."
 }
