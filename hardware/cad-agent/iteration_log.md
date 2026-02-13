@@ -13,11 +13,13 @@ Key issues:
 - Overall depth ~410mm vs expected ~370mm (frame positioned past support bar endpoints)
 - Frame front cross-tube poorly visible/connected
 
-## Iteration 2 — IN PROGRESS
-Generated corrected CadQuery script addressing all 6 critical issues:
-1. Frame: Implemented continuous rectangular rim using sweep method (or extended tube fallback)
-2. Roll housing: Changed to curved cradle with cylindrical channel cut
-3. Hinge brackets: Rebuilt as L-shaped profiles using polyline
-4. Servo clearance: Added 15×15×30mm void cut from left hinge bracket
-5. Outer clips: Fixed spacing to use frame_width (30mm) instead of roll_width (26mm)
-6. Overall depth: Maintained correct positioning math (should now measure ~370mm)
+## Iteration 2 — FAIL (REGRESSION)
+Score: 28% (7/25)
+Key issues:
+- CRITICAL: frame_path.sweep(frame_profile) created a SOLID SLAB instead of tubular rim — obscured all other components
+- Support bars double-positioned: sketched at Y=hinge_y, rotated around origin, then translated by hinge_y again
+- tube_overlap parameter extended frame dimensions beyond spec (160mm x 230mm instead of 150mm x 220mm)
+- Overall depth ballooned to 466mm (vs 370mm target)
+- Servo clearance void center at X=-52.5 falls OUTSIDE the bracket
+- Hinge bracket holes drilled through top Z face instead of through Y direction for horizontal pin
+- What worked: outer clip spacing fix (frame_width), roll housing curved cradle code, L-shaped bracket code structure

@@ -30,27 +30,28 @@ def validate_mesh(stl_path: str) -> dict:
             "z": round(float(extents[2]), 2),
         },
         "center_of_mass": [round(float(c), 2) for c in mesh.center_mass] if mesh.is_watertight else None,
-        "has_degenerate_faces": bool(mesh.degenerate_faces.sum() > 0),
-        "degenerate_face_count": int(mesh.degenerate_faces.sum()),
+        "has_degenerate_faces": bool(len(mesh.nondegenerate_faces()) < len(mesh.faces)),
+        "degenerate_face_count": int(len(mesh.faces) - len(mesh.nondegenerate_faces())),
         "checks": {},
     }
 
     # Check 1: Non-trivial geometry
-    results["checks"]["has_geometry"] = mesh.vertices.shape[0] > 3
-    
+    results["checks"]["has_geometry"] = bool(mesh.vertices.shape[0] > 3)
+
     # Check 2: Watertight
-    results["checks"]["watertight"] = mesh.is_watertight
+    results["checks"]["watertight"] = bool(mesh.is_watertight)
 
     # Check 3: No degenerate faces (more than 1% is bad)
-    degen_ratio = mesh.degenerate_faces.sum() / max(mesh.faces.shape[0], 1)
-    results["checks"]["low_degenerate_faces"] = degen_ratio < 0.01
+    degen_count = len(mesh.faces) - len(mesh.nondegenerate_faces())
+    degen_ratio = degen_count / max(len(mesh.faces), 1)
+    results["checks"]["low_degenerate_faces"] = bool(degen_ratio < 0.01)
 
     # Check 4: Reasonable size (0.1mm to 10m per axis)
-    results["checks"]["reasonable_size"] = all(0.1 <= e <= 10000 for e in extents)
+    results["checks"]["reasonable_size"] = bool(all(0.1 <= e <= 10000 for e in extents))
 
     # Check 5: Positive volume (if watertight)
     if mesh.is_watertight:
-        results["checks"]["positive_volume"] = mesh.volume > 0
+        results["checks"]["positive_volume"] = bool(mesh.volume > 0)
     else:
         results["checks"]["positive_volume"] = False
 
