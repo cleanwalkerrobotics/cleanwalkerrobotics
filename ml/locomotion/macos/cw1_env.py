@@ -36,12 +36,16 @@ LEG_JOINT_NAMES = [
     "RR_hip_yaw", "RR_hip_pitch", "RR_knee_pitch",
 ]
 
-# Default standing joint positions (slightly bent knees)
+# Default standing joint positions — splayed stance for stability.
+# Front legs pitched forward (negative hip_pitch = thigh forward in world X),
+# rear legs pitched backward. This spreads the support polygon so the
+# forward-heavy body (head + arm) doesn't tip over.
+# Verified: robot stands at 0.34m with <1° tilt for 5+ seconds.
 DEFAULT_JOINT_POS = np.array([
-    0.0, 0.4, 0.8,   # FL: yaw, hip, knee
-    0.0, 0.4, 0.8,   # FR
-    0.0, -0.4, -0.8,  # RL: negative for rear legs
-    0.0, -0.4, -0.8,  # RR
+    0.0, -0.6, 1.24,    # FL: yaw, hip_pitch (forward), knee_pitch
+    0.0, -0.6, 1.24,    # FR
+    0.0,  0.6, -1.24,   # RL: opposite signs for rear legs
+    0.0,  0.6, -1.24,   # RR
 ], dtype=np.float32)
 
 # Joint limits from URDF (for penalty computation)
@@ -88,26 +92,31 @@ class CW1LocomotionEnv(gym.Env):
         control_dt: float = 0.02,     # 50 Hz control (decimation=4)
         max_episode_steps: int = 1000,  # 20 seconds
         # Action
-        action_scale: float = 0.25,
-        # Velocity commands
-        cmd_vx_range: tuple = (-1.0, 1.5),
-        cmd_vy_range: tuple = (-0.5, 0.5),
-        cmd_yaw_range: tuple = (-1.5, 1.5),
+        action_scale: float = 0.5,
+        # Velocity commands (always some forward component)
+        cmd_vx_range: tuple = (0.2, 0.8),
+        cmd_vy_range: tuple = (-0.2, 0.2),
+        cmd_yaw_range: tuple = (-0.5, 0.5),
         # Termination
         min_body_height: float = 0.15,
-        max_body_tilt: float = 1.2,   # radians (~69 degrees)
-        # Reward weights (from IsaacLab config)
-        rew_track_lin_vel: float = 1.5,
-        rew_track_ang_vel: float = 0.75,
-        rew_alive: float = 0.5,
+        max_body_tilt: float = 0.7,   # radians (~40 degrees)
+        # Reward weights (velocity-focused: robot can balance, now learn to walk)
+        rew_track_lin_vel: float = 2.0,
+        rew_track_ang_vel: float = 0.5,
+        rew_alive: float = 0.1,
         rew_lin_vel_z: float = -2.0,
         rew_ang_vel_xy: float = -0.05,
-        rew_torques: float = -2.5e-5,
+        rew_torques: float = -1e-5,
         rew_joint_accel: float = -2.5e-7,
         rew_action_rate: float = -0.01,
-        rew_orientation: float = -5.0,
-        rew_joint_limits: float = -10.0,
-        rew_feet_air_time: float = 0.5,
+        rew_orientation: float = -0.3,
+        rew_joint_limits: float = -5.0,
+        rew_feet_air_time: float = 1.0,
+        rew_base_height: float = 0.5,
+        rew_collision: float = -1.0,
+        # Tracking
+        tracking_sigma: float = 0.25,
+        target_base_height: float = 0.35,
         # Domain randomization
         randomize_friction: bool = True,
         friction_range: tuple = (0.5, 1.5),
@@ -137,6 +146,10 @@ class CW1LocomotionEnv(gym.Env):
         self.min_body_height = min_body_height
         self.max_body_tilt = max_body_tilt
 
+        # Tracking
+        self.tracking_sigma = tracking_sigma
+        self.target_base_height = target_base_height
+
         # Reward weights
         self.reward_weights = {
             "track_lin_vel": rew_track_lin_vel,
@@ -150,6 +163,8 @@ class CW1LocomotionEnv(gym.Env):
             "orientation": rew_orientation,
             "joint_limits": rew_joint_limits,
             "feet_air_time": rew_feet_air_time,
+            "base_height": rew_base_height,
+            "collision": rew_collision,
         }
 
         # Domain randomization
@@ -187,6 +202,8 @@ class CW1LocomotionEnv(gym.Env):
         self._velocity_cmd = np.zeros(3, dtype=np.float32)
         self._foot_contact_time = np.zeros(4, dtype=np.float32)
         self._foot_air_time = np.zeros(4, dtype=np.float32)
+        self._last_contacts = np.zeros(4, dtype=bool)
+        self._first_contact = np.zeros(4, dtype=bool)
 
         # Original values for domain randomization
         self._default_body_mass = self.model.body_mass.copy()
@@ -300,6 +317,8 @@ class CW1LocomotionEnv(gym.Env):
         self._prev_joint_vel = np.zeros(self.n_act, dtype=np.float32)
         self._foot_contact_time = np.zeros(4, dtype=np.float32)
         self._foot_air_time = np.zeros(4, dtype=np.float32)
+        self._last_contacts = np.zeros(4, dtype=bool)
+        self._first_contact = np.zeros(4, dtype=bool)
 
         obs = self._get_obs()
         info = {"velocity_cmd": self._velocity_cmd.copy()}
@@ -419,15 +438,15 @@ class CW1LocomotionEnv(gym.Env):
 
         total_reward = 0.0
 
-        # 1. Forward velocity tracking (exponential kernel, sigma=0.25)
+        # 1. Forward velocity tracking (exponential kernel)
         lin_vel_error = np.sum((body_linvel[:2] - self._velocity_cmd[:2]) ** 2)
-        r_track_lin = np.exp(-lin_vel_error / 0.25) * w["track_lin_vel"]
+        r_track_lin = np.exp(-lin_vel_error / self.tracking_sigma) * w["track_lin_vel"]
         total_reward += r_track_lin
         info["r_track_lin_vel"] = r_track_lin
 
         # 2. Angular velocity tracking
         ang_vel_error = (body_angvel[2] - self._velocity_cmd[2]) ** 2
-        r_track_ang = np.exp(-ang_vel_error / 0.25) * w["track_ang_vel"]
+        r_track_ang = np.exp(-ang_vel_error / self.tracking_sigma) * w["track_ang_vel"]
         total_reward += r_track_ang
         info["r_track_ang_vel"] = r_track_ang
 
@@ -477,12 +496,41 @@ class CW1LocomotionEnv(gym.Env):
         total_reward += r_joint_limits
         info["r_joint_limits"] = r_joint_limits
 
-        # 11. Feet air time reward (encourage swing phase)
-        r_feet_air = np.sum(
-            np.clip(self._foot_air_time - 0.1, 0, 0.5)
-        ) * w["feet_air_time"]
+        # 11. Feet air time reward (legged_gym style: reward on first contact)
+        # Reward feet for landing after being airborne > threshold.
+        # Threshold 0.2s matches the ~0.4-0.8s step cycle at current speed.
+        # Only active when robot is commanded to move.
+        cmd_speed = np.linalg.norm(self._velocity_cmd[:2])
+        r_feet_air = 0.0
+        if cmd_speed > 0.1:
+            r_feet_air = np.sum(
+                (self._foot_air_time - 0.2) * self._first_contact
+            ) * w["feet_air_time"]
         total_reward += r_feet_air
         info["r_feet_air_time"] = r_feet_air
+
+        # 12. Base height reward (keep body at target standing height)
+        body_height = self.data.xpos[self.body_id][2]
+        height_error = (body_height - self.target_base_height) ** 2
+        r_base_height = np.exp(-height_error / 0.05) * w["base_height"]
+        total_reward += r_base_height
+        info["r_base_height"] = r_base_height
+
+        # 13. Collision penalty (non-foot body parts touching ground)
+        r_collision = 0.0
+        for i in range(self.data.ncon):
+            contact = self.data.contact[i]
+            geom1, geom2 = contact.geom1, contact.geom2
+            # Check if floor is involved
+            if geom1 != self.floor_geom_id and geom2 != self.floor_geom_id:
+                continue
+            # Check if it's NOT a foot contact (feet touching floor is OK)
+            other_geom = geom2 if geom1 == self.floor_geom_id else geom1
+            if other_geom not in self.foot_geom_ids:
+                r_collision = w["collision"]
+                break
+        total_reward += r_collision
+        info["r_collision"] = r_collision
 
         # Scale by dt
         total_reward *= dt
@@ -491,7 +539,11 @@ class CW1LocomotionEnv(gym.Env):
         return float(total_reward), info
 
     def _update_foot_contacts(self):
-        """Track foot contact and air time for reward computation."""
+        """Track foot contact and air time (legged_gym style).
+
+        Computes first_contact: True when foot touches ground after being airborne.
+        This is used for the feet_air_time reward (reward on landing).
+        """
         in_contact = np.zeros(4, dtype=bool)
 
         for i in range(self.data.ncon):
@@ -502,12 +554,22 @@ class CW1LocomotionEnv(gym.Env):
                    (geom2 == foot_id and geom1 == self.floor_geom_id):
                     in_contact[j] = True
 
+        # Filtered contact (current or last step)
+        contact_filt = np.logical_or(in_contact, self._last_contacts)
+        self._last_contacts = in_contact.copy()
+
+        # First contact: foot was airborne and now touching
+        self._first_contact = (self._foot_air_time > 0.0) & contact_filt
+
+        # Accumulate air time, reset on contact
+        self._foot_air_time += self.control_dt
+        self._foot_air_time *= ~contact_filt  # reset to 0 on contact
+
+        # Track contact time for other uses
         for j in range(4):
             if in_contact[j]:
-                self._foot_air_time[j] = 0.0
                 self._foot_contact_time[j] += self.control_dt
             else:
-                self._foot_air_time[j] += self.control_dt
                 self._foot_contact_time[j] = 0.0
 
     def _check_termination(self) -> bool:

@@ -297,7 +297,7 @@ def wrap_in_scene(robot_xml: str) -> str:
             act = ET.SubElement(actuator, "position")
             act.set("name", f"{joint_name}_act")
             act.set("joint", joint_name)
-            act.set("kp", "25")
+            act.set("kp", "80")
 
     # Write formatted XML
     ET.indent(tree, space="  ")
@@ -320,10 +320,10 @@ def generate_handcrafted_mjcf() -> str:
       <size nconmax="200" njmax="500"/>
 
       <default>
-        <joint armature="0.01" damping="0.5" frictionloss="0.1"/>
+        <joint armature="0.01" damping="2.0" frictionloss="0.1"/>
         <geom friction="1.0 0.005 0.001" condim="3" conaffinity="1" contype="1"
               rgba="0.3 0.3 0.3 1"/>
-        <position kp="25" kv="0.5"/>
+        <position kp="80" kv="2.0"/>
       </default>
 
       <visual>

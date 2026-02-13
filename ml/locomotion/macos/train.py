@@ -57,13 +57,15 @@ def find_latest_checkpoint(checkpoint_dir: Path) -> Path | None:
     return checkpoints[-1] if checkpoints else None
 
 
-def make_env(render_mode=None):
-    """Create the CW-1 locomotion environment."""
-    # Import here to ensure cw1_env is on the path
-    sys.path.insert(0, str(SCRIPT_DIR))
-    from cw1_env import CW1LocomotionEnv
-
-    return CW1LocomotionEnv(render_mode=render_mode)
+def make_env(render_mode=None, rank=0):
+    """Create a factory function for the CW-1 locomotion environment."""
+    def _init():
+        sys.path.insert(0, str(SCRIPT_DIR))
+        from cw1_env import CW1LocomotionEnv
+        env = CW1LocomotionEnv(render_mode=render_mode)
+        env.reset(seed=rank)
+        return env
+    return _init
 
 
 def main():
@@ -104,8 +106,12 @@ def main():
         help="Mini-batch size"
     )
     parser.add_argument(
+        "--n-envs", type=int, default=8,
+        help="Number of parallel environments"
+    )
+    parser.add_argument(
         "--n-steps", type=int, default=2048,
-        help="Steps per rollout buffer collection"
+        help="Steps per rollout buffer collection (per env)"
     )
     args = parser.parse_args()
 
@@ -135,6 +141,7 @@ def main():
         sys.exit(1)
 
     print(f"\nDevice: {device} (SB3 device: {sb3_device})")
+    print(f"Parallel envs: {args.n_envs}")
     print(f"Timesteps: {args.timesteps:,}")
     print(f"Learning rate: {args.lr}")
     print(f"Batch size: {args.batch_size}")
@@ -149,6 +156,7 @@ def main():
         BaseCallback,
         CheckpointCallback,
     )
+    from stable_baselines3.common.vec_env import SubprocVecEnv
 
     # Custom progress callback
     class ProgressCallback(BaseCallback):
@@ -180,11 +188,12 @@ def main():
                     )
             return True
 
-    # Create environment
-    print("Creating CW-1 environment...")
-    env = make_env()
+    # Create parallel environments
+    print(f"Creating {args.n_envs} parallel CW-1 environments...")
+    env = SubprocVecEnv([make_env(rank=i) for i in range(args.n_envs)])
     print(f"  Observation space: {env.observation_space.shape}")
     print(f"  Action space: {env.action_space.shape}")
+    print(f"  Parallel envs: {args.n_envs}")
 
     # Create or load model
     if args.resume:
