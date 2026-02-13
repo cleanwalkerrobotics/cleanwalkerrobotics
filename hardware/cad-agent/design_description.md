@@ -1,163 +1,147 @@
-# Arm + Gripper Assembly Design Description — CW-1
+# Body Chassis + Head Module Design Description — CW-1
 
 ## Overview
 
-Complete 5-DOF robotic arm assembly for the CW-1 quadrupedal litter-collecting robot. Mounts to the front-center of the body via a turret base. The arm reaches forward/down to pick up litter and back to compress it into the bag. Includes turret, upper arm, forearm, wrist, and 2-finger mechanical gripper with silicone fingertip pads.
+The main body chassis and integrated head/sensor module for the CW-1 quadrupedal robot. This is the structural core that all other subsystems mount to: 4 legs, 1 arm, bag system, electronics, and battery. The body is a rectangular aluminum frame with 3D-printed enclosure panels. The head is an integrated forward extension of the body (not a separate block).
 
-## Reference Data (from URDF: cleanwalker_cw1.urdf)
+## Reference Data (from Robot Design Spec V2.3 + Component Decisions)
 
 ### Coordinate Convention
-- X = forward, Y = left, Z = up
-- Arm turret mounts at body position: X=+150mm, Y=0, Z=+60mm (front-center, top of body)
+- X = lateral (positive = left), Y = longitudinal (positive = forward), Z = vertical (positive = up)
+- Body center at origin (0, 0, 0) — this model is self-referenced, not relative to another component
 
-### Joint Specifications
+### External Dimensions
 
-| Joint | Type | Axis | Lower Limit | Upper Limit | Effort Limit | Actuator |
-|-------|------|------|-------------|-------------|--------------|----------|
-| Turret yaw | Revolute | Z (vertical) | -180° (-3.14159 rad) | +180° (+3.14159 rad) | 15 Nm | Dynamixel XM430-W350-T |
-| Shoulder pitch | Revolute | Y (lateral) | -45° (-0.7854 rad) | +180° (+3.14159 rad) | 15 Nm | Dynamixel XM430-W350-T |
-| Elbow pitch | Revolute | Y (lateral) | 0° | +150° (+2.618 rad) | 15 Nm | Dynamixel XM430-W350-T |
-| Wrist pitch | Revolute | Y (lateral) | -90° (-1.5708 rad) | +90° (+1.5708 rad) | 10 Nm | Dynamixel XL430-W250-T |
-| Gripper open/close | Revolute | Y (lateral) | 0° | +60° (+1.0472 rad) | 5 Nm | Dynamixel XL430-W250-T |
+| Dimension | Value | Notes |
+|-----------|-------|-------|
+| Body length | 600mm | Y-axis, from rear edge (Y=-300) to front edge (Y=+300) |
+| Body width | 150mm | X-axis, from X=-75 to X=+75 |
+| Body height | 120mm | Z-axis, from Z=-60 (bottom) to Z=+60 (top) |
+| Head depth | 80mm | Extension beyond front edge, Y=300 to Y=380 |
+| Head width | 150mm | Same as body (tapers slightly at front face) |
+| Head height | 80mm | Z=-40 to Z=+40 (lower profile than body) |
 
-### Link Specifications
+### Mass Budget
 
-| Link | Mass | Geometry | Dimensions | Material Color |
-|------|------|----------|------------|----------------|
-| Turret base | 0.3 kg | Cylinder | R=40mm, H=50mm, axis along Z | Dark grey |
-| Upper arm | 0.3 kg | Structural tube | 30×30mm cross-section, 180mm long along Z | Olive green panels + dark grey joints |
-| Forearm | 0.3 kg | Structural tube | 30×30mm cross-section, 180mm long along Z | Olive green panels + dark grey joints |
-| Wrist | 0.15 kg | Cylinder | R=20mm, H=50mm | Dark grey |
-| Gripper (body + fingers) | 0.15 kg | 2-finger mechanism | 100mm total length, 60mm max opening | Dark grey + silicone tips |
-
-**Total arm mass: 1.2 kg (excluding payload)**
-
-## Actuator Specifications
-
-### Dynamixel XM430-W350-T (Turret, Shoulder, Elbow) — 3 per arm
-- Form factor: ~46.5mm × 36mm × 34mm (rectangular, integrated gearbox)
-- Mass: ~82g
-- Stall torque: 4.1 Nm (at 12V)
-- Voltage: 12V (nominal)
-- Interface: TTL (half-duplex UART, daisy-chain capable)
-- Mounting: 4× M2.5 tapped holes on both faces
-
-### Dynamixel XL430-W250-T (Wrist, Gripper) — 2 per arm
-- Form factor: ~28.5mm × 46.5mm × 34mm
-- Mass: ~57.2g
-- Stall torque: 1.5 Nm (at 11.1V)
-- Voltage: 11.1V (nominal)
-- Interface: TTL (same bus as XM430)
-- Mounting: 4× M2 tapped holes on both faces
+| Component | Mass |
+|-----------|------|
+| Chassis frame (6061-T6 aluminum) | 2.0 kg |
+| Enclosure panels (ASA 3D-printed) | 0.5 kg |
+| Head/sensor housing | 0.5 kg |
+| Battery (48V 20Ah) | 5.0 kg |
+| Electronics (Jetson + PCB + adapters) | 0.5 kg |
+| **Total body** | **8.0 kg** |
 
 ## Detailed Geometry
 
-### 1. Turret Base
-- **Purpose:** Provides 360° yaw rotation for the entire arm, mounts to body dorsal surface
-- **Shape:** Cylinder, OD=80mm, height=50mm
-- **Internal:** Hollow (ID=60mm) for cable routing (TTL bus + power)
-- **Mounting:** 4× M4 holes on bottom face at 60mm bolt circle diameter for body attachment
-- **Top:** Flat face with 4× M2.5 holes at 40mm bolt circle for shoulder bracket
-- **Actuator:** XM430-W350-T mounted internally (output shaft exits top center)
-- **Position:** Centered at X=150, Y=0, Z=60 (body coordinates) — sits on top of body
+### 1. Main Chassis Frame
+- **Purpose:** Structural backbone, all subsystems mount to this
+- **Construction:** Rectangular frame of 20×20mm square aluminum tubes, welded or bolted
+- **Outer dimensions:** 600×150×120mm
+- **Frame members:**
+  - 4× longitudinal rails (600mm, along Y) at the 4 bottom corners: (±75, Y, -60)
+  - 4× lateral cross-members (150mm, along X) connecting bottom rails at Y=-300, -100, +100, +300
+  - 4× vertical posts (120mm, along Z) at corners: (±75, ±300, Z)
+  - 4× lateral cross-members (150mm, along X) connecting top rails at Y=-300, +300
+  - 2× longitudinal top rails (600mm, along Y) at top edges: (±75, Y, +60)
+- **Material:** 6061-T6 aluminum, 20×20mm square tube, 2mm wall
+- **Color:** Medium grey (0.5, 0.5, 0.5)
+
+### 2. Top Panel
+- **Purpose:** Flat top surface for arm mounting and protection
+- **Shape:** Rectangular plate, 600×150×3mm
+- **Position:** Z=+60 (top of frame)
+- **Cutouts:**
+  - Arm turret mount: circular hole, 85mm diameter, centered at Y=+150 (front third)
+  - LiDAR mount: circular hole, 50mm diameter, centered at Y=0 (body center)
+  - Battery access: rectangular, 200×100mm, centered at Y=-100 (rear half)
+- **Color:** Olive green (0.23, 0.29, 0.25)
+
+### 3. Bottom Panel
+- **Purpose:** Structural floor, battery support
+- **Shape:** Rectangular plate, 600×150×3mm
+- **Position:** Z=-60 (bottom of frame)
+- **Cutouts:**
+  - Charging port: circular, 25mm diameter, at Y=-200 (rear underside)
 - **Color:** Dark grey (0.2, 0.2, 0.2)
 
-### 2. Shoulder Joint Bracket
-- **Purpose:** Connects turret output to upper arm, provides shoulder pitch rotation
-- **Shape:** U-bracket (fork end), 50mm wide × 40mm tall × 30mm deep, 3mm wall thickness
-- **Material:** 6061-T6 aluminum
-- **Actuator mount:** XM430-W350-T mounted on one side of the U, output shaft through the opposite side
-- **Position:** On top of turret, rotating with turret yaw
-- **Axis:** Y (lateral) — pitches the upper arm forward/backward
-- **Color:** Dark grey
+### 4. Leg Mount Plates (×4)
+- **Purpose:** Interface between chassis and leg hip mounting plates
+- **Shape:** Rectangular reinforcement plates, 80×60×5mm each
+- **Positions (bottom corners):**
+  - Front-left: X=+75, Y=+250, Z=-60
+  - Front-right: X=-75, Y=+250, Z=-60
+  - Rear-left: X=+75, Y=-250, Z=-60
+  - Rear-right: X=-75, Y=-250, Z=-60
+- **Bolt pattern:** 4× M5 holes at corners (65×45mm pattern), matching leg hip mounting plate
+- **Note:** Plates extend downward 5mm below frame bottom
+- **Color:** Dark grey (0.3, 0.3, 0.3)
 
-### 3. Upper Arm (Shoulder to Elbow)
-- **Structure:** Rectangular structural tube, 30mm wide × 30mm deep × 180mm long
-- **Wall thickness:** 2mm (aluminum or PA-CF 3D printed)
-- **Cross braces:** 1× horizontal stiffener at midpoint (internal web)
-- **LED strip channel:** Flat groove on outward-facing side, 15mm wide × 2mm deep
-- **Top end:** Bolts to shoulder bracket via 4× M2.5 through the XM430 output horn
-- **Bottom end:** Houses elbow pitch actuator bracket
-- **Direction:** Extends upward (+Z) from shoulder joint in default pose, 180mm total
-- **Color:** Olive green panels (0.23, 0.29, 0.25), dark grey end caps
+### 5. Arm Turret Mount
+- **Purpose:** Reinforced platform for arm turret base
+- **Shape:** Circular reinforcement ring, OD=90mm, ID=60mm, 5mm thick
+- **Position:** Z=+60, centered at Y=+150 (front-center top)
+- **Bolt pattern:** 4× M4 holes on 70mm bolt circle (matching turret base)
+- **Color:** Dark grey (0.3, 0.3, 0.3)
 
-### 4. Elbow Joint
-- **Actuator:** XM430-W350-T mounted at bottom of upper arm
-- **Housing:** Integrated into the upper/forearm junction — motor body in upper arm, output shaft drives forearm
-- **Position:** 180mm above shoulder joint (along arm axis)
-- **Axis:** Y (lateral) — bends the forearm
-- **Rotation range:** 0° to +150° (forearm can fold back against upper arm)
-- **Bracket:** Same U-bracket style as shoulder, 50mm wide × 35mm tall × 25mm deep
+### 6. Bag System Hinge Mount
+- **Purpose:** Hinge bracket mounting for folding bag frame
+- **Shape:** 2× reinforcement plates, 30×20×5mm
+- **Positions:** X=±(75-30)=±45, Y=-300 (rear edge), Z=+60 (top)
+- **Bolt pattern:** 2× M5 holes per plate for hinge bracket
+- **Color:** Dark grey (0.3, 0.3, 0.3)
 
-### 5. Forearm (Elbow to Wrist)
-- **Structure:** Rectangular structural tube, 30mm wide × 30mm deep × 180mm long (same as upper arm)
-- **Wall thickness:** 2mm
-- **Top end:** Bolts to elbow bracket
-- **Bottom end:** Houses wrist pitch actuator
-- **Internal:** Cable routing channel for gripper motor power + TTL
-- **Direction:** Extends from elbow joint, 180mm total
-- **Color:** Olive green panels (0.23, 0.29, 0.25), dark grey end caps
+### 7. Head Module (Integrated Sensor Housing)
+- **Purpose:** Houses front stereo cameras, LED "eyes", forward-facing sensors
+- **Shape:** Tapered rectangular box extending from body front face
+  - Rear face (at Y=+300): same size as body cross-section (150×120mm)
+  - Front face (at Y=+380): narrower and lower (120×80mm) — slight taper
+  - Use linear loft or simple box with chamfered top edge
+- **Front face features:**
+  - 2× LED "eye" panels: square cutouts, 30×30mm each, centered at X=±25, Z=+10
+  - These are camera windows (OAK-D Pro stereo pair behind them)
+- **Material appearance:** Same olive green as body panels
+- **Color:** Olive green (0.23, 0.29, 0.25) with bright green (0.13, 0.77, 0.37) LED panel inserts
 
-### 6. Wrist Joint
-- **Actuator:** XL430-W250-T mounted at bottom of forearm
-- **Housing:** Cylindrical shell, OD=40mm, height=50mm
-- **Camera mount:** Small cylinder (20mm dia, 10mm deep) on the dorsal face for wrist camera (OAK-D or similar)
-- **Position:** 180mm below elbow joint (along forearm axis)
-- **Axis:** Y (lateral) — pitches the gripper for approach angle
-- **Rotation range:** ±90°
-- **Color:** Dark grey
+### 8. LiDAR Mount
+- **Purpose:** Mounting point for LiDAR sensor puck on body top
+- **Shape:** Short cylinder, OD=60mm, height=15mm
+- **Position:** Z=+60+3=+63 (on top panel surface), Y=0 (body center)
+- **Color:** Dark grey (0.15, 0.15, 0.15)
 
-### 7. Gripper Assembly
-- **Type:** 2-finger parallel/radial gripper, mechanically actuated
-- **Actuator:** XL430-W250-T (drives linkage mechanism)
-- **Gripper body:** Rectangular housing, 40mm wide × 40mm deep × 30mm tall, dark grey
-- **Fingers:**
-  - 2× CNC aluminum fingers, each 70mm long × 15mm wide × 5mm thick
-  - Curved inward profile (slight concavity for cylindrical objects)
-  - Silicone grip pads at tips: 15mm × 10mm × 3mm, Shore A 20-30
-- **Max opening:** 60mm (handles bottles, cans, most litter items)
-- **Grip force:** ~50N max (XL430 stall torque through linkage)
-- **Actuation:** Simple pivot linkage — motor rotates center cam, fingers open/close symmetrically
-- **Position:** At bottom of wrist, extending 100mm from wrist axis
-- **Color:** Dark grey body, silver/grey fingers, black silicone tips
+### 9. Antenna Nub
+- **Purpose:** 4G cellular antenna
+- **Shape:** Small cylinder, OD=10mm, height=20mm
+- **Position:** Z=+63, Y=-50, X=+60 (rear-right top)
+- **Color:** Black (0.1, 0.1, 0.1)
 
-### 8. Cable Routing
-- **Path:** Cables enter turret base bottom (60mm ID bore), route up through turret, into shoulder bracket, down through upper arm tube interior, through elbow bracket, down forearm tube interior, into wrist housing, to gripper motor
-- **Cable types:** 12V power (2× 18AWG), TTL bus (3-wire), wrist camera USB
-- **Daisy chain:** All 5 Dynamixel motors share a single TTL bus (3-pin: VCC, GND, DATA)
-- **Cable management:** Zip-tie anchors every 50mm inside structural tubes
+### 10. Side Panels (×2)
+- **Purpose:** Weatherproof enclosure walls
+- **Shape:** Rectangular plates, 600×120×3mm each
+- **Positions:** X=+75 (left) and X=-75 (right), spanning Y=-300 to Y=+300, Z=-60 to Z=+60
+- **Color:** Olive green (0.23, 0.29, 0.25)
 
 ## Assembly Dimensions Summary
 
 | Measurement | Value |
 |-------------|-------|
-| Turret diameter | 80mm |
-| Turret height | 50mm |
-| Upper arm length | 180mm |
-| Forearm length | 180mm |
-| Wrist height | 50mm |
-| Gripper length | 100mm |
-| Total arm reach (horizontal) | ~460mm (shoulder to gripper tip) |
-| Total arm height (vertical, extended up) | ~560mm above body (50 turret + 180 upper + 180 forearm + 50 wrist + 100 gripper) |
-| Arm cross-section (tubes) | 30mm × 30mm |
-| Gripper max opening | 60mm |
-| Total arm mass | 1.2 kg |
+| Total length (with head) | 680mm (300 rear + 300 front body + 80 head) |
+| Total width | 150mm |
+| Total height (with LiDAR) | 138mm (120 body + 3 top panel + 15 LiDAR) |
+| Chassis tube size | 20×20mm square, 2mm wall |
+| Top/bottom panel thickness | 3mm |
+| Side panel thickness | 3mm |
+| Leg mount plate size | 80×60×5mm |
+| Head taper | 150→120mm width, 120→80mm height over 80mm depth |
 
-## Default Pose (for CAD model)
+## Default Orientation
 
-Arm in "reaching forward and slightly down" pose (the signature render pose):
-- Turret yaw: 0° (forward)
-- Shoulder pitch: +90° (arm horizontal, pointing forward)
-- Elbow pitch: +30° (slight bend downward)
-- Wrist pitch: -30° (angled down for pickup)
-- Gripper: 30° open (half-open, ready to grab)
+Body horizontal, Y-axis pointing forward, Z-axis up. No rotation. This is the world reference frame for full robot assembly.
 
-This gives a reaching pose where the gripper is approximately at body height, extended forward ~400mm, as if approaching litter on the ground.
+## Simplification Notes for CadQuery
 
-**Alternative pose for standing render:** All joints at 0° — arm pointing straight up (compact stow position).
-
-## Body Plate Context
-
-Include a simplified body plate (600×150×5mm at Z=-5 to Z=0) below the turret for visual reference, similar to the bag system model. The turret center should be at X=150mm from body front edge (X=0), Y=0 (centered), Z=60mm (top of body — but for simplified context, place turret at Z=0 on the plate and note the body height offset).
-
-For simplified CAD context: place the turret directly on the body plate surface at Y=100mm (front third of the 600mm plate), centered at X=0.
+- Frame members can be modeled as solid rectangular boxes (20×20mm cross-section, full length) — hollow tubes are optional refinement
+- Head taper: if CadQuery loft is unreliable, use a simple box (150×120×80mm) attached to the front face
+- Panel cutouts: use boolean cut operations on the flat panels
+- LED panels: simple colored boxes inset into the head front face
+- Focus on correct dimensions and mount point positions over surface detail

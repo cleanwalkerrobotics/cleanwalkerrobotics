@@ -1,6 +1,6 @@
 """
-CAD Model: CW-1 Arm + Gripper Assembly
-Description: 5-DOF robotic arm with turret, shoulder, elbow, wrist, and 2-finger gripper
+CAD Model: CW-1 Body Chassis + Head Module
+Description: Main structural frame with mounting interfaces and head sensor housing
 Iteration: 1
 """
 import cadquery as cq
@@ -9,372 +9,375 @@ import math
 # ============================================================
 # PARAMETERS (all dimensions in mm)
 # ============================================================
+# Body dimensions
+body_length = 600.0
+body_width = 150.0
+body_height = 120.0
 
-# Body plate
-plate_length = 600.0
-plate_width = 150.0
-plate_thickness = 5.0
+# Frame tube dimensions
+tube_size = 20.0
 
-# Turret
-turret_od = 80.0
+# Panel dimensions
+panel_thickness = 3.0
+side_panel_thickness = 3.0
+
+# Head dimensions
+head_depth = 80.0
+head_width_rear = 150.0
+head_width_front = 120.0
+head_height_rear = 120.0
+head_height_front = 80.0
+
+# LED eye panel dimensions
+led_panel_size = 30.0
+led_panel_thickness = 3.0
+led_panel_spacing = 50.0  # center-to-center distance
+
+# LiDAR mount dimensions
+lidar_od = 60.0
+lidar_height = 15.0
+
+# Antenna dimensions
+antenna_od = 10.0
+antenna_height = 20.0
+antenna_x_offset = 60.0
+antenna_y_offset = -50.0
+
+# Leg mount plate dimensions
+leg_mount_width = 80.0
+leg_mount_depth = 60.0
+leg_mount_thickness = 5.0
+leg_mount_bolt_pattern_x = 65.0
+leg_mount_bolt_pattern_y = 45.0
+leg_mount_bolt_dia = 5.0
+
+# Arm turret mount dimensions
+turret_od = 90.0
 turret_id = 60.0
-turret_height = 50.0
-turret_y = 100.0  # position from front of plate
+turret_thickness = 5.0
+turret_bolt_circle = 70.0
+turret_bolt_dia = 4.0
+turret_y_position = 150.0
 
-# Shoulder bracket
-shoulder_width = 50.0
-shoulder_height = 40.0
-shoulder_depth = 30.0
-shoulder_wall = 3.0
+# Bag hinge mount dimensions
+hinge_mount_width = 30.0
+hinge_mount_depth = 20.0
+hinge_mount_thickness = 5.0
+hinge_mount_bolt_dia = 5.0
+hinge_mount_x_offset = 45.0
 
-# Upper arm
-upper_arm_length = 180.0
-arm_width = 30.0
-arm_depth = 30.0
-arm_wall = 2.0
+# Cutout dimensions
+arm_turret_cutout_dia = 85.0
+lidar_cutout_dia = 50.0
+battery_cutout_width = 200.0
+battery_cutout_depth = 100.0
+battery_cutout_y = -100.0
+charging_port_dia = 25.0
+charging_port_y = -200.0
 
-# Elbow bracket
-elbow_width = 50.0
-elbow_height = 35.0
-elbow_depth = 25.0
-elbow_wall = 3.0
-
-# Forearm
-forearm_length = 180.0
-
-# Wrist
-wrist_od = 40.0
-wrist_height = 50.0
-
-# Gripper body
-gripper_width = 40.0
-gripper_depth = 40.0
-gripper_height = 30.0
-
-# Gripper fingers
-finger_length = 70.0
-finger_width = 15.0
-finger_thickness = 5.0
-finger_open_angle = 30.0  # total, each finger 15° from center
-gripper_max_opening = 60.0
-
-# Silicone pads
-pad_length = 15.0
-pad_width = 10.0
-pad_thickness = 3.0
-
-# Joint angles (DEFAULT POSE)
-turret_yaw = 0.0        # degrees
-shoulder_pitch = 90.0    # degrees — arm horizontal forward
-elbow_pitch = 30.0       # degrees — slight downward bend
-wrist_pitch = -30.0      # degrees — angled down
-gripper_angle = 30.0     # degrees — half open (each finger 15°)
-
-# Actuator reference dimensions (for visual representation)
-xm430_w = 46.5
-xm430_d = 36.0
-xm430_h = 34.0
-xl430_w = 28.5
-xl430_d = 46.5
-xl430_h = 34.0
+# Colors
+color_frame = (0.5, 0.5, 0.5)
+color_top_panel = (0.23, 0.29, 0.25)
+color_bottom_panel = (0.2, 0.2, 0.2)
+color_mount_plate = (0.3, 0.3, 0.3)
+color_head = (0.23, 0.29, 0.25)
+color_led = (0.13, 0.77, 0.37)
+color_lidar = (0.15, 0.15, 0.15)
+color_antenna = (0.1, 0.1, 0.1)
+color_side_panel = (0.23, 0.29, 0.25)
 
 # ============================================================
 # CONSTRUCTION
 # ============================================================
 
-# Step 1: Body plate (reference)
-body_plate = (
-    cq.Workplane("XY")
-    .box(plate_width, plate_length, plate_thickness)
-    .translate((0, plate_length/2, -plate_thickness/2))
+# Step 1: Chassis frame tubes (20×20mm square tubes)
+# Bottom longitudinal rails (4×)
+half_width = body_width / 2
+half_height = body_height / 2
+
+rail_bl_left = cq.Workplane("XY").box(tube_size, body_length, tube_size).translate((half_width, 0, -half_height))
+rail_bl_right = cq.Workplane("XY").box(tube_size, body_length, tube_size).translate((-half_width, 0, -half_height))
+
+# Bottom lateral cross-members (4×)
+cross_positions_y = [-body_length/2, -100, 100, body_length/2]
+bottom_crosses = []
+for y_pos in cross_positions_y:
+    cross = cq.Workplane("XY").box(body_width, tube_size, tube_size).translate((0, y_pos, -half_height))
+    bottom_crosses.append(cross)
+
+# Vertical posts at corners (4×)
+corner_positions = [
+    (half_width, body_length/2),
+    (half_width, -body_length/2),
+    (-half_width, body_length/2),
+    (-half_width, -body_length/2)
+]
+vertical_posts = []
+for x_pos, y_pos in corner_positions:
+    post = cq.Workplane("XY").box(tube_size, tube_size, body_height).translate((x_pos, y_pos, 0))
+    vertical_posts.append(post)
+
+# Top longitudinal rails (2×)
+rail_tl_left = cq.Workplane("XY").box(tube_size, body_length, tube_size).translate((half_width, 0, half_height))
+rail_tl_right = cq.Workplane("XY").box(tube_size, body_length, tube_size).translate((-half_width, 0, half_height))
+
+# Top lateral cross-members (2×)
+top_cross_front = cq.Workplane("XY").box(body_width, tube_size, tube_size).translate((0, body_length/2, half_height))
+top_cross_rear = cq.Workplane("XY").box(body_width, tube_size, tube_size).translate((0, -body_length/2, half_height))
+
+# Combine all frame tubes
+frame = rail_bl_left
+for component in [rail_bl_right] + bottom_crosses + vertical_posts + [rail_tl_left, rail_tl_right, top_cross_front, top_cross_rear]:
+    frame = frame.union(component)
+
+# Step 2: Top panel with cutouts
+top_panel = (cq.Workplane("XY")
+    .box(body_width, body_length, panel_thickness)
+    .translate((0, 0, half_height))
 )
 
-# Step 2: Turret base — hollow cylinder
-turret_outer = (
-    cq.Workplane("XY")
+# Arm turret cutout
+top_panel = (top_panel
+    .faces(">Z")
+    .workplane()
+    .center(0, turret_y_position)
+    .circle(arm_turret_cutout_dia / 2)
+    .cutThruAll()
+)
+
+# LiDAR cutout
+top_panel = (top_panel
+    .faces(">Z")
+    .workplane()
+    .center(0, 0)
+    .circle(lidar_cutout_dia / 2)
+    .cutThruAll()
+)
+
+# Battery access cutout
+top_panel = (top_panel
+    .faces(">Z")
+    .workplane()
+    .center(0, battery_cutout_y)
+    .rect(battery_cutout_width, battery_cutout_depth)
+    .cutThruAll()
+)
+
+# Step 3: Bottom panel with cutouts
+bottom_panel = (cq.Workplane("XY")
+    .box(body_width, body_length, panel_thickness)
+    .translate((0, 0, -half_height))
+)
+
+# Charging port cutout
+bottom_panel = (bottom_panel
+    .faces("<Z")
+    .workplane()
+    .center(0, charging_port_y)
+    .circle(charging_port_dia / 2)
+    .cutThruAll()
+)
+
+# Step 4: Leg mount plates (×4)
+leg_positions = [
+    (half_width, 250, "FL"),
+    (-half_width, 250, "FR"),
+    (half_width, -250, "RL"),
+    (-half_width, -250, "RR")
+]
+
+leg_mount_plates = {}
+for x_pos, y_pos, label in leg_positions:
+    plate = (cq.Workplane("XY")
+        .box(leg_mount_width, leg_mount_depth, leg_mount_thickness)
+        .translate((x_pos, y_pos, -half_height - leg_mount_thickness/2))
+    )
+
+    # Add M5 bolt holes (4× per plate)
+    bolt_pattern = [
+        (leg_mount_bolt_pattern_x/2, leg_mount_bolt_pattern_y/2),
+        (leg_mount_bolt_pattern_x/2, -leg_mount_bolt_pattern_y/2),
+        (-leg_mount_bolt_pattern_x/2, leg_mount_bolt_pattern_y/2),
+        (-leg_mount_bolt_pattern_x/2, -leg_mount_bolt_pattern_y/2)
+    ]
+
+    try:
+        plate = (plate
+            .faces(">Z")
+            .workplane()
+            .pushPoints(bolt_pattern)
+            .circle(leg_mount_bolt_dia / 2)
+            .cutThruAll()
+        )
+    except Exception as e:
+        print(f"Warning: Could not add bolt holes to leg mount {label}: {e}")
+
+    leg_mount_plates[label] = plate
+
+# Step 5: Arm turret mount ring
+arm_turret_ring = (cq.Workplane("XY")
     .circle(turret_od / 2)
-    .extrude(turret_height)
-)
-turret_inner = (
-    cq.Workplane("XY")
     .circle(turret_id / 2)
-    .extrude(turret_height)
+    .extrude(turret_thickness)
+    .translate((0, turret_y_position, half_height))
 )
-turret = turret_outer.cut(turret_inner).translate((0, turret_y, 0))
 
-# Step 3: Shoulder bracket — U-bracket (simplified as box with channel)
-shoulder_bracket_solid = (
-    cq.Workplane("XY")
-    .box(shoulder_width, shoulder_depth, shoulder_height)
-)
-shoulder_channel = (
-    cq.Workplane("XY")
-    .box(shoulder_width - 2*shoulder_wall, shoulder_depth + 2, shoulder_height - shoulder_wall)
-    .translate((0, 0, -shoulder_wall/2))
-)
-shoulder_bracket = shoulder_bracket_solid.cut(shoulder_channel)
-shoulder_bracket = shoulder_bracket.translate((0, turret_y, turret_height + shoulder_height/2))
+# Add M4 bolt holes on 70mm bolt circle
+num_bolts = 4
+bolt_angles = [i * 360 / num_bolts for i in range(num_bolts)]
+bolt_positions = [
+    (turret_bolt_circle/2 * math.cos(math.radians(angle)),
+     turret_bolt_circle/2 * math.sin(math.radians(angle)))
+    for angle in bolt_angles
+]
 
-# Shoulder joint position (top of turret + bracket)
-shoulder_joint_z = turret_height + shoulder_height  # 50 + 40 = 90
-shoulder_joint_pos = (0, turret_y, shoulder_joint_z)
-
-# Step 4: Upper arm — rectangular tube
-# Build at origin along Z axis, then rotate and translate
-upper_arm_outer = (
-    cq.Workplane("XY")
-    .box(arm_width, arm_depth, upper_arm_length)
-    .translate((0, 0, upper_arm_length/2))
-)
-upper_arm_inner = (
-    cq.Workplane("XY")
-    .box(arm_width - 2*arm_wall, arm_depth - 2*arm_wall, upper_arm_length)
-    .translate((0, 0, upper_arm_length/2))
-)
-upper_arm = upper_arm_outer.cut(upper_arm_inner)
-
-# Rotate to shoulder pitch: +90° pitch means rotate -90° around X (Z→ -Y forward)
-upper_arm = upper_arm.rotate((0,0,0), (1,0,0), -shoulder_pitch)
-# Translate to shoulder joint
-upper_arm = upper_arm.translate(shoulder_joint_pos)
-
-# Compute upper arm end position
-ua_end_y = shoulder_joint_pos[1] - upper_arm_length * math.sin(math.radians(shoulder_pitch))
-ua_end_z = shoulder_joint_pos[2] + upper_arm_length * math.cos(math.radians(shoulder_pitch))
-upper_arm_end = (0, ua_end_y, ua_end_z)
-
-# Step 5: Elbow bracket
-elbow_bracket_solid = (
-    cq.Workplane("XY")
-    .box(elbow_width, elbow_depth, elbow_height)
-)
-elbow_channel = (
-    cq.Workplane("XY")
-    .box(elbow_width - 2*elbow_wall, elbow_depth + 2, elbow_height - elbow_wall)
-    .translate((0, 0, -elbow_wall/2))
-)
-elbow_bracket = elbow_bracket_solid.cut(elbow_channel)
-
-# Rotate to cumulative pitch (shoulder + elbow)
-cumulative_pitch_elbow = shoulder_pitch + elbow_pitch  # 120°
-elbow_bracket = elbow_bracket.rotate((0,0,0), (1,0,0), -cumulative_pitch_elbow)
-elbow_bracket = elbow_bracket.translate(upper_arm_end)
-
-# Elbow joint position (at end of upper arm)
-elbow_joint_pos = upper_arm_end
-
-# Step 6: Forearm — rectangular tube
-forearm_outer = (
-    cq.Workplane("XY")
-    .box(arm_width, arm_depth, forearm_length)
-    .translate((0, 0, forearm_length/2))
-)
-forearm_inner = (
-    cq.Workplane("XY")
-    .box(arm_width - 2*arm_wall, arm_depth - 2*arm_wall, forearm_length)
-    .translate((0, 0, forearm_length/2))
-)
-forearm = forearm_outer.cut(forearm_inner)
-
-# Rotate to cumulative pitch at elbow
-forearm = forearm.rotate((0,0,0), (1,0,0), -cumulative_pitch_elbow)
-forearm = forearm.translate(elbow_joint_pos)
-
-# Compute forearm end position
-fa_dy = -forearm_length * math.sin(math.radians(cumulative_pitch_elbow))
-fa_dz = forearm_length * math.cos(math.radians(cumulative_pitch_elbow))
-forearm_end = (0, elbow_joint_pos[1] + fa_dy, elbow_joint_pos[2] + fa_dz)
-
-# Step 7: Wrist — cylinder
-wrist_cyl = (
-    cq.Workplane("XY")
-    .circle(wrist_od / 2)
-    .extrude(wrist_height)
-)
-# Cumulative pitch at wrist = shoulder + elbow + wrist
-cumulative_pitch_wrist = cumulative_pitch_elbow + wrist_pitch  # 90°
-wrist_cyl = wrist_cyl.rotate((0,0,0), (1,0,0), -cumulative_pitch_wrist)
-wrist_cyl = wrist_cyl.translate(forearm_end)
-
-# Compute wrist end position
-w_dy = -wrist_height * math.sin(math.radians(cumulative_pitch_wrist))
-w_dz = wrist_height * math.cos(math.radians(cumulative_pitch_wrist))
-wrist_end = (0, forearm_end[1] + w_dy, forearm_end[2] + w_dz)
-
-# Step 8: Gripper body
-gripper_body_box = (
-    cq.Workplane("XY")
-    .box(gripper_width, gripper_depth, gripper_height)
-    .translate((0, 0, gripper_height/2))
-)
-gripper_body_box = gripper_body_box.rotate((0,0,0), (1,0,0), -cumulative_pitch_wrist)
-gripper_body_box = gripper_body_box.translate(wrist_end)
-
-# Compute gripper attach point (end of gripper body)
-gb_dy = -gripper_height * math.sin(math.radians(cumulative_pitch_wrist))
-gb_dz = gripper_height * math.cos(math.radians(cumulative_pitch_wrist))
-gripper_base = (0, wrist_end[1] + gb_dy, wrist_end[2] + gb_dz)
-
-# Step 9: Gripper fingers
-# Each finger is a flat bar, pivoting from the gripper body
-# Finger opens in X direction (left/right)
-half_angle = finger_open_angle / 2  # 15° each side (= gripper_angle / 2)
-
-def make_finger(x_sign):
-    """
-    Build a finger at origin, then rotate and position it.
-    x_sign: 1 for left finger (opens to +X), -1 for right finger (opens to -X)
-    """
-    # Build finger along Z axis at origin
-    finger = (
-        cq.Workplane("XY")
-        .box(finger_width, finger_thickness, finger_length)
-        .translate((0, 0, finger_length/2))
+try:
+    arm_turret_ring = (arm_turret_ring
+        .faces(">Z")
+        .workplane()
+        .pushPoints(bolt_positions)
+        .circle(turret_bolt_dia / 2)
+        .cutThruAll()
     )
+except Exception as e:
+    print(f"Warning: Could not add bolt holes to turret mount: {e}")
 
-    # Add silicone pad at tip
-    pad = (
-        cq.Workplane("XY")
-        .box(pad_width, pad_thickness, pad_length)
-        .translate((0, 0, finger_length - pad_length/2))
-    )
-
-    # First rotate finger to match arm cumulative pitch (align with gripper body)
-    # Build at origin, rotate at origin, then translate ONCE
-    finger = finger.rotate((0,0,0), (1,0,0), -cumulative_pitch_wrist)
-    pad = pad.rotate((0,0,0), (1,0,0), -cumulative_pitch_wrist)
-
-    # Apply opening angle at origin (spread in X direction)
-    # At cumulative_pitch_wrist = 90°, arm points along -Y, so rotate around Y axis
-    finger = finger.rotate((0,0,0), (0,1,0), x_sign * half_angle)
-    pad = pad.rotate((0,0,0), (0,1,0), x_sign * half_angle)
-
-    # Translate ONCE to gripper base position
-    finger = finger.translate(gripper_base)
-    pad = pad.translate(gripper_base)
-
-    return finger, pad
-
-finger_left, pad_left = make_finger(1)
-finger_right, pad_right = make_finger(-1)
-
-# Step 10: Actuator reference boxes (simplified servo representations)
-# XM430 at shoulder
-xm430_shoulder = (
-    cq.Workplane("XY")
-    .box(xm430_w, xm430_d, xm430_h)
-    .translate((0, turret_y, turret_height + shoulder_height/2))
+# Step 6: Bag system hinge mounts (×2)
+hinge_mount_left = (cq.Workplane("XY")
+    .box(hinge_mount_width, hinge_mount_depth, hinge_mount_thickness)
+    .translate((hinge_mount_x_offset, -body_length/2, half_height + hinge_mount_thickness/2))
 )
 
-# XM430 at elbow
-xm430_elbow = (
-    cq.Workplane("XY")
-    .box(xm430_w, xm430_d, xm430_h)
-    .rotate((0,0,0), (1,0,0), -cumulative_pitch_elbow)
-    .translate(elbow_joint_pos)
+hinge_mount_right = (cq.Workplane("XY")
+    .box(hinge_mount_width, hinge_mount_depth, hinge_mount_thickness)
+    .translate((-hinge_mount_x_offset, -body_length/2, half_height + hinge_mount_thickness/2))
 )
 
-# XL430 at wrist
-xl430_wrist = (
-    cq.Workplane("XY")
-    .box(xl430_w, xl430_d, xl430_h)
-    .rotate((0,0,0), (1,0,0), -cumulative_pitch_wrist)
-    .translate(forearm_end)
+# Add M5 bolt holes (2× per plate)
+hinge_bolt_pattern = [(8, 0), (-8, 0)]
+
+for mount in [hinge_mount_left, hinge_mount_right]:
+    try:
+        mount = (mount
+            .faces(">Z")
+            .workplane()
+            .pushPoints(hinge_bolt_pattern)
+            .circle(hinge_mount_bolt_dia / 2)
+            .cutThruAll()
+        )
+    except Exception as e:
+        print(f"Warning: Could not add bolt holes to hinge mount: {e}")
+
+# Step 7: Head module (simple box to avoid loft issues)
+head_box = (cq.Workplane("XY")
+    .box(head_width_rear, head_depth, head_height_front)
+    .translate((0, body_length/2 + head_depth/2, -20))
 )
 
-# XL430 at gripper
-xl430_gripper = (
-    cq.Workplane("XY")
-    .box(xl430_w, xl430_d, xl430_h)
-    .rotate((0,0,0), (1,0,0), -cumulative_pitch_wrist)
-    .translate(wrist_end)
+# Step 8: LED eye panels (×2)
+led_left = (cq.Workplane("XY")
+    .box(led_panel_size, led_panel_thickness, led_panel_size)
+    .translate((led_panel_spacing/2, body_length/2 + head_depth, 10))
+)
+
+led_right = (cq.Workplane("XY")
+    .box(led_panel_size, led_panel_thickness, led_panel_size)
+    .translate((-led_panel_spacing/2, body_length/2 + head_depth, 10))
+)
+
+# Step 9: LiDAR mount
+lidar_mount = (cq.Workplane("XY")
+    .circle(lidar_od / 2)
+    .extrude(lidar_height)
+    .translate((0, 0, half_height + panel_thickness + lidar_height/2))
+)
+
+# Step 10: Antenna nub
+antenna = (cq.Workplane("XY")
+    .circle(antenna_od / 2)
+    .extrude(antenna_height)
+    .translate((antenna_x_offset, antenna_y_offset, half_height + panel_thickness + antenna_height/2))
+)
+
+# Step 11: Side panels (×2)
+side_panel_left = (cq.Workplane("YZ")
+    .box(body_length, body_height, side_panel_thickness)
+    .translate((half_width + side_panel_thickness/2, 0, 0))
+)
+
+side_panel_right = (cq.Workplane("YZ")
+    .box(body_length, body_height, side_panel_thickness)
+    .translate((-half_width - side_panel_thickness/2, 0, 0))
 )
 
 # ============================================================
 # DIMENSION CHECK
 # ============================================================
-# Expected dimensions based on parameters:
-# Body plate: X: -75 to +75, Y: 0 to 600, Z: -5 to 0
-# Turret: Y=100, Z=0 to Z=50, diameter 80mm → X: -40 to +40
-# Shoulder: Z=50 to Z=90
-# Upper arm: from (0, 100, 90) extending 180mm at 90° pitch → to (0, -80, 90)
-# Forearm: from (0, -80, 90) extending 180mm at 120° pitch
-#   dy = -180*sin(120°) = -155.88, dz = 180*cos(120°) = -90
-#   end: (0, -235.88, 0)
-# Wrist: from (0, -235.88, 0) extending 50mm at 90° pitch
-#   dy = -50*sin(90°) = -50, dz = 50*cos(90°) = 0
-#   end: (0, -285.88, 0)
-# Gripper body: 30mm more → (0, -315.88, 0)
-# Fingers: 70mm more → tip at approximately (0, -385.88, 0)
-#
-# Total forward reach from turret: ~386mm
-# Total forward reach from body center: ~486mm
-# Vertical extent: ~95mm (from plate bottom to shoulder top)
-#
-# All parameters used: ✓
-# - plate_length, plate_width, plate_thickness
-# - turret_od, turret_id, turret_height, turret_y
-# - shoulder_width, shoulder_height, shoulder_depth, shoulder_wall
-# - upper_arm_length, arm_width, arm_depth, arm_wall
-# - elbow_width, elbow_height, elbow_depth, elbow_wall
-# - forearm_length
-# - wrist_od, wrist_height
-# - gripper_width, gripper_depth, gripper_height
-# - finger_length, finger_width, finger_thickness, finger_open_angle, gripper_max_opening
-# - pad_length, pad_width, pad_thickness
-# - turret_yaw, shoulder_pitch, elbow_pitch, wrist_pitch, gripper_angle
-# - xm430_w, xm430_d, xm430_h
-# - xl430_w, xl430_d, xl430_h
+# Expected total dimensions:
+# Length (with head): 600 + 80 = 680mm
+# Width: 150mm (plus side panels = 150 + 2*3 = 156mm)
+# Height (with LiDAR): 120 + 3 + 15 = 138mm
 
-print(f"Dimension check:")
-print(f"  Shoulder joint: Y={shoulder_joint_pos[1]:.1f}, Z={shoulder_joint_pos[2]:.1f}")
-print(f"  Upper arm end: Y={ua_end_y:.1f}, Z={ua_end_z:.1f}")
-print(f"  Forearm end: Y={forearm_end[1]:.1f}, Z={forearm_end[2]:.1f}")
-print(f"  Wrist end: Y={wrist_end[1]:.1f}, Z={wrist_end[2]:.1f}")
-print(f"  Gripper base: Y={gripper_base[1]:.1f}, Z={gripper_base[2]:.1f}")
-print(f"  Total forward reach: ~{abs(gripper_base[1] - turret_y):.1f}mm from turret")
-# Verify gripper opening matches spec
-finger_spread = 2 * finger_length * math.sin(math.radians(half_angle))
-print(f"  Finger spread at tips: {finger_spread:.1f}mm (max opening spec: {gripper_max_opening}mm)")
-print(f"  Gripper open angle: {gripper_angle}° = finger_open_angle {finger_open_angle}°")
-print(f"  Turret yaw applied: {turret_yaw}° (verified)")
+# Compute bounding box from main body frame
+frame_bbox = frame.val().BoundingBox()
+print(f"Frame bounding box: X=[{frame_bbox.xmin:.1f}, {frame_bbox.xmax:.1f}], "
+      f"Y=[{frame_bbox.ymin:.1f}, {frame_bbox.ymax:.1f}], "
+      f"Z=[{frame_bbox.zmin:.1f}, {frame_bbox.zmax:.1f}]")
+
+# Expected frame dimensions: X=[-75-10, 75+10] Y=[-300, 300] Z=[-60, 60]
+expected_x_span = body_width + tube_size
+expected_y_span = body_length
+expected_z_span = body_height
+
+actual_x_span = frame_bbox.xmax - frame_bbox.xmin
+actual_y_span = frame_bbox.ymax - frame_bbox.ymin
+actual_z_span = frame_bbox.zmax - frame_bbox.zmin
+
+print(f"Expected frame spans: X={expected_x_span:.1f}, Y={expected_y_span:.1f}, Z={expected_z_span:.1f}")
+print(f"Actual frame spans: X={actual_x_span:.1f}, Y={actual_y_span:.1f}, Z={actual_z_span:.1f}")
+
+# Check within 10% tolerance
+tolerance = 0.10
+for name, expected, actual in [("X", expected_x_span, actual_x_span),
+                                ("Y", expected_y_span, actual_y_span),
+                                ("Z", expected_z_span, actual_z_span)]:
+    diff_pct = abs(actual - expected) / expected
+    if diff_pct > tolerance:
+        print(f"WARNING: {name}-dimension off by {diff_pct*100:.1f}% (expected {expected:.1f}, got {actual:.1f})")
 
 # ============================================================
 # ASSEMBLY
 # ============================================================
-
 assy = cq.Assembly()
 
-assy.add(body_plate, name="body_plate", color=cq.Color(0.15, 0.15, 0.15))
-assy.add(turret, name="turret_base", color=cq.Color(0.2, 0.2, 0.2))
-assy.add(shoulder_bracket, name="shoulder_bracket", color=cq.Color(0.25, 0.25, 0.25))
-assy.add(upper_arm, name="upper_arm", color=cq.Color(0.23, 0.29, 0.25))
-assy.add(elbow_bracket, name="elbow_bracket", color=cq.Color(0.25, 0.25, 0.25))
-assy.add(forearm, name="forearm", color=cq.Color(0.23, 0.29, 0.25))
-assy.add(wrist_cyl, name="wrist", color=cq.Color(0.2, 0.2, 0.2))
-assy.add(gripper_body_box, name="gripper_body", color=cq.Color(0.2, 0.2, 0.2))
-assy.add(finger_left, name="finger_left", color=cq.Color(0.6, 0.6, 0.6))
-assy.add(finger_right, name="finger_right", color=cq.Color(0.6, 0.6, 0.6))
-assy.add(pad_left, name="pad_left", color=cq.Color(0.1, 0.1, 0.1))
-assy.add(pad_right, name="pad_right", color=cq.Color(0.1, 0.1, 0.1))
-assy.add(xm430_shoulder, name="xm430_shoulder", color=cq.Color(0.8, 0.3, 0.3))
-assy.add(xm430_elbow, name="xm430_elbow", color=cq.Color(0.8, 0.3, 0.3))
-assy.add(xl430_wrist, name="xl430_wrist", color=cq.Color(0.3, 0.3, 0.8))
-assy.add(xl430_gripper, name="xl430_gripper", color=cq.Color(0.3, 0.8, 0.3))
+# Add all components
+assy.add(frame, name="chassis_frame", color=cq.Color(*color_frame))
+assy.add(top_panel, name="top_panel", color=cq.Color(*color_top_panel))
+assy.add(bottom_panel, name="bottom_panel", color=cq.Color(*color_bottom_panel))
+
+assy.add(leg_mount_plates["FL"], name="leg_mount_FL", color=cq.Color(*color_mount_plate))
+assy.add(leg_mount_plates["FR"], name="leg_mount_FR", color=cq.Color(*color_mount_plate))
+assy.add(leg_mount_plates["RL"], name="leg_mount_RL", color=cq.Color(*color_mount_plate))
+assy.add(leg_mount_plates["RR"], name="leg_mount_RR", color=cq.Color(*color_mount_plate))
+
+assy.add(arm_turret_ring, name="arm_turret_mount", color=cq.Color(*color_mount_plate))
+assy.add(hinge_mount_left, name="hinge_mount_left", color=cq.Color(*color_mount_plate))
+assy.add(hinge_mount_right, name="hinge_mount_right", color=cq.Color(*color_mount_plate))
+
+assy.add(head_box, name="head_module", color=cq.Color(*color_head))
+assy.add(led_left, name="led_left", color=cq.Color(*color_led))
+assy.add(led_right, name="led_right", color=cq.Color(*color_led))
+
+assy.add(lidar_mount, name="lidar_mount", color=cq.Color(*color_lidar))
+assy.add(antenna, name="antenna", color=cq.Color(*color_antenna))
+
+assy.add(side_panel_left, name="side_panel_left", color=cq.Color(*color_side_panel))
+assy.add(side_panel_right, name="side_panel_right", color=cq.Color(*color_side_panel))
 
 # ============================================================
 # EXPORT
 # ============================================================
-
 assy.save("models/model.step")
 compound = assy.toCompound()
 cq.exporters.export(compound, "models/model.stl")
-
-print("\n" + "="*60)
-print("EXPORT COMPLETE")
-print("="*60)
-print(f"STEP file: models/model.step")
-print(f"STL file: models/model.stl")
-print(f"Total components: {len(assy.objects)}")
-print(f"All {len([p for p in dir() if not p.startswith('_') and p.isupper()])} parameters used ✓")
-print("="*60)
+print("Export complete: models/model.step, models/model.stl")
