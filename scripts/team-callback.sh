@@ -8,53 +8,44 @@
 #   ./scripts/team-callback.sh "TEAM_UPDATE [web]: Homepage redesign 50% done"
 #
 # Notification flow:
-#   1. PRIMARY:  openclaw message send → Telegram (via gateway, with retry)
-#   2. FALLBACK: Direct Telegram Bot API → curl (if gateway unavailable)
-#   3. CONTEXT:  openclaw agent --message → Walker session (non-blocking, best-effort)
+#   1. PRIMARY: openclaw agent --message → Walker CEO session (processes and routes)
+#   2. FALLBACK: /tools/invoke → Walker session via HTTP API
 #
-# Requirements:
-#   - openclaw CLI installed and gateway running (for primary path)
-#   - Internet access (for fallback path)
+# Walker (CEO) receives all callbacks, processes them, and decides what to
+# forward to Maurits. Raw team callbacks should NOT go directly to Maurits.
 # ============================================================================
 
 set -euo pipefail
 
 # --- Configuration -----------------------------------------------------------
-TELEGRAM_CHAT_ID="1602324097"           # Maurits
-TELEGRAM_ACCOUNT="ceo"                  # OpenClaw account binding
 AGENT_ID="cleanwalker"
 SESSION_KEY="agent:cleanwalker:main"
-
-# Bot token for direct fallback (sourced from env or hardcoded)
-# The CEO bot: @BrainsCeoBot
-TELEGRAM_BOT_TOKEN="${TELEGRAM_BOT_TOKEN:-8597718324:AAGAoANJm-mKhZQWxRMO-ImocQPD1Y7dNIM}"
+GATEWAY_URL="http://localhost:18789"
 
 # --- Input validation --------------------------------------------------------
 if [ $# -eq 0 ] || [ -z "${1:-}" ]; then
-  echo "Usage: $0 \"TEAM_DONE [team-name]: message\""
+  echo "Usage: $0 \"TEAM_DONE [team-name]: Summary. Commit: hash\""
   exit 1
 fi
 
 MESSAGE="$1"
 TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
-HOSTNAME=$(hostname -s)
 
-# Format for Telegram (add metadata)
-FORMATTED="🤖 CleanWalker Team Callback\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n${MESSAGE}\n\n🕐 ${TIMESTAMP}\n🖥️ ${HOSTNAME}"
+# Add timestamp to message
+TIMESTAMPED="[${TIMESTAMP}] ${MESSAGE}"
 
-# --- Primary: openclaw message send ------------------------------------------
+# --- Primary: openclaw agent --message ---------------------------------------
 primary_send() {
-  echo "[callback] Attempting primary: openclaw message send..."
+  echo "[callback] Attempting primary: openclaw agent --message..."
   if command -v openclaw &>/dev/null; then
-    if openclaw message send \
-      --channel telegram \
-      --account "$TELEGRAM_ACCOUNT" \
-      --target "$TELEGRAM_CHAT_ID" \
-      --message "$FORMATTED" 2>&1; then
-      echo "[callback] ✅ Primary delivery successful (openclaw message send)"
+    if openclaw agent \
+      --agent "$AGENT_ID" \
+      --session-id "$SESSION_KEY" \
+      --message "$TIMESTAMPED" 2>&1; then
+      echo "[callback] ✅ Delivered to Walker session"
       return 0
     else
-      echo "[callback] ⚠️  Primary delivery failed"
+      echo "[callback] ⚠️  openclaw agent delivery failed"
       return 1
     fi
   else
@@ -63,43 +54,37 @@ primary_send() {
   fi
 }
 
-# --- Fallback: Direct Telegram Bot API ---------------------------------------
+# --- Fallback: HTTP API to gateway -------------------------------------------
 fallback_send() {
-  echo "[callback] Attempting fallback: direct Telegram Bot API..."
+  echo "[callback] Attempting fallback: gateway /tools/invoke..."
 
-  # Escape special characters for JSON
-  ESCAPED_MSG=$(printf '%s' "$FORMATTED" | python3 -c 'import sys,json; print(json.dumps(sys.stdin.read()))' 2>/dev/null || printf '"%s"' "$FORMATTED")
+  # Load gateway token
+  local TOKEN="${OPENCLAW_GATEWAY_TOKEN:-}"
+  if [ -z "$TOKEN" ] && [ -f ~/.openclaw/.env ]; then
+    TOKEN=$(grep -m1 'GATEWAY_TOKEN\|OPENCLAW_GATEWAY_TOKEN' ~/.openclaw/.env 2>/dev/null | cut -d= -f2 || true)
+  fi
+
+  if [ -z "$TOKEN" ]; then
+    echo "[callback] ⚠️  No gateway token available"
+    return 1
+  fi
 
   RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
-    "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+    "${GATEWAY_URL}/tools/invoke" \
+    -H "Authorization: Bearer ${TOKEN}" \
     -H "Content-Type: application/json" \
-    -d "{\"chat_id\": \"${TELEGRAM_CHAT_ID}\", \"text\": ${ESCAPED_MSG}}" \
+    -d "{\"tool\":\"message\",\"args\":{\"action\":\"send\",\"channel\":\"telegram\",\"target\":\"1602324097\",\"accountId\":\"ceo\",\"message\":\"${TIMESTAMPED}\"}}" \
     --connect-timeout 10 \
     --max-time 15 2>&1)
 
   HTTP_CODE=$(echo "$RESPONSE" | tail -1)
-  BODY=$(echo "$RESPONSE" | head -n -1)
 
   if [ "$HTTP_CODE" = "200" ]; then
-    echo "[callback] ✅ Fallback delivery successful (Telegram Bot API)"
+    echo "[callback] ✅ Fallback delivery successful"
     return 0
   else
-    echo "[callback] ❌ Fallback delivery failed: HTTP $HTTP_CODE"
-    echo "[callback] Response: $BODY"
+    echo "[callback] ❌ Fallback failed: HTTP $HTTP_CODE"
     return 1
-  fi
-}
-
-# --- Context: Notify Walker agent session (best-effort) ----------------------
-context_send() {
-  echo "[callback] Sending context to Walker agent session (best-effort)..."
-  if command -v openclaw &>/dev/null; then
-    # Run in background, don't block on agent turn
-    (openclaw agent \
-      --agent "$AGENT_ID" \
-      --session-id "$SESSION_KEY" \
-      --message "$MESSAGE" &>/dev/null &)
-    echo "[callback] ✅ Context message queued for Walker session"
   fi
 }
 
@@ -108,30 +93,18 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "[callback] Sending: ${MESSAGE:0:80}..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-DELIVERED=false
-
-# Try primary
+# Try primary (to Walker session)
 if primary_send; then
-  DELIVERED=true
-fi
-
-# If primary failed, try fallback
-if [ "$DELIVERED" = false ]; then
-  if fallback_send; then
-    DELIVERED=true
-  fi
-fi
-
-# Always send context to Walker session (non-blocking, best-effort)
-context_send
-
-# --- Final status ------------------------------------------------------------
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-if [ "$DELIVERED" = true ]; then
-  echo "[callback] ✅ Notification delivered to Maurits via Telegram"
   exit 0
-else
-  echo "[callback] ❌ ALL delivery methods failed!"
-  echo "[callback] Manual check: message was '$MESSAGE'"
-  exit 1
 fi
+
+# If primary failed, try fallback (HTTP API)
+if fallback_send; then
+  exit 0
+fi
+
+# --- All failed --------------------------------------------------------------
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "[callback] ❌ ALL delivery methods failed!"
+echo "[callback] Message: '$MESSAGE'"
+exit 1
