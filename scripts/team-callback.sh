@@ -34,19 +34,34 @@ TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
 # Add timestamp to message
 TIMESTAMPED="[${TIMESTAMP}] ${MESSAGE}"
 
-# --- Primary: openclaw agent --message ---------------------------------------
+# --- Primary: openclaw agent --message (fire-and-forget) ---------------------
 primary_send() {
   echo "[callback] Attempting primary: openclaw agent --message..."
   if command -v openclaw &>/dev/null; then
-    if openclaw agent \
+    # Fire and forget — openclaw agent blocks waiting for agent turn response.
+    # We don't need the response, just need the message queued.
+    # Timeout after 10s in case gateway is unreachable.
+    timeout 10 openclaw agent \
       --agent "$AGENT_ID" \
       --session-id "$SESSION_KEY" \
-      --message "$TIMESTAMPED" 2>&1; then
-      echo "[callback] ✅ Delivered to Walker session"
+      --message "$TIMESTAMPED" &>/dev/null &
+    local PID=$!
+    # Give it 2 seconds to establish connection and queue the message
+    sleep 2
+    if kill -0 "$PID" 2>/dev/null; then
+      echo "[callback] ✅ Message queued for Walker session (pid $PID)"
       return 0
     else
-      echo "[callback] ⚠️  openclaw agent delivery failed"
-      return 1
+      # Process already exited — check if it was success or failure
+      wait "$PID" 2>/dev/null
+      local EXIT_CODE=$?
+      if [ "$EXIT_CODE" -eq 0 ]; then
+        echo "[callback] ✅ Delivered to Walker session"
+        return 0
+      else
+        echo "[callback] ⚠️  openclaw agent delivery failed (exit $EXIT_CODE)"
+        return 1
+      fi
     fi
   else
     echo "[callback] ⚠️  openclaw CLI not found"
