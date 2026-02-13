@@ -12,7 +12,7 @@
 
 ### WBSO Application Industrial Cost Update (bizdev) — COMPLETED
 
-| 2026-02-13 | bizdev | WBSO application updated with industrial-grade cost data: added WP5 (Industrial Hardening), TRL progression section (TRL 2-3→5-6), rewrote R&D cost section with €48K industrial prototype data, added actuator transition R&D (€32-38K), total eligible costs €125K-€184K (up from €53K-€111K), WBSO benefit €62K-€92K (up from €48K). Removed competitor brand references, strengthened technical uncertainties with real component data. | PENDING |
+| 2026-02-13 | bizdev | WBSO application updated with industrial-grade cost data: added WP5 (Industrial Hardening), TRL progression section (TRL 2-3→5-6), rewrote R&D cost section with €48K industrial prototype data, added actuator transition R&D (€32-38K), total eligible costs €125K-€184K (up from €53K-€111K), WBSO benefit €62K-€92K (up from €48K). Removed competitor brand references, strengthened technical uncertainties with real component data. | 4204fd9 |
 
 ## 2026-02-12
 
@@ -282,3 +282,11 @@
 | 2026-02-13 | cad-generator | CW-1 Bag System iteration 2 — corrected all 6 critical issues from eval: (1) frame now continuous rectangular rim via sweep method with fallback, (2) roll housing now curved cradle with cylindrical cut, (3) hinge brackets now L-shaped via polyline profile, (4) servo clearance void implemented (15×15×30mm), (5) outer clips now use frame_width spacing (30mm) not roll_width (26mm), (6) overall depth positioning corrected. All fixes wrapped in try/except with fallbacks. | d9000f5 |
 | 2026-02-13 00:28 | web | feat: featured demos system + 3D viewer concept disclaimer | c70c51c |
 | 2026-02-13 | cad-team | CW-1 Bag System iteration 4: fixed overall depth (frame_depth 220→180mm, bbox 410→381mm), servo void repositioned into left bracket body. 25/25 eval (100%). | pending |
+
+### Comms Optimizer Check — 2026-02-13 04:46 UTC
+- No sessions running. team-status.json was stale (cw-hardware + cw-bizdev marked "active" but sessions gone ~2h ago).
+- Both teams completed without callback — 3rd consecutive comms failure pattern. Sessions self-terminated after finishing.
+- Fixed: team-status.json updated to reflect all completed. 9 commits logged in last window.
+- No new tasks spawned — quiet hours (23:46 COT). Next priority: full robot assembly.
+
+| 2026-02-13 | cw-hardware | CW-1 full robot assembly: all 4 subsystems integrated (body chassis + 4 legs + arm/gripper + bag system). 76 components, 254×1089×837mm bounding box, 100% eval (28/28). STEP 3.3MB + STL 5.1MB + 6 renders. | pending |
