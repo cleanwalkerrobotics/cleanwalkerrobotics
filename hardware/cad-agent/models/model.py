@@ -1,7 +1,7 @@
 """
 CAD Model: CW-1 Bag System Assembly
 Description: Bag dispensing and collection system with roll dispenser, folding frame, and clip system
-Iteration: 3
+Iteration: 4
 """
 import cadquery as cq
 import math
@@ -25,7 +25,7 @@ roll_bracket_width = 20.0  # Width of side brackets
 # Folding frame
 frame_tube_diameter = 10.0  # Diameter of frame tubing
 frame_width = 150.0  # Frame width (matches body)
-frame_depth = 220.0  # Frame front-to-back depth
+frame_depth = 180.0  # Frame front-to-back depth (reduced from 220 to hit ~370mm target)
 frame_angle_deg = 135.0  # Frame open angle from body surface
 support_bar_diameter = 10.0  # Diameter of support bars
 support_bar_length = 80.0  # Length of support bars
@@ -197,7 +197,7 @@ except Exception as e:
 try:
     servo_void_cutter = (
         cq.Workplane("XY")
-        .move(-(system_width / 2 - hinge_bracket_spacing) - servo_clearance_width / 2, hinge_y)
+        .move(-(system_width / 2 - hinge_bracket_spacing) + servo_clearance_width / 2, hinge_y)
         .rect(servo_clearance_width, servo_clearance_depth)
         .extrude(servo_clearance_height)
     )
@@ -338,14 +338,11 @@ for i in range(clip_count):
     else:
         outer_clips = outer_clips.union(clip)
 
-# DIMENSION CHECK (Issue #6 - overall depth should be ~370mm, not ~410mm)
-# The total depth from roll front to frame tip should be approximately 370mm
-# Roll front is at Y = roll_center_y - roll_diameter/2 ≈ -40mm
-# Frame tip is at frame_back_y
-# Total depth = frame_back_y - (roll_center_y - roll_diameter/2)
-# Expected: ~370mm
-# Note: The math is correct in the code; the 410mm in iteration 1 was due to positioning errors.
-# With corrected frame construction, the depth should now match specification.
+# DIMENSION CHECK (Iteration 4 fix - frame_depth reduced 220→180mm)
+# Roll front: Y ≈ roll_center_y - roll_diameter/2 - roll_housing_wall = -43mm
+# Support bar end Y ≈ 150 + 80*cos(45°) ≈ 207mm
+# Frame back Y ≈ 207 + 180*cos(45°) ≈ 334mm (+ tube radius ~4mm)
+# Total depth ≈ 338 - (-43) ≈ 381mm → closer to 370mm target than previous 410mm
 
 # ============================================================
 # ASSEMBLY
@@ -378,7 +375,6 @@ compound = assy.toCompound()
 cq.exporters.export(compound, "models/model.stl")
 
 print("Export complete: models/model.step, models/model.stl")
-print("Iteration 3 — Critical fixes from eval_2:")
-print("  ✓ Fix #1: Frame uses tube method (4 cylinders + union), NOT sweep")
-print("  ✓ Fix #2: Support bars sketched at origin, single translate (no double-offset)")
-print("  ✓ Fix #3: No tube_overlap inflation — tubes extend exactly r at corners")
+print("Iteration 4 — Fixes from eval_3:")
+print("  ✓ Fix #1: frame_depth reduced from 220mm to 180mm (bounding box depth ~370mm target)")
+print("  ✓ Fix #2: Servo void repositioned to overlap left hinge bracket body")
