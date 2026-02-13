@@ -1,12 +1,13 @@
-"""CW-1 Locomotion Gymnasium Environment for MuJoCo (v2 / Run 8).
+"""CW-1 Locomotion Gymnasium Environment for MuJoCo (v3 / Run 10).
 
 Custom Gymnasium environment with:
 - 52-dim observation space (body state + joint state + commands + prev actions + gait clock)
 - 12-dim action space (leg joints only)
 - Mammalian knee configuration (all knees backward)
 - Heightfield terrain support (flat, rough, obstacles, stairs, slopes)
-- WTW-inspired shaped rewards: contact force/velocity, phase-based clearance target,
-  action smoothness (1st+2nd order), foot slip penalty
+- Stability-focused reward balance: alive=0.5, orientation=-1.0, fall_penalty=-5.0
+- WTW-inspired shaped rewards: gait clock, air time, contact force/velocity
+- Best trained with ent_coef=0.0 + adaptive LR (KL target 0.02)
 - 200Hz simulation, 50Hz control (decimation=4)
 - Episode: 1000 steps (20s), terminates on fall
 
@@ -98,9 +99,9 @@ class CW1LocomotionEnv(gym.Env):
         # Action
         action_scale: float = 0.5,
         # Velocity commands (always forward — no standing command)
-        cmd_vx_range: tuple = (0.3, 0.8),
-        cmd_vy_range: tuple = (-0.2, 0.2),
-        cmd_yaw_range: tuple = (-0.5, 0.5),
+        cmd_vx_range: tuple = (0.0, 0.7),
+        cmd_vy_range: tuple = (-0.1, 0.1),
+        cmd_yaw_range: tuple = (-0.3, 0.3),
         # Termination
         min_body_height: float = 0.15,
         max_body_tilt: float = 0.7,   # radians (~40 degrees)
@@ -109,18 +110,18 @@ class CW1LocomotionEnv(gym.Env):
         # Phase 2 adds shaped rewards via --refine flag
         rew_track_lin_vel: float = 3.0,
         rew_track_ang_vel: float = 0.5,
-        rew_alive: float = 0.1,
+        rew_alive: float = 0.5,
         rew_lin_vel_z: float = -2.0,
         rew_ang_vel_xy: float = -0.05,
         rew_torques: float = -1e-5,
         rew_joint_accel: float = -2.5e-7,
         rew_action_rate: float = -0.01,
-        rew_orientation: float = -0.3,
+        rew_orientation: float = -1.0,
         rew_joint_limits: float = -5.0,
         rew_feet_air_time: float = 1.0,
         rew_base_height: float = 0.5,
         rew_collision: float = -1.0,
-        rew_gait_clock: float = 1.0,        # Binary gait clock (Run 7f breakthrough)
+        rew_gait_clock: float = 0.5,        # Binary gait clock (Run 7f breakthrough)
         # Shaped gait rewards — zeroed by default, enabled in Phase 2
         rew_gait_force: float = 0.0,
         rew_gait_vel: float = 0.0,
@@ -393,7 +394,7 @@ class CW1LocomotionEnv(gym.Env):
         self._prev_action = np.zeros(self.n_act, dtype=np.float32)
         self._prev_prev_action = np.zeros(self.n_act, dtype=np.float32)
         self._prev_joint_vel = np.zeros(self.n_act, dtype=np.float32)
-        self._velocity_cmd = np.zeros(3, dtype=np.float32)  # reset before randomizing
+        # NOTE: _velocity_cmd already randomized above (lines 371-375) — do NOT zero it here
         self._foot_contact_time = np.zeros(4, dtype=np.float32)
         self._foot_air_time = np.zeros(4, dtype=np.float32)
         self._last_contacts = np.zeros(4, dtype=bool)
@@ -451,6 +452,10 @@ class CW1LocomotionEnv(gym.Env):
         # Check termination
         terminated = self._check_termination()
         truncated = self._step_count >= self.max_episode_steps
+
+        # Fall penalty: one-time cost for crashing (makes survival critical)
+        if terminated:
+            reward -= 5.0
 
         # Update history
         joint_vel = self.data.qvel[self.leg_qvel_ids].astype(np.float32)

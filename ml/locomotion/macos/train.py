@@ -359,10 +359,10 @@ def main():
 
     if args.adaptive_lr:
         adaptive_lr_callback = AdaptiveLRCallback(
-            kl_target=0.01, lr_min=1e-5, lr_max=1e-2
+            kl_target=0.02, lr_min=1e-5, lr_max=1e-2
         )
         callbacks.append(adaptive_lr_callback)
-        print("Adaptive LR: ON (KL target=0.01, range=[1e-5, 1e-2])")
+        print("Adaptive LR: ON (KL target=0.02, range=[1e-5, 1e-2])")
 
     # Train
     print(f"\nStarting training for {args.timesteps:,} timesteps...")

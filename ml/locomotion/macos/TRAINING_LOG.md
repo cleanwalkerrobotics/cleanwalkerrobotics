@@ -303,3 +303,86 @@ Best: **Phase 2 50K steps at 0.209 m/s, 100% survival**
 3. **PPO collapse persists**: Even with constant lr=3e-4, std grows from 1.01→1.8 and policy collapses after 800K-1M steps
 4. **Adaptive LR too aggressive**: SB3's LR is quickly reduced to 7.5e-5 which slows learning too much
 5. **Natural foot lift achieved**: Phase 2 clearance target + smoothness produces 5-9cm foot lift per step
+
+---
+
+### Run 9 — Velocity Command Bug Fix + Reward Rebalancing (5M steps)
+
+**Critical bug found**: In `cw1_env.py` `reset()`, `_velocity_cmd` was randomized (lines 371-375) then **overwritten to zeros** (line 396: `self._velocity_cmd = np.zeros(3, dtype=np.float32)`). This made cmd_speed=0 always, disabling ALL gait rewards (they check `cmd_speed > 0.1`). Runs 7f and 8 trained with effectively zero velocity commands.
+
+**Fix**: Removed the zeroing line. Gait rewards now active.
+
+#### Run 9a — First attempt (no adaptive LR)
+- Config: 5M steps, n_envs=8, n_steps=4096, lr=3e-4, flat terrain
+- Orientation penalty reduced to -0.1 (too weak)
+- **Result**: KL exploded to 0.109, std hit 1.16+ by 700K. Robot sprinted at 0.44 m/s but only 8% survival.
+- **Stopped at 800K** — PPO instability without adaptive LR
+
+#### Run 9b — Adaptive LR (KL target 0.02)
+- Config: 5M steps, n_envs=8, n_steps=2048, adaptive LR, flat terrain
+- Orientation restored to -0.3, cmd_vx range (0.0, 0.8)
+- **Result**: Adaptive LR controlled KL well (→7.5e-5). But 0.6 m/s with 6-16% survival — still sprint-and-crash.
+- **Root cause**: Speed incentives (tracking 3.0 + gait 1.0 = 4.0) overwhelmed stability (alive 0.1 + orientation 0.3 = 0.4).
+- **Stopped at 1.5M**
+
+#### Run 9c — Stability-focused rewards
+- Changes from 9b: alive 0.1→0.5, orientation -0.3→-1.0, gait_clock 1.0→0.5, fall penalty -2.0 (new), cmd_vx (0.2, 0.5)
+- **Result**: Walking at 800K-1.45M range!
+
+| Checkpoint | Speed | Survival | Tilt |
+|-----------|-------|----------|------|
+| 800K | 0.333 | 91% | 4.0° |
+| 1M | 0.414 | 85% | 4.3° |
+| **1.3M** | **0.431** | **94%** | **4.5°** |
+| 1.45M | 0.448 | 90% | 4.3° |
+| 1.5M | 0.677 | 5% | 14.6° |
+
+- PPO collapse at 1.5M: std grew from 1.0→1.16+ and policy collapsed to sprint-and-crash
+- Velocity modulation: 0.35-0.49 for commands 0.2-0.6 (some tracking but not precise)
+
+---
+
+### Run 10 — Zero Entropy Training (5M steps) ★ BEST
+
+**Key insight**: ent_coef=0.01 drives std growth, which causes PPO collapse at ~1.5M steps. Setting ent_coef=0.0 lets std naturally decrease as the policy becomes confident.
+
+- Config: 5M steps, n_envs=8, ent_coef=0.0, adaptive LR (KL target=0.02), flat terrain
+- Rewards: alive=0.5, orientation=-1.0, gait_clock=0.5, track=3.0, fall penalty=-5.0
+- cmd_vx range (0.0, 0.7)
+
+**Training metrics (healthy throughout)**:
+- std: 1.0 → 0.93 (500K) → 0.85 (1.2M) — continuously DECREASING
+- KL: 0.022-0.028 (well-controlled near 0.02 target)
+- clip_fraction: 0.25-0.30 (healthy)
+- No collapse observed at any point
+
+| Checkpoint | Speed | Survival | Tilt | Reward |
+|-----------|-------|----------|------|--------|
+| 500K | 0.243 | **100%** | 3.1° | 37.1 |
+| **1M** | **0.375** | **100%** | **2.4°** | **33.9** |
+| 1.5M | 0.301 | 100% | 2.3° | 30.7 |
+| 2M | 0.288 | 100% | 2.6° | 30.5 |
+
+Best: **1M steps — 0.366 m/s avg (10 eps), 100% survival, 2.3° tilt**
+
+Policy converges to safe-but-slightly-slow gait after 1M (std becomes too low, reducing exploration). The 1M checkpoint is the sweet spot before over-convergence.
+
+#### Velocity response (1M checkpoint)
+- cmd 0.2 → 0.35 m/s (slight modulation)
+- cmd 0.4 → 0.37 m/s
+- cmd 0.6 → 0.38 m/s
+
+Minimal tracking — policy walks at ~0.37 regardless. Tracking improvement deferred to terrain training.
+
+#### Run 11 — Sharper tracking (attempted)
+- sigma 0.15→0.05, alive 0.5→0.3
+- Result: Slower learning, peaked at 0.339 m/s (1.5M). Sharper sigma made learning harder without improving tracking.
+- **Discarded** — Run 10 remains best.
+
+#### Key findings (Runs 9-10)
+1. **Critical: velocity command bug** invalidated Runs 7f-8 gait rewards
+2. **ent_coef=0.0 prevents PPO collapse**: std decreases naturally, no instability
+3. **Reward balance matters**: alive + orientation must be competitive with tracking + gait
+4. **Fall penalty**: -5.0 is effective but can make policy overly conservative
+5. **Adaptive LR with KL target 0.02**: essential for stable training with SB3 PPO
+6. **Training sweet spot**: ~1M steps with ent_coef=0. Policy over-converges beyond this.
