@@ -1,11 +1,12 @@
-"""CW-1 Locomotion Gymnasium Environment for MuJoCo (v2).
+"""CW-1 Locomotion Gymnasium Environment for MuJoCo (v2 / Run 8).
 
 Custom Gymnasium environment with:
 - 52-dim observation space (body state + joint state + commands + prev actions + gait clock)
 - 12-dim action space (leg joints only)
 - Mammalian knee configuration (all knees backward)
 - Heightfield terrain support (flat, rough, obstacles, stairs, slopes)
-- Foot clearance reward for natural gait
+- WTW-inspired shaped rewards: contact force/velocity, phase-based clearance target,
+  action smoothness (1st+2nd order), foot slip penalty
 - 200Hz simulation, 50Hz control (decimation=4)
 - Episode: 1000 steps (20s), terminates on fall
 
@@ -103,7 +104,9 @@ class CW1LocomotionEnv(gym.Env):
         # Termination
         min_body_height: float = 0.15,
         max_body_tilt: float = 0.7,   # radians (~40 degrees)
-        # Reward weights — Run 7f: gait clock for structured exploration
+        # Reward weights — Run 8: two-phase training
+        # Phase 1 defaults (same as Run 7f — proven walking config)
+        # Phase 2 adds shaped rewards via --refine flag
         rew_track_lin_vel: float = 3.0,
         rew_track_ang_vel: float = 0.5,
         rew_alive: float = 0.1,
@@ -117,12 +120,21 @@ class CW1LocomotionEnv(gym.Env):
         rew_feet_air_time: float = 1.0,
         rew_base_height: float = 0.5,
         rew_collision: float = -1.0,
-        rew_foot_clearance: float = 0.3,
-        rew_gait_clock: float = 1.0,        # NEW: reward matching trot phase
+        rew_gait_clock: float = 1.0,        # Binary gait clock (Run 7f breakthrough)
+        # Shaped gait rewards — zeroed by default, enabled in Phase 2
+        rew_gait_force: float = 0.0,
+        rew_gait_vel: float = 0.0,
+        rew_clearance_target: float = 0.0,
+        rew_action_smooth_1: float = 0.0,
+        rew_action_smooth_2: float = 0.0,
+        rew_foot_slip: float = 0.0,
+        rew_air_time_var: float = 0.0,
+        rew_hip_vel: float = 0.0,
         # Tracking
         tracking_sigma: float = 0.15,
         # Gait clock (trot pattern)
         gait_period: float = 0.5,           # 0.5s per full stride (2 Hz)
+        swing_height_target: float = 0.06,  # target foot clearance during swing (6cm)
         target_base_height: float = 0.35,
         # Domain randomization
         randomize_friction: bool = True,
@@ -158,6 +170,7 @@ class CW1LocomotionEnv(gym.Env):
         # Tracking
         self.tracking_sigma = tracking_sigma
         self.target_base_height = target_base_height
+        self.swing_height_target = swing_height_target
 
         # Reward weights
         self.reward_weights = {
@@ -174,8 +187,15 @@ class CW1LocomotionEnv(gym.Env):
             "feet_air_time": rew_feet_air_time,
             "base_height": rew_base_height,
             "collision": rew_collision,
-            "foot_clearance": rew_foot_clearance,
             "gait_clock": rew_gait_clock,
+            "gait_force": rew_gait_force,
+            "gait_vel": rew_gait_vel,
+            "clearance_target": rew_clearance_target,
+            "action_smooth_1": rew_action_smooth_1,
+            "action_smooth_2": rew_action_smooth_2,
+            "foot_slip": rew_foot_slip,
+            "air_time_var": rew_air_time_var,
+            "hip_vel": rew_hip_vel,
         }
 
         # Gait clock params
@@ -222,6 +242,7 @@ class CW1LocomotionEnv(gym.Env):
         # State tracking
         self._step_count = 0
         self._prev_action = np.zeros(self.n_act, dtype=np.float32)
+        self._prev_prev_action = np.zeros(self.n_act, dtype=np.float32)  # for 2nd order smoothness
         self._prev_joint_vel = np.zeros(self.n_act, dtype=np.float32)
         self._velocity_cmd = np.zeros(3, dtype=np.float32)
         self._foot_contact_time = np.zeros(4, dtype=np.float32)
@@ -370,7 +391,9 @@ class CW1LocomotionEnv(gym.Env):
         # Reset state
         self._step_count = 0
         self._prev_action = np.zeros(self.n_act, dtype=np.float32)
+        self._prev_prev_action = np.zeros(self.n_act, dtype=np.float32)
         self._prev_joint_vel = np.zeros(self.n_act, dtype=np.float32)
+        self._velocity_cmd = np.zeros(3, dtype=np.float32)  # reset before randomizing
         self._foot_contact_time = np.zeros(4, dtype=np.float32)
         self._foot_air_time = np.zeros(4, dtype=np.float32)
         self._last_contacts = np.zeros(4, dtype=bool)
@@ -432,6 +455,7 @@ class CW1LocomotionEnv(gym.Env):
         # Update history
         joint_vel = self.data.qvel[self.leg_qvel_ids].astype(np.float32)
         self._prev_joint_vel = joint_vel.copy()
+        self._prev_prev_action = self._prev_action.copy()
         self._prev_action = action.copy()
 
         info = {
@@ -494,7 +518,16 @@ class CW1LocomotionEnv(gym.Env):
         return obs.astype(np.float32)
 
     def _compute_reward(self, action: np.ndarray) -> tuple[float, dict]:
-        """Compute reward with terrain-relative heights and foot clearance."""
+        """Compute reward with WTW-style shaped gait rewards.
+
+        Key changes from Run 7f:
+        - Shaped gait force/velocity rewards replace binary gait clock
+        - Phase-based foot clearance TARGET (penalizes deviation from swing height)
+        - Action smoothness 1st + 2nd order (anti-stiff/jerky)
+        - Foot slip penalty (anti-sliding in stance)
+        - Air time variance penalty (even gait)
+        - Hip yaw velocity penalty (anti-wobble)
+        """
         w = self.reward_weights
         dt = self.control_dt
         info = {}
@@ -515,7 +548,21 @@ class CW1LocomotionEnv(gym.Env):
         joint_pos = self.data.qpos[self.leg_qpos_ids]
         torques = self.data.actuator_force[self.leg_actuator_ids]
 
+        # Foot contact detection
+        in_contact = np.zeros(4, dtype=bool)
+        for i in range(self.data.ncon):
+            contact = self.data.contact[i]
+            geom1, geom2 = contact.geom1, contact.geom2
+            for j, foot_id in enumerate(self.foot_geom_ids):
+                if (geom1 == foot_id and geom2 == self.floor_geom_id) or \
+                   (geom2 == foot_id and geom1 == self.floor_geom_id):
+                    in_contact[j] = True
+
+        cmd_speed = np.linalg.norm(self._velocity_cmd[:2])
+
         total_reward = 0.0
+
+        # ===== TRACKING REWARDS =====
 
         # 1. Forward velocity tracking (exponential kernel)
         lin_vel_error = np.sum((body_linvel[:2] - self._velocity_cmd[:2]) ** 2)
@@ -534,6 +581,8 @@ class CW1LocomotionEnv(gym.Env):
         total_reward += r_alive
         info["r_alive"] = r_alive
 
+        # ===== STABILITY PENALTIES =====
+
         # 4. Vertical velocity penalty
         r_lin_vel_z = body_linvel[2] ** 2 * w["lin_vel_z"]
         total_reward += r_lin_vel_z
@@ -544,30 +593,57 @@ class CW1LocomotionEnv(gym.Env):
         total_reward += r_ang_vel_xy
         info["r_ang_vel_xy"] = r_ang_vel_xy
 
-        # 6. Torque penalty (energy efficiency)
-        r_torques = np.sum(torques ** 2) * w["torques"]
-        total_reward += r_torques
-        info["r_torques"] = r_torques
-
-        # 7. Joint acceleration penalty (smoothness)
-        joint_accel = (joint_vel - self._prev_joint_vel) / dt
-        r_joint_accel = np.sum(joint_accel ** 2) * w["joint_accel"]
-        total_reward += r_joint_accel
-        info["r_joint_accel"] = r_joint_accel
-
-        # 8. Action rate penalty (smooth actions)
-        action_diff = action - self._prev_action
-        r_action_rate = np.sum(action_diff ** 2) * w["action_rate"]
-        total_reward += r_action_rate
-        info["r_action_rate"] = r_action_rate
-
-        # 9. Orientation penalty (keep body level)
+        # 6. Orientation penalty (keep body level)
         proj_gravity = body_rot.T @ np.array([0, 0, -1.0])
         r_orientation = np.sum(proj_gravity[:2] ** 2) * w["orientation"]
         total_reward += r_orientation
         info["r_orientation"] = r_orientation
 
-        # 10. Joint limit penalty
+        # 7. Base height reward (terrain-relative)
+        body_height = self.data.xpos[self.body_id][2]
+        relative_height = body_height - self._terrain_height_at_robot
+        height_error = (relative_height - self.target_base_height) ** 2
+        r_base_height = np.exp(-height_error / 0.05) * w["base_height"]
+        total_reward += r_base_height
+        info["r_base_height"] = r_base_height
+
+        # ===== ENERGY / SMOOTHNESS PENALTIES =====
+
+        # 8. Torque penalty (10x stronger than Run 7f)
+        r_torques = np.sum(torques ** 2) * w["torques"]
+        total_reward += r_torques
+        info["r_torques"] = r_torques
+
+        # 9. Joint acceleration penalty
+        joint_accel = (joint_vel - self._prev_joint_vel) / dt
+        r_joint_accel = np.sum(joint_accel ** 2) * w["joint_accel"]
+        total_reward += r_joint_accel
+        info["r_joint_accel"] = r_joint_accel
+
+        # 10. Action rate penalty (legacy)
+        action_diff = action - self._prev_action
+        r_action_rate = np.sum(action_diff ** 2) * w["action_rate"]
+        total_reward += r_action_rate
+        info["r_action_rate"] = r_action_rate
+
+        # 11. Action smoothness 1st order (position target difference)
+        r_smooth_1 = np.sum(np.abs(action - self._prev_action)) * w["action_smooth_1"]
+        total_reward += r_smooth_1
+        info["r_action_smooth_1"] = r_smooth_1
+
+        # 12. Action smoothness 2nd order (acceleration of position targets)
+        action_accel = action - 2 * self._prev_action + self._prev_prev_action
+        r_smooth_2 = np.sum(np.abs(action_accel)) * w["action_smooth_2"]
+        total_reward += r_smooth_2
+        info["r_action_smooth_2"] = r_smooth_2
+
+        # 13. Hip yaw velocity penalty (anti-wobble, only hip_yaw joints: indices 0,3,6,9)
+        hip_yaw_vel = joint_vel[np.array([0, 3, 6, 9])]
+        r_hip_vel = np.sum(hip_yaw_vel ** 2) * w["hip_vel"]
+        total_reward += r_hip_vel
+        info["r_hip_vel"] = r_hip_vel
+
+        # 14. Joint limit penalty
         margin = 0.1  # radians from limit
         lower_violation = np.maximum(JOINT_LOWER + margin - joint_pos, 0)
         upper_violation = np.maximum(joint_pos - (JOINT_UPPER - margin), 0)
@@ -575,8 +651,9 @@ class CW1LocomotionEnv(gym.Env):
         total_reward += r_joint_limits
         info["r_joint_limits"] = r_joint_limits
 
-        # 11. Feet air time reward (legged_gym style: reward on first contact)
-        cmd_speed = np.linalg.norm(self._velocity_cmd[:2])
+        # ===== GAIT SHAPING REWARDS (WTW-inspired) =====
+
+        # 15. Feet air time reward (legged_gym style: reward on first contact)
         r_feet_air = 0.0
         if cmd_speed > 0.1:
             r_feet_air = np.sum(
@@ -585,15 +662,109 @@ class CW1LocomotionEnv(gym.Env):
         total_reward += r_feet_air
         info["r_feet_air_time"] = r_feet_air
 
-        # 12. Base height reward (terrain-relative)
-        body_height = self.data.xpos[self.body_id][2]
-        relative_height = body_height - self._terrain_height_at_robot
-        height_error = (relative_height - self.target_base_height) ** 2
-        r_base_height = np.exp(-height_error / 0.05) * w["base_height"]
-        total_reward += r_base_height
-        info["r_base_height"] = r_base_height
+        # 16. Shaped gait force reward — stance feet should have ground reaction force
+        # Uses exponential kernel on contact normal force (σ=100N)
+        r_gait_force = 0.0
+        if cmd_speed > 0.1:
+            for j in range(4):
+                foot_phase = self._gait_phase + self._gait_phase_offsets[j]
+                desired_stance = math.sin(foot_phase) > 0
+                if desired_stance:
+                    # Find contact force for this foot
+                    foot_force = 0.0
+                    for ci in range(self.data.ncon):
+                        contact = self.data.contact[ci]
+                        g1, g2 = contact.geom1, contact.geom2
+                        if (g1 == self.foot_geom_ids[j] and g2 == self.floor_geom_id) or \
+                           (g2 == self.foot_geom_ids[j] and g1 == self.floor_geom_id):
+                            # Get contact force magnitude
+                            c_force = np.zeros(6)
+                            mujoco.mj_contactForce(self.model, self.data, ci, c_force)
+                            foot_force = np.linalg.norm(c_force[:3])
+                            break
+                    # Reward: 1 - exp(-force/σ) → 0 for no force, ~1 for large force
+                    r_gait_force += 1.0 - np.exp(-foot_force / 100.0)
+            r_gait_force *= w["gait_force"] / 4.0  # normalize by 4 feet
+        total_reward += r_gait_force
+        info["r_gait_force"] = r_gait_force
 
-        # 13. Collision penalty (proportional: count non-foot ground contacts, cap at 4)
+        # 17. Shaped gait velocity reward — swing feet should be moving
+        # Uses exponential kernel on foot velocity magnitude (σ=10)
+        r_gait_vel = 0.0
+        if cmd_speed > 0.1:
+            for j in range(4):
+                foot_phase = self._gait_phase + self._gait_phase_offsets[j]
+                desired_swing = math.sin(foot_phase) < 0
+                if desired_swing:
+                    # Get foot body velocity (world frame)
+                    foot_vel = self.data.cvel[self.foot_body_ids[j]][3:6]
+                    foot_speed = np.linalg.norm(foot_vel)
+                    # Reward: 1 - exp(-speed/σ) → 0 for stationary, ~1 for moving
+                    r_gait_vel += 1.0 - np.exp(-foot_speed / 10.0)
+            r_gait_vel *= w["gait_vel"] / 4.0
+        total_reward += r_gait_vel
+        info["r_gait_vel"] = r_gait_vel
+
+        # 18. Binary gait clock reward (Run 7f breakthrough — breaks standing optimum)
+        r_gait_clock = 0.0
+        if cmd_speed > 0.1:
+            for j in range(4):
+                foot_phase = self._gait_phase + self._gait_phase_offsets[j]
+                desired_stance = math.sin(foot_phase) > 0
+                actual_stance = in_contact[j]
+                if desired_stance == actual_stance:
+                    r_gait_clock += 0.25
+            r_gait_clock *= w["gait_clock"]
+        total_reward += r_gait_clock
+        info["r_gait_clock"] = r_gait_clock
+
+        # 19. Phase-based foot clearance TARGET (KEY anti-stiff reward)
+        # During swing phase, foot should reach swing_height_target above ground.
+        # Uses L1 (absolute) error for stronger gradient than L2.
+        r_clearance = 0.0
+        if cmd_speed > 0.1:
+            for j in range(4):
+                foot_phase = self._gait_phase + self._gait_phase_offsets[j]
+                swing_signal = -math.sin(foot_phase)  # >0 during swing
+                if swing_signal > 0:
+                    foot_z = self.data.xpos[self.foot_body_ids[j]][2]
+                    foot_x = self.data.xpos[self.foot_body_ids[j]][0]
+                    foot_y = self.data.xpos[self.foot_body_ids[j]][1]
+                    terrain_z = self._terrain_gen.get_height_at(foot_x, foot_y)
+                    clearance = foot_z - terrain_z
+
+                    # Target clearance follows swing arc: peak at mid-swing
+                    target = self.swing_height_target * swing_signal
+                    clearance_error = abs(clearance - target)  # L1 for stronger signal
+                    r_clearance += clearance_error * swing_signal  # weight by phase
+
+            r_clearance *= w["clearance_target"] / 4.0
+        total_reward += r_clearance
+        info["r_clearance_target"] = r_clearance
+
+        # 20. Foot slip penalty — penalize foot XY velocity during stance contact
+        r_slip = 0.0
+        if cmd_speed > 0.1:
+            for j in range(4):
+                if in_contact[j]:
+                    foot_vel = self.data.cvel[self.foot_body_ids[j]][3:6]
+                    xy_speed_sq = foot_vel[0] ** 2 + foot_vel[1] ** 2
+                    r_slip += xy_speed_sq
+            r_slip *= w["foot_slip"]
+        total_reward += r_slip
+        info["r_foot_slip"] = r_slip
+
+        # 20. Air time variance penalty — all feet should have similar air time
+        r_air_var = 0.0
+        if cmd_speed > 0.1 and np.any(self._first_contact):
+            air_times = self._foot_air_time.copy()
+            # Only consider feet that have data (air_time > 0 or just landed)
+            if np.sum(air_times > 0) >= 2:
+                r_air_var = np.var(air_times[air_times > 0]) * w["air_time_var"]
+        total_reward += r_air_var
+        info["r_air_time_var"] = r_air_var
+
+        # 21. Collision penalty (proportional: count non-foot ground contacts, cap at 4)
         collision_count = 0
         for i in range(self.data.ncon):
             contact = self.data.contact[i]
@@ -607,46 +778,6 @@ class CW1LocomotionEnv(gym.Env):
         r_collision = collision_count * w["collision"]
         total_reward += r_collision
         info["r_collision"] = r_collision
-
-        # 14. Foot clearance reward (swing phase foot height above terrain)
-        r_foot_clearance = 0.0
-        in_contact = np.zeros(4, dtype=bool)
-        for i in range(self.data.ncon):
-            contact = self.data.contact[i]
-            geom1, geom2 = contact.geom1, contact.geom2
-            for j, foot_id in enumerate(self.foot_geom_ids):
-                if (geom1 == foot_id and geom2 == self.floor_geom_id) or \
-                   (geom2 == foot_id and geom1 == self.floor_geom_id):
-                    in_contact[j] = True
-
-        if cmd_speed > 0.1:
-            for j in range(4):
-                if not in_contact[j]:  # foot is airborne (swing phase)
-                    foot_z = self.data.xpos[self.foot_body_ids[j]][2]
-                    foot_x = self.data.xpos[self.foot_body_ids[j]][0]
-                    foot_y = self.data.xpos[self.foot_body_ids[j]][1]
-                    terrain_z = self._terrain_gen.get_height_at(foot_x, foot_y)
-                    clearance = foot_z - terrain_z
-                    r_foot_clearance += min(clearance, 0.1)
-
-            r_foot_clearance *= w["foot_clearance"]
-        total_reward += r_foot_clearance
-        info["r_foot_clearance"] = r_foot_clearance
-
-        # 15. Gait clock reward — reward feet matching desired trot phase
-        r_gait_clock = 0.0
-        if cmd_speed > 0.1:
-            for j in range(4):
-                foot_phase = self._gait_phase + self._gait_phase_offsets[j]
-                # sin(phase) > 0 → stance (foot should be on ground)
-                # sin(phase) < 0 → swing (foot should be airborne)
-                desired_stance = math.sin(foot_phase) > 0
-                actual_stance = in_contact[j]
-                if desired_stance == actual_stance:
-                    r_gait_clock += 0.25  # each foot contributes 0.25 (max 1.0)
-            r_gait_clock *= w["gait_clock"]
-        total_reward += r_gait_clock
-        info["r_gait_clock"] = r_gait_clock
 
         # Scale by dt
         total_reward *= dt

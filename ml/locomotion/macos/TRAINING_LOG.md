@@ -73,6 +73,7 @@ Train a quadruped robot to walk using PPO + MuJoCo on macOS Apple Silicon.
 | **6** | **0.774** | **100%** | **Fast walking! Speed modulation** |
 | 7a-7e | 0.02-0.11 | 50-100% | v2 model: standing/shuffling, no walking |
 | **7f** | **0.34** | **100%** | **v2 Walking! Gait clock breakthrough** |
+| **8** | **0.21** | **100%** | **v2 Walking with foot lift! Two-phase training** |
 
 ### Run 6 — Speed range expansion + 10M steps
 - **Changes**: cmd_vx_range (0.2,0.8)→(0.0,1.5), 10M steps (40 min)
@@ -238,5 +239,67 @@ Phase offsets: FL=0, FR=π, RL=π, RR=0 (trot pattern)
 | Stage | Steps | Terrain | Status |
 |-------|-------|---------|--------|
 | 1 (Run 7f) | 500K | flat | DONE — 0.34 m/s, 100% survival |
+| 1b (Run 8) | 700K+50K | flat | DONE — 0.21 m/s, 100% survival, natural foot lift |
 | 2 | TBD | flat, rough | Pending — need speed modulation first |
 | 3 | TBD | full mix | Pending |
+
+---
+
+### Run 8 — Two-phase training with WTW-inspired shaped rewards
+
+#### Research
+Studied Unitree (legged_gym, rsl_rl), walk-these-ways (WTW), IsaacLab Spot. Key findings:
+- **Phase-based foot clearance target** (WTW weight -30): penalizes deviation from target swing height
+- **Shaped contact force/velocity rewards**: reward stance feet for ground reaction force, swing feet for velocity
+- **Action smoothness 1st/2nd order**: prevents stiff/jerky leg movement
+- **Foot slip penalty**: penalizes foot XY velocity during stance
+- **Adaptive KL-based LR**: industry standard from rsl_rl to prevent PPO collapse
+
+#### Strategy: Two-phase training
+Adding all shaped rewards from scratch suppresses exploration (penalties kill any movement before walking can be discovered). Solution: learn to walk first with simple rewards, then refine gait quality.
+
+**Phase 1** (proven Run 7f config): Binary gait clock, minimal penalties, 8 envs, lr=3e-4
+**Phase 2** (`--refine`): Load Phase 1 walker, add shaped rewards (clearance target, smoothness, slip, force/velocity)
+
+#### Phase 1 — Get walking (8 envs, lr=3e-4, ent=0.01)
+Same reward structure as Run 7f. Training progression:
+
+| Steps | Speed (m/s) | Survival |
+|-------|-------------|----------|
+| 50K | 0.002 | 100% |
+| 100K | 0.003 | 100% |
+| 200K | 0.014 | 100% |
+| 300K | 0.051 | 100% |
+| 400K | 0.078 | 100% |
+| 500K | 0.122 | 100% |
+| **700K** | **0.190** | **100%** |
+| 800K | 0.221 | 80% |
+| 900K | 0.207 | 60% |
+| 1M+ | collapse | 0% |
+
+Best Phase 1: **700K steps at 0.190 m/s, 100% survival**
+
+#### Phase 2 — Refine gait quality (shaped rewards)
+Added from `cw1_policy_phase1_best.zip`:
+- `rew_gait_force=1.0`, `rew_gait_vel=1.0` (shaped contact rewards)
+- `rew_clearance_target=-30.0` (L1 swing height target, 6cm)
+- `rew_action_smooth_1=-0.1`, `rew_action_smooth_2=-0.1` (smoothness)
+- `rew_foot_slip=-0.25` (anti-slide)
+- `rew_air_time_var=-1.0` (even gait)
+- `rew_hip_vel=-1e-2` (anti-wobble)
+- `rew_torques=-1e-4` (10x stronger energy penalty)
+
+Best: **Phase 2 50K steps at 0.209 m/s, 100% survival**
+
+#### Gait analysis (best checkpoint)
+- Foot lift: FL=6.4cm, FR=9.1cm, RL=8.2cm, RR=5.3cm (**real stepping!**)
+- Step cycles: ~40 per foot over 10s (~4 Hz)
+- Body height: 0.353m stable (0.327-0.378 range)
+- Survival: 100%
+
+#### Key findings
+1. **Two-phase training works**: Phase 1 discovers walking, Phase 2 refines gait quality
+2. **Shaped rewards suppress exploration**: Adding too many penalties prevents PPO from discovering walking
+3. **PPO collapse persists**: Even with constant lr=3e-4, std grows from 1.01→1.8 and policy collapses after 800K-1M steps
+4. **Adaptive LR too aggressive**: SB3's LR is quickly reduced to 7.5e-5 which slows learning too much
+5. **Natural foot lift achieved**: Phase 2 clearance target + smoothness produces 5-9cm foot lift per step
