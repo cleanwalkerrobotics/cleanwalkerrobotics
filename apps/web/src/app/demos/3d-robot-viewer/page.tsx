@@ -49,6 +49,12 @@ export default function ThreeDRobotViewerPage() {
 				</div>
 			</div>
 
+			<div className="border-b border-amber-500/20 bg-amber-500/5 px-6 py-2">
+				<p className="mx-auto max-w-7xl text-center text-xs text-amber-400/70">
+					This is an early concept visualization and does not represent the final production design.
+				</p>
+			</div>
+
 			<div className="lg:grid lg:grid-cols-4">
 				<div className="lg:col-span-3">
 					<RobotViewer

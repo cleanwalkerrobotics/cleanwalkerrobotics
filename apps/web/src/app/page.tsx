@@ -25,12 +25,13 @@ const featuredDemos = [
 		desc: "Explore the CW-1 quadruped in interactive 3D.",
 		href: "/demos/3d-robot-viewer",
 		tags: ["Three.js", "3D Model"],
+		disclaimer: "Concept visualization — not final production design",
 	},
 	{
-		title: "Cost Savings Calculator",
-		desc: "Calculate your ROI from deploying CleanWalker.",
-		href: "/demos/cost-calculator",
-		tags: ["ROI", "Calculator"],
+		title: "Robot Simulation",
+		desc: "Watch a CW-1 robot patrol, collect litter, and dock — fully autonomous.",
+		href: "/demos/simulation",
+		tags: ["Simulation", "Autonomy"],
 	},
 ];
 
@@ -376,6 +377,11 @@ export default function Home() {
 								<p className="mt-2 text-sm leading-relaxed text-gray-400">
 									{demo.desc}
 								</p>
+								{"disclaimer" in demo && demo.disclaimer && (
+									<p className="mt-1.5 text-[11px] italic text-gray-500">
+										{demo.disclaimer}
+									</p>
+								)}
 								<div className="mt-4 flex flex-wrap gap-2">
 									{demo.tags.map((tag) => (
 										<span

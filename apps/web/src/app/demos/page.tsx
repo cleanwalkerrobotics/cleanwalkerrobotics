@@ -15,16 +15,9 @@ export const metadata: Metadata = {
 	},
 };
 
+const FEATURED_SLUGS = new Set(["litter-detection", "3d-robot-viewer", "simulation"]);
+
 const demos = [
-	{
-		title: "3D Robot Viewer",
-		status: "live",
-		slug: "3d-robot-viewer",
-		description:
-			"Explore the CleanWalker CW-1 quadruped in interactive 3D. Spin, zoom, and inspect the 12-DOF robot model built from our engineering URDF — 23 links, 22 joints, accurate dimensions and materials.",
-		placeholder: "Interactive 3D model — rotate and zoom to explore",
-		tags: ["Three.js", "URDF", "3D Model"],
-	},
 	{
 		title: "Real-Time AI Litter Detection",
 		status: "live",
@@ -34,7 +27,26 @@ const demos = [
 		placeholder: "Upload an image or use your camera to see AI detection live",
 		tags: ["Computer Vision", "Real-Time", "On-Device AI"],
 	},
-{
+	{
+		title: "3D Robot Viewer",
+		status: "live",
+		slug: "3d-robot-viewer",
+		description:
+			"Explore the CleanWalker CW-1 quadruped in interactive 3D. Spin, zoom, and inspect the 12-DOF robot model built from our engineering URDF — 23 links, 22 joints, accurate dimensions and materials.",
+		placeholder: "Interactive 3D model — rotate and zoom to explore",
+		tags: ["Three.js", "URDF", "3D Model"],
+		disclaimer: "Concept visualization — not final production design",
+	},
+	{
+		title: "Robot Simulation",
+		status: "live",
+		slug: "simulation",
+		description:
+			"Watch a CW-1 robot autonomously patrol a park, detect and collect litter, fill its bag, and return to the dock for a bag swap. The full operational cycle, visualized.",
+		placeholder: "Live simulation — autonomous litter collection in a park",
+		tags: ["Simulation", "Real-Time", "Autonomy"],
+	},
+	{
 		title: "Quadrupedal Locomotion",
 		status: "live",
 		slug: "quadrupedal-locomotion",
@@ -88,16 +100,10 @@ const demos = [
 		placeholder: "Interactive ROI calculator — estimate your savings",
 		tags: ["ROI", "Cost Analysis", "Calculator"],
 	},
-	{
-		title: "Robot Simulation",
-		status: "live",
-		slug: "simulation",
-		description:
-			"Watch a CW-1 robot autonomously patrol a park, detect and collect litter, fill its bag, and return to the dock for a bag swap. The full operational cycle, visualized.",
-		placeholder: "Live simulation — autonomous litter collection in a park",
-		tags: ["Simulation", "Real-Time", "Autonomy"],
-	},
 ];
+
+const featuredDemos = demos.filter((d) => FEATURED_SLUGS.has(d.slug));
+const otherDemos = demos.filter((d) => !FEATURED_SLUGS.has(d.slug));
 
 export default function DemosPage() {
 	return (
@@ -127,11 +133,45 @@ export default function DemosPage() {
 				</div>
 			</section>
 
-			{/* Demo Grid */}
+			{/* Featured Demos */}
+			<section className="px-6 pb-16">
+				<div className="mx-auto max-w-7xl">
+					<div className="mb-8 flex items-center gap-3">
+						<span className="rounded-full bg-cw-green/10 px-3 py-1 text-xs font-semibold tracking-wide text-cw-green">
+							Featured
+						</span>
+						<div className="h-px flex-1 bg-white/10" />
+					</div>
+					<div className="grid gap-8 md:grid-cols-3">
+						{featuredDemos.map((demo) => (
+							<a
+								key={demo.title}
+								href={`/demos/${demo.slug}`}
+								className="group relative overflow-hidden rounded-2xl border border-cw-green/20 bg-gradient-to-b from-cw-green/[0.06] to-white/5 transition-all hover:border-cw-green/40 hover:from-cw-green/[0.1] hover:to-white/[0.07]"
+							>
+								<div className="absolute left-3 top-3 z-10">
+									<span className="rounded-full bg-cw-green/20 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-cw-green">
+										Featured
+									</span>
+								</div>
+								<FeaturedCardContent demo={demo} />
+							</a>
+						))}
+					</div>
+				</div>
+			</section>
+
+			{/* All Demos */}
 			<section className="px-6 pb-24">
 				<div className="mx-auto max-w-7xl">
-					<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-						{demos.map((demo) => {
+					<div className="mb-8 flex items-center gap-3">
+						<span className="text-sm font-medium text-gray-400">
+							All Demos
+						</span>
+						<div className="h-px flex-1 bg-white/10" />
+					</div>
+					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+						{otherDemos.map((demo) => {
 							const href = demo.status === "live" && "slug" in demo ? `/demos/${demo.slug}` : undefined;
 							return href ? (
 								<a
@@ -171,6 +211,50 @@ export default function DemosPage() {
 				</div>
 			</section>
 		</div>
+	);
+}
+
+function FeaturedCardContent({ demo }: { demo: (typeof demos)[number] }) {
+	return (
+		<>
+			{/* Demo Preview Area */}
+			<div className="relative flex aspect-[4/3] items-center justify-center bg-gradient-to-br from-cw-green/10 to-cw-dark p-6">
+				<div className="text-center">
+					<div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-cw-green/20">
+						<svg className="h-10 w-10 text-cw-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+						</svg>
+					</div>
+					<p className="text-sm text-gray-400">{demo.placeholder}</p>
+				</div>
+			</div>
+
+			{/* Content */}
+			<div className="p-6">
+				<h3 className="text-xl font-bold text-white group-hover:text-cw-green transition-colors">{demo.title}</h3>
+				<p className="mt-2 text-sm leading-relaxed text-gray-400">{demo.description}</p>
+				{"disclaimer" in demo && demo.disclaimer && (
+					<p className="mt-2 text-xs italic text-gray-500">{demo.disclaimer}</p>
+				)}
+				<div className="mt-4 flex flex-wrap gap-2">
+					{demo.tags.map((tag) => (
+						<span
+							key={tag}
+							className="rounded-full bg-cw-green/10 px-3 py-1 text-xs text-cw-green/80"
+						>
+							{tag}
+						</span>
+					))}
+				</div>
+				<div className="mt-4 flex items-center gap-1.5 text-sm font-medium text-cw-green">
+					<span>Try it now</span>
+					<svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+						<path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+					</svg>
+				</div>
+			</div>
+		</>
 	);
 }
 
