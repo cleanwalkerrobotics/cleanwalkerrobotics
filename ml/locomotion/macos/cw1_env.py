@@ -121,6 +121,7 @@ class CW1LocomotionEnv(gym.Env):
         rew_feet_air_time: float = 1.0,
         rew_base_height: float = 0.5,
         rew_collision: float = -1.0,
+        fall_penalty: float = 5.0,           # One-time penalty on termination
         rew_gait_clock: float = 0.5,        # Binary gait clock (Run 7f breakthrough)
         # Shaped gait rewards — zeroed by default, enabled in Phase 2
         rew_gait_force: float = 0.0,
@@ -168,7 +169,8 @@ class CW1LocomotionEnv(gym.Env):
         self.min_body_height = min_body_height
         self.max_body_tilt = max_body_tilt
 
-        # Tracking
+        # Tracking + penalties
+        self.fall_penalty = fall_penalty
         self.tracking_sigma = tracking_sigma
         self.target_base_height = target_base_height
         self.swing_height_target = swing_height_target
@@ -455,7 +457,7 @@ class CW1LocomotionEnv(gym.Env):
 
         # Fall penalty: one-time cost for crashing (makes survival critical)
         if terminated:
-            reward -= 5.0
+            reward -= self.fall_penalty
 
         # Update history
         joint_vel = self.data.qvel[self.leg_qvel_ids].astype(np.float32)
