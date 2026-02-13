@@ -348,8 +348,18 @@ for i in range(clip_count):
 # ASSEMBLY
 # ============================================================
 
+# Body plate — represents the robot's back surface as mounting context
+body_length = hinge_y + 20  # Extends slightly past hinge
+body_plate = (
+    cq.Workplane("XY")
+    .move(0, body_length / 2 - 20)
+    .rect(system_width, body_length)
+    .extrude(-5)  # 5mm thick plate below Z=0
+)
+
 # Create assembly and add all components
 assy = cq.Assembly()
+assy.add(body_plate, name="body_plate", color=cq.Color(0.15, 0.15, 0.15))
 assy.add(roll_housing, name="roll_housing", color=cq.Color(0.2, 0.2, 0.2))
 assy.add(roll_cylinder, name="roll_cylinder", color=cq.Color(0.8, 0.8, 0.8))
 assy.add(left_bracket, name="left_bracket", color=cq.Color(0.2, 0.2, 0.2))
