@@ -1,24 +1,34 @@
 # Render Report
 
-**Status**: SUCCESS
+**Iteration**: 1
 
-**Views generated**: front, back, left, right, top, isometric
+## Status
+✓ SUCCESS
 
-**Resolution**: 1024x1024
+## Rendering Details
+- **Views generated**: front, back, left, right, top, isometric
+- **Resolution**: 1024×1024 pixels
+- **Renderer**: PyVista (headless with xvfb)
+- **Mesh source**: models/model.stl
 
-**File sizes**:
-- front.png: 33.6 KB
-- back.png: 26.5 KB
-- left.png: 22.3 KB
-- right.png: 22.3 KB
-- top.png: 10.3 KB
-- isometric.png: 61.6 KB
+## File Sizes
+| View | Size |
+|------|------|
+| front.png | 8.5 KB |
+| back.png | 8.5 KB |
+| left.png | 12 KB |
+| right.png | 12 KB |
+| top.png | 9.6 KB |
+| isometric.png | 20 KB |
 
-**Mesh info**:
-- Points: 11,806
-- Cells: 23,608
-- Bounds (X): -52.0 to 52.0 mm
-- Bounds (Y): -82.5 to 50.0 mm
-- Bounds (Z): -475.0 to 5.0 mm
+## Model Bounds
+- **X**: -75.0 to 75.0 mm (width: 150 mm)
+- **Y**: -315.88 to 600.0 mm (depth: ~916 mm)
+- **Z**: -23.25 to 114.09 mm (height: ~137 mm)
+- **Center**: (0.0, 142.06, 45.42) mm
 
-All views rendered successfully from the STL model.
+## Notes
+- All 6 orthogonal and isometric views rendered successfully
+- File sizes are reasonable for 1024×1024 PNG compression
+- Mesh contains 900 vertices and 1748 cells
+- Rendering completed without errors
