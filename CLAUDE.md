@@ -105,6 +105,36 @@ When adding a new demo:
 
 Unregistered demos will fail the prebuild check.
 
+## Browser Automation (agent-browser)
+
+You have access to `agent-browser` — a headless browser CLI powered by Browserbase (remote cloud browser).
+
+**Setup (already done globally):**
+```bash
+export AGENT_BROWSER_PROVIDER=browserbase
+export BROWSERBASE_API_KEY=$(grep BROWSERBASE_API_KEY ~/.openclaw/.env | cut -d= -f2)
+export BROWSERBASE_PROJECT_ID=$(grep BROWSERBASE_PROJECT_ID ~/.openclaw/.env | cut -d= -f2)
+```
+
+**Usage:**
+```bash
+agent-browser open https://example.com        # Navigate
+agent-browser snapshot -i                      # Get interactive elements (AI-friendly)
+agent-browser click @e2                        # Click by ref from snapshot
+agent-browser fill @e3 "text"                  # Fill input
+agent-browser screenshot page.png              # Take screenshot
+agent-browser get text @e1                     # Extract text
+agent-browser pdf output.pdf                   # Save page as PDF
+```
+
+Use this for:
+- Visual QA of the website (screenshot pages, verify layouts)
+- Testing forms and interactions
+- Scraping competitor/market data
+- Verifying email deliverability (checking landing pages)
+
+**NEVER put API keys in code or commits.** Always load from `~/.openclaw/.env`.
+
 ## Standards
 - Commit messages: `type(scope): description` (conventional commits)
 - Always `git add -A && git commit && git push` when done
