@@ -1,6 +1,6 @@
 # CleanWalker — Outreach Tracker
 
-**Last updated:** 2026-02-11 (Tier 2 emails scheduled via Resend)
+**Last updated:** 2026-02-13 (Day 4 follow-ups scheduled)
 **Owner:** Maurits Bos (CEO)
 
 ---
@@ -9,9 +9,9 @@
 
 | # | Date | Company | Contact Role | Email | Status | Next Action | Notes |
 |---|------|---------|-------------|-------|--------|-------------|-------|
-| 1 | 2026-02-10 | Veolia ANZ | Innovation / Environmental Services Lead | — | Draft Ready | Send email (Tue-Wed, 9-10 AM AEDT) | Bondi Beach "Scoop Doggy Dog" quadruped trial team. Already validated concept. 56 countries. EUR 45B revenue. **#1 priority.** |
-| 2 | 2026-02-10 | BEEAH Group | BEEAH Digital or Tandeef Leadership | — | Draft Ready | Send email (Sun-Tue, 9-10 AM GST) | Sharjah-based. AI City Vision, autonomous cleaning since 2019. MENA gateway. Smart city DNA. |
-| 3 | 2026-02-10 | Municipality of Amsterdam | Stadsbeheer / "Schoon en Afvalvrij" team | — | Draft Ready | Send email (Tue-Wed, 9-10 AM CET) | "Clean & Waste Free Framework 2025-2028". Dutch-language subject line. Maurits is Dutch — warm angle. |
+| 1 | 2026-02-11 | Veolia ANZ | Kate Slattery — Innovation Lead | kate.slattery@veolia.com.au | **Sent** (Day 4 bump scheduled Feb 15) | Monitor for reply; Day 4 bump at 22:00 UTC Feb 15 | Sent Feb 11 22:00 UTC. Resend ID: abef1e8d. Day 4 follow-up: 07128978. |
+| 2 | 2026-02-11 | BEEAH Group | Rafael Sanjurjo Lopez — VP Operations | rlopez@beeahgroup.com | **Sent** (Day 4 bump scheduled Feb 15) | Monitor for reply; Day 4 bump at 05:00 UTC Feb 15 | Sent Feb 11 05:00 UTC (~20 duplicates due to cron bug, apology sent). Day 4 follow-up: a9e3b1b4. |
+| 3 | 2026-02-11 | Municipality of Amsterdam | Anita Numan — Stadsbeheer | a.numan@amsterdam.nl | **Delivered** (Day 4 bump scheduled Feb 15) | Monitor for reply; Day 4 bump at 08:00 UTC Feb 15 | Delivered Feb 11 08:00 UTC. Resend ID: 687bb03e. Day 4 follow-up: bcab6195. |
 
 **Email drafts:** See `docs/ceo/outreach-emails.md`
 **Follow-up cadence:** Day 0 → Day 4 bump → Day 10 value-add → Day 21 new angle → Day 30+ LinkedIn/phone
