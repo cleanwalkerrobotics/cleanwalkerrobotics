@@ -57,12 +57,15 @@ def find_latest_checkpoint(checkpoint_dir: Path) -> Path | None:
     return checkpoints[-1] if checkpoints else None
 
 
-def make_env(render_mode=None, rank=0):
+def make_env(render_mode=None, rank=0, terrain_types=None):
     """Create a factory function for the CW-1 locomotion environment."""
     def _init():
         sys.path.insert(0, str(SCRIPT_DIR))
         from cw1_env import CW1LocomotionEnv
-        env = CW1LocomotionEnv(render_mode=render_mode)
+        env = CW1LocomotionEnv(
+            render_mode=render_mode,
+            terrain_types=terrain_types,
+        )
         env.reset(seed=rank)
         return env
     return _init
@@ -113,6 +116,14 @@ def main():
         "--n-steps", type=int, default=2048,
         help="Steps per rollout buffer collection (per env)"
     )
+    parser.add_argument(
+        "--terrain", type=str, nargs="+", default=["flat"],
+        help="Terrain types for training (e.g. --terrain flat rough obstacles)"
+    )
+    parser.add_argument(
+        "--ent-coef", type=float, default=0.005,
+        help="Entropy coefficient (default: 0.005, lower = less exploration)"
+    )
     args = parser.parse_args()
 
     print("=" * 60)
@@ -146,6 +157,7 @@ def main():
     print(f"Learning rate: {args.lr}")
     print(f"Batch size: {args.batch_size}")
     print(f"Rollout steps: {args.n_steps}")
+    print(f"Terrain types: {args.terrain}")
     print(f"Checkpoint frequency: {args.checkpoint_freq:,}")
     print(f"Log directory: {args.log_dir}")
     print()
@@ -190,7 +202,10 @@ def main():
 
     # Create parallel environments
     print(f"Creating {args.n_envs} parallel CW-1 environments...")
-    env = SubprocVecEnv([make_env(rank=i) for i in range(args.n_envs)])
+    env = SubprocVecEnv([
+        make_env(rank=i, terrain_types=args.terrain)
+        for i in range(args.n_envs)
+    ])
     print(f"  Observation space: {env.observation_space.shape}")
     print(f"  Action space: {env.action_space.shape}")
     print(f"  Parallel envs: {args.n_envs}")
@@ -226,7 +241,7 @@ def main():
             gamma=0.99,           # Discount factor
             gae_lambda=0.95,      # GAE lambda
             clip_range=0.2,       # PPO clip
-            ent_coef=0.01,        # Entropy bonus
+            ent_coef=args.ent_coef,  # Entropy bonus
             vf_coef=1.0,          # Value function coefficient
             max_grad_norm=1.0,    # Gradient clipping
             policy_kwargs=policy_kwargs,
@@ -237,8 +252,10 @@ def main():
         print(f"  Policy params: {sum(p.numel() for p in model.policy.parameters()):,}")
 
     # Setup callbacks
+    # save_freq is per-env steps; divide by n_envs for total-timestep frequency
+    effective_save_freq = max(1, args.checkpoint_freq // args.n_envs)
     checkpoint_callback = CheckpointCallback(
-        save_freq=args.checkpoint_freq,
+        save_freq=effective_save_freq,
         save_path=str(args.checkpoint_dir),
         name_prefix="cw1_ppo",
         verbose=1,

@@ -1,9 +1,11 @@
-"""CW-1 Locomotion Gymnasium Environment for MuJoCo.
+"""CW-1 Locomotion Gymnasium Environment for MuJoCo (v2).
 
-Custom Gymnasium environment matching our IsaacLab configuration:
-- 48-dim observation space (body state + joint state + commands + prev actions)
-- 12-dim action space (leg joints only, arm fixed)
-- Reward function from ml/locomotion/rewards.py
+Custom Gymnasium environment with:
+- 52-dim observation space (body state + joint state + commands + prev actions + gait clock)
+- 12-dim action space (leg joints only)
+- Mammalian knee configuration (all knees backward)
+- Heightfield terrain support (flat, rough, obstacles, stairs, slopes)
+- Foot clearance reward for natural gait
 - 200Hz simulation, 50Hz control (decimation=4)
 - Episode: 1000 steps (20s), terminates on fall
 
@@ -36,38 +38,38 @@ LEG_JOINT_NAMES = [
     "RR_hip_yaw", "RR_hip_pitch", "RR_knee_pitch",
 ]
 
-# Default standing joint positions — splayed stance for stability.
-# Front legs pitched forward (negative hip_pitch = thigh forward in world X),
-# rear legs pitched backward. This spreads the support polygon so the
-# forward-heavy body (head + arm) doesn't tip over.
-# Verified: robot stands at 0.34m with <1° tilt for 5+ seconds.
+# Default standing joint positions — mammalian configuration.
+# All four legs identical: hip_pitch=-0.6 (thigh tilted forward),
+# knee_pitch=1.2 (all knees bent backward ~69 degrees).
+# hip_pitch = -knee/2 gives zero net foot forward displacement.
+# Standing height: 2 * 0.2 * cos(0.6) + 0.025 = 0.355m ~ 0.35m
 DEFAULT_JOINT_POS = np.array([
-    0.0, -0.6, 1.24,    # FL: yaw, hip_pitch (forward), knee_pitch
-    0.0, -0.6, 1.24,    # FR
-    0.0,  0.6, -1.24,   # RL: opposite signs for rear legs
-    0.0,  0.6, -1.24,   # RR
+    0.0, -0.6, 1.2,    # FL: yaw, hip_pitch, knee_pitch
+    0.0, -0.6, 1.2,    # FR
+    0.0, -0.6, 1.2,    # RL (same as front — mammalian)
+    0.0, -0.6, 1.2,    # RR
 ], dtype=np.float32)
 
-# Joint limits from URDF (for penalty computation)
+# Joint limits — all knees now have same range (mammalian)
 JOINT_LOWER = np.array([
     -0.4993, -1.5708, -0.0995,
     -0.4993, -1.5708, -0.0995,
-    -0.4993, -1.5708, -2.6005,
-    -0.4993, -1.5708, -2.6005,
+    -0.4993, -1.5708, -0.0995,
+    -0.4993, -1.5708, -0.0995,
 ], dtype=np.float32)
 
 JOINT_UPPER = np.array([
     0.4993, 1.5708, 2.6005,
     0.4993, 1.5708, 2.6005,
-    0.4993, 1.5708, 0.0995,
-    0.4993, 1.5708, 0.0995,
+    0.4993, 1.5708, 2.6005,
+    0.4993, 1.5708, 2.6005,
 ], dtype=np.float32)
 
 
 class CW1LocomotionEnv(gym.Env):
-    """CW-1 quadruped locomotion environment.
+    """CW-1 quadruped locomotion environment (v2: mammalian knees + terrain + gait clock).
 
-    Observation space (48 dims):
+    Observation space (52 dims):
         [0:3]   Base linear velocity (body frame)
         [3:6]   Base angular velocity (body frame)
         [6:9]   Projected gravity (body frame)
@@ -75,6 +77,7 @@ class CW1LocomotionEnv(gym.Env):
         [12:24] Leg joint positions relative to default (12)
         [24:36] Leg joint velocities (12)
         [36:48] Previous leg actions (12)
+        [48:52] Gait clock [sin(FL/RR), cos(FL/RR), sin(FR/RL), cos(FR/RL)]
 
     Action space (12 dims):
         Position targets for 12 leg joints, scaled by action_scale.
@@ -93,15 +96,15 @@ class CW1LocomotionEnv(gym.Env):
         max_episode_steps: int = 1000,  # 20 seconds
         # Action
         action_scale: float = 0.5,
-        # Velocity commands (wide range for speed modulation)
-        cmd_vx_range: tuple = (0.0, 1.5),
+        # Velocity commands (always forward — no standing command)
+        cmd_vx_range: tuple = (0.3, 0.8),
         cmd_vy_range: tuple = (-0.2, 0.2),
         cmd_yaw_range: tuple = (-0.5, 0.5),
         # Termination
         min_body_height: float = 0.15,
         max_body_tilt: float = 0.7,   # radians (~40 degrees)
-        # Reward weights (velocity-focused: robot can balance, now learn to walk)
-        rew_track_lin_vel: float = 2.0,
+        # Reward weights — Run 7f: gait clock for structured exploration
+        rew_track_lin_vel: float = 3.0,
         rew_track_ang_vel: float = 0.5,
         rew_alive: float = 0.1,
         rew_lin_vel_z: float = -2.0,
@@ -114,14 +117,20 @@ class CW1LocomotionEnv(gym.Env):
         rew_feet_air_time: float = 1.0,
         rew_base_height: float = 0.5,
         rew_collision: float = -1.0,
+        rew_foot_clearance: float = 0.3,
+        rew_gait_clock: float = 1.0,        # NEW: reward matching trot phase
         # Tracking
-        tracking_sigma: float = 0.25,
+        tracking_sigma: float = 0.15,
+        # Gait clock (trot pattern)
+        gait_period: float = 0.5,           # 0.5s per full stride (2 Hz)
         target_base_height: float = 0.35,
         # Domain randomization
         randomize_friction: bool = True,
         friction_range: tuple = (0.5, 1.5),
         randomize_mass: bool = True,
         mass_range: tuple = (-1.0, 3.0),
+        # Terrain
+        terrain_types: list[str] | None = None,
     ):
         super().__init__()
 
@@ -165,13 +174,25 @@ class CW1LocomotionEnv(gym.Env):
             "feet_air_time": rew_feet_air_time,
             "base_height": rew_base_height,
             "collision": rew_collision,
+            "foot_clearance": rew_foot_clearance,
+            "gait_clock": rew_gait_clock,
         }
+
+        # Gait clock params
+        self.gait_period = gait_period
+        # Trot gait phase offsets: FL=0, FR=π, RL=π, RR=0 (diagonal pairs)
+        self._gait_phase_offsets = np.array([0.0, math.pi, math.pi, 0.0])
 
         # Domain randomization
         self.randomize_friction = randomize_friction
         self.friction_range = friction_range
         self.randomize_mass = randomize_mass
         self.mass_range = mass_range
+
+        # Terrain
+        self.terrain_types = terrain_types or ["flat"]
+        self._terrain_gen = None
+        self._terrain_height_at_robot = 0.0
 
         # Load MuJoCo model
         if not self.mjcf_path.exists():
@@ -187,8 +208,11 @@ class CW1LocomotionEnv(gym.Env):
         # Cache joint/actuator indices
         self._setup_indices()
 
-        # Observation and action spaces
-        self.n_obs = 48
+        # Initialize terrain generator
+        self._init_terrain()
+
+        # Observation and action spaces (48 base + 4 gait clock = 52)
+        self.n_obs = 52
         self.n_act = 12
 
         obs_high = np.full(self.n_obs, 100.0, dtype=np.float32)
@@ -204,6 +228,7 @@ class CW1LocomotionEnv(gym.Env):
         self._foot_air_time = np.zeros(4, dtype=np.float32)
         self._last_contacts = np.zeros(4, dtype=bool)
         self._first_contact = np.zeros(4, dtype=bool)
+        self._gait_phase = 0.0  # current gait clock phase [0, 2π)
 
         # Original values for domain randomization
         self._default_body_mass = self.model.body_mass.copy()
@@ -215,7 +240,7 @@ class CW1LocomotionEnv(gym.Env):
             self._setup_viewer()
 
     def _setup_indices(self):
-        """Cache MuJoCo joint and actuator indices."""
+        """Cache MuJoCo joint, actuator, and foot body indices."""
         self.leg_joint_ids = []
         self.leg_qpos_ids = []
         self.leg_qvel_ids = []
@@ -256,10 +281,28 @@ class CW1LocomotionEnv(gym.Env):
             self.foot_geom_ids.append(geom_id)
         self.foot_geom_ids = np.array(self.foot_geom_ids)
 
+        # Foot body indices for clearance reward
+        self.foot_body_ids = []
+        for prefix in ["FL", "FR", "RL", "RR"]:
+            body_name = f"{prefix}_foot"
+            body_id = mujoco.mj_name2id(
+                self.model, mujoco.mjtObj.mjOBJ_BODY, body_name
+            )
+            self.foot_body_ids.append(body_id)
+        self.foot_body_ids = np.array(self.foot_body_ids)
+
         # Floor geom
         self.floor_geom_id = mujoco.mj_name2id(
             self.model, mujoco.mjtObj.mjOBJ_GEOM, "floor"
         )
+
+    def _init_terrain(self):
+        """Initialize terrain generator and set initial flat terrain."""
+        from terrain import TerrainGenerator
+        self._terrain_gen = TerrainGenerator()
+        # Start with flat terrain so the model loads cleanly
+        hfield_data = self._terrain_gen.generate("flat")
+        self.model.hfield_data[:] = (hfield_data * 65535).astype(np.uint16)
 
     def _setup_viewer(self):
         """Setup MuJoCo viewer for human rendering."""
@@ -273,14 +316,27 @@ class CW1LocomotionEnv(gym.Env):
     def reset(self, *, seed=None, options=None):
         super().reset(seed=seed)
 
+        # Generate terrain for this episode
+        terrain_type = self.np_random.choice(self.terrain_types)
+        rng = np.random.default_rng(self.np_random.integers(0, 2**31))
+        self._terrain_gen.rng = rng
+        hfield_data = self._terrain_gen.generate(terrain_type)
+        self.model.hfield_data[:] = (hfield_data * 65535).astype(np.uint16)
+
         # Reset simulation
         mujoco.mj_resetData(self.model, self.data)
 
+        # Recompute derived quantities after hfield change
+        mujoco.mj_setConst(self.model, self.data)
+
+        # Get terrain height at spawn point (center of hfield)
+        self._terrain_height_at_robot = self._terrain_gen.get_height_at(0.0, 0.0)
+        spawn_z = self._terrain_height_at_robot + self.target_base_height
+
         # Set initial pose: standing position
-        # Freejoint qpos: [x, y, z, qw, qx, qy, qz]
         self.data.qpos[0] = 0.0   # x
         self.data.qpos[1] = 0.0   # y
-        self.data.qpos[2] = 0.35  # z (standing height)
+        self.data.qpos[2] = spawn_z  # z (terrain + standing height)
         self.data.qpos[3] = 1.0   # qw (identity quaternion)
         self.data.qpos[4] = 0.0   # qx
         self.data.qpos[5] = 0.0   # qy
@@ -319,9 +375,13 @@ class CW1LocomotionEnv(gym.Env):
         self._foot_air_time = np.zeros(4, dtype=np.float32)
         self._last_contacts = np.zeros(4, dtype=bool)
         self._first_contact = np.zeros(4, dtype=bool)
+        self._gait_phase = 0.0
 
         obs = self._get_obs()
-        info = {"velocity_cmd": self._velocity_cmd.copy()}
+        info = {
+            "velocity_cmd": self._velocity_cmd.copy(),
+            "terrain_type": terrain_type,
+        }
 
         return obs, info
 
@@ -344,6 +404,15 @@ class CW1LocomotionEnv(gym.Env):
             obs = np.zeros(self.n_obs, dtype=np.float32)
             self._prev_action = action.copy()
             return obs, 0.0, True, False, {"unstable": True}
+
+        # Advance gait clock
+        self._gait_phase += 2 * math.pi * self.control_dt / self.gait_period
+        self._gait_phase %= (2 * math.pi)
+
+        # Update terrain height at robot position
+        robot_x = self.data.xpos[self.body_id][0]
+        robot_y = self.data.xpos[self.body_id][1]
+        self._terrain_height_at_robot = self._terrain_gen.get_height_at(robot_x, robot_y)
 
         # Update foot contact tracking
         self._update_foot_contacts()
@@ -374,7 +443,7 @@ class CW1LocomotionEnv(gym.Env):
         return obs, reward, terminated, truncated, info
 
     def _get_obs(self) -> np.ndarray:
-        """Construct 48-dim observation vector."""
+        """Construct 52-dim observation vector (48 base + 4 gait clock)."""
         # Body orientation quaternion [w, x, y, z]
         body_quat = self.data.xquat[self.body_id].copy()
 
@@ -402,6 +471,15 @@ class CW1LocomotionEnv(gym.Env):
         # Relative joint positions (offset from default)
         joint_pos_rel = joint_pos - DEFAULT_JOINT_POS
 
+        # Gait clock signals: sin/cos for each diagonal pair
+        # This tells the policy which feet should be in stance vs swing
+        phase_fl_rr = self._gait_phase + self._gait_phase_offsets[0]  # FL/RR pair
+        phase_fr_rl = self._gait_phase + self._gait_phase_offsets[1]  # FR/RL pair
+        gait_clock = np.array([
+            math.sin(phase_fl_rr), math.cos(phase_fl_rr),
+            math.sin(phase_fr_rl), math.cos(phase_fr_rl),
+        ], dtype=np.float32)
+
         obs = np.concatenate([
             body_linvel.astype(np.float32),       # [0:3]
             body_angvel.astype(np.float32),       # [3:6]
@@ -410,12 +488,13 @@ class CW1LocomotionEnv(gym.Env):
             joint_pos_rel,                         # [12:24]
             joint_vel,                             # [24:36]
             self._prev_action,                     # [36:48]
+            gait_clock,                            # [48:52] NEW
         ])
 
         return obs.astype(np.float32)
 
     def _compute_reward(self, action: np.ndarray) -> tuple[float, dict]:
-        """Compute reward matching IsaacLab configuration."""
+        """Compute reward with terrain-relative heights and foot clearance."""
         w = self.reward_weights
         dt = self.control_dt
         info = {}
@@ -497,9 +576,6 @@ class CW1LocomotionEnv(gym.Env):
         info["r_joint_limits"] = r_joint_limits
 
         # 11. Feet air time reward (legged_gym style: reward on first contact)
-        # Reward feet for landing after being airborne > threshold.
-        # Threshold 0.2s matches the ~0.4-0.8s step cycle at current speed.
-        # Only active when robot is commanded to move.
         cmd_speed = np.linalg.norm(self._velocity_cmd[:2])
         r_feet_air = 0.0
         if cmd_speed > 0.1:
@@ -509,28 +585,68 @@ class CW1LocomotionEnv(gym.Env):
         total_reward += r_feet_air
         info["r_feet_air_time"] = r_feet_air
 
-        # 12. Base height reward (keep body at target standing height)
+        # 12. Base height reward (terrain-relative)
         body_height = self.data.xpos[self.body_id][2]
-        height_error = (body_height - self.target_base_height) ** 2
+        relative_height = body_height - self._terrain_height_at_robot
+        height_error = (relative_height - self.target_base_height) ** 2
         r_base_height = np.exp(-height_error / 0.05) * w["base_height"]
         total_reward += r_base_height
         info["r_base_height"] = r_base_height
 
-        # 13. Collision penalty (non-foot body parts touching ground)
-        r_collision = 0.0
+        # 13. Collision penalty (proportional: count non-foot ground contacts, cap at 4)
+        collision_count = 0
         for i in range(self.data.ncon):
             contact = self.data.contact[i]
             geom1, geom2 = contact.geom1, contact.geom2
-            # Check if floor is involved
             if geom1 != self.floor_geom_id and geom2 != self.floor_geom_id:
                 continue
-            # Check if it's NOT a foot contact (feet touching floor is OK)
             other_geom = geom2 if geom1 == self.floor_geom_id else geom1
             if other_geom not in self.foot_geom_ids:
-                r_collision = w["collision"]
-                break
+                collision_count += 1
+        collision_count = min(collision_count, 4)
+        r_collision = collision_count * w["collision"]
         total_reward += r_collision
         info["r_collision"] = r_collision
+
+        # 14. Foot clearance reward (swing phase foot height above terrain)
+        r_foot_clearance = 0.0
+        in_contact = np.zeros(4, dtype=bool)
+        for i in range(self.data.ncon):
+            contact = self.data.contact[i]
+            geom1, geom2 = contact.geom1, contact.geom2
+            for j, foot_id in enumerate(self.foot_geom_ids):
+                if (geom1 == foot_id and geom2 == self.floor_geom_id) or \
+                   (geom2 == foot_id and geom1 == self.floor_geom_id):
+                    in_contact[j] = True
+
+        if cmd_speed > 0.1:
+            for j in range(4):
+                if not in_contact[j]:  # foot is airborne (swing phase)
+                    foot_z = self.data.xpos[self.foot_body_ids[j]][2]
+                    foot_x = self.data.xpos[self.foot_body_ids[j]][0]
+                    foot_y = self.data.xpos[self.foot_body_ids[j]][1]
+                    terrain_z = self._terrain_gen.get_height_at(foot_x, foot_y)
+                    clearance = foot_z - terrain_z
+                    r_foot_clearance += min(clearance, 0.1)
+
+            r_foot_clearance *= w["foot_clearance"]
+        total_reward += r_foot_clearance
+        info["r_foot_clearance"] = r_foot_clearance
+
+        # 15. Gait clock reward — reward feet matching desired trot phase
+        r_gait_clock = 0.0
+        if cmd_speed > 0.1:
+            for j in range(4):
+                foot_phase = self._gait_phase + self._gait_phase_offsets[j]
+                # sin(phase) > 0 → stance (foot should be on ground)
+                # sin(phase) < 0 → swing (foot should be airborne)
+                desired_stance = math.sin(foot_phase) > 0
+                actual_stance = in_contact[j]
+                if desired_stance == actual_stance:
+                    r_gait_clock += 0.25  # each foot contributes 0.25 (max 1.0)
+            r_gait_clock *= w["gait_clock"]
+        total_reward += r_gait_clock
+        info["r_gait_clock"] = r_gait_clock
 
         # Scale by dt
         total_reward *= dt
@@ -539,11 +655,7 @@ class CW1LocomotionEnv(gym.Env):
         return float(total_reward), info
 
     def _update_foot_contacts(self):
-        """Track foot contact and air time (legged_gym style).
-
-        Computes first_contact: True when foot touches ground after being airborne.
-        This is used for the feet_air_time reward (reward on landing).
-        """
+        """Track foot contact and air time (legged_gym style)."""
         in_contact = np.zeros(4, dtype=bool)
 
         for i in range(self.data.ncon):
@@ -565,7 +677,7 @@ class CW1LocomotionEnv(gym.Env):
         self._foot_air_time += self.control_dt
         self._foot_air_time *= ~contact_filt  # reset to 0 on contact
 
-        # Track contact time for other uses
+        # Track contact time
         for j in range(4):
             if in_contact[j]:
                 self._foot_contact_time[j] += self.control_dt
@@ -573,10 +685,11 @@ class CW1LocomotionEnv(gym.Env):
                 self._foot_contact_time[j] = 0.0
 
     def _check_termination(self) -> bool:
-        """Check if episode should terminate (robot fell over)."""
-        # Body height check
+        """Check if episode should terminate (terrain-relative)."""
+        # Body height check (relative to terrain)
         body_height = self.data.xpos[self.body_id][2]
-        if body_height < self.min_body_height:
+        relative_height = body_height - self._terrain_height_at_robot
+        if relative_height < self.min_body_height:
             return True
 
         # Body tilt check (angle from upright)

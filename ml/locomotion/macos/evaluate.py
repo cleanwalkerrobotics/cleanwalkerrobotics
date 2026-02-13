@@ -40,6 +40,8 @@ def main():
     parser.add_argument("--episodes", type=int, default=5)
     parser.add_argument("--cmd-vx", type=float, default=0.4)
     parser.add_argument("--render-frames", action="store_true", help="Save frames")
+    parser.add_argument("--terrain", type=str, nargs="+", default=["flat"],
+                        help="Terrain types for evaluation")
     args = parser.parse_args()
 
     model_path = args.checkpoint or find_best_model()
@@ -56,7 +58,11 @@ def main():
     print(f"Loading: {model_path}")
     model = PPO.load(str(model_path), device="cpu")
 
-    env = CW1LocomotionEnv(randomize_friction=False, randomize_mass=False)
+    env = CW1LocomotionEnv(
+        randomize_friction=False,
+        randomize_mass=False,
+        terrain_types=args.terrain,
+    )
 
     frame_dir = SCRIPT_DIR / "renders" / "frames"
     if args.render_frames:

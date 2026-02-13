@@ -32,14 +32,7 @@ LEG_JOINTS = [
     "RR_hip_yaw", "RR_hip_pitch", "RR_knee_pitch",
 ]
 
-ARM_JOINTS = [
-    "arm_turret_yaw", "arm_shoulder_pitch", "arm_elbow_pitch",
-    "arm_wrist_pitch", "arm_gripper_joint",
-]
-
-BAG_JOINTS = ["bag_frame_hinge"]
-
-ALL_JOINTS = LEG_JOINTS + ARM_JOINTS + BAG_JOINTS
+ALL_JOINTS = LEG_JOINTS
 
 
 def compile_urdf(urdf_path: Path) -> str:
@@ -317,7 +310,7 @@ def generate_handcrafted_mjcf() -> str:
       <option timestep="0.005" gravity="0 0 -9.81" iterations="50"
               solver="Newton" integrator="implicitfast"/>
 
-      <size nconmax="200" njmax="500"/>
+      <size nconmax="500" njmax="1000"/>
 
       <default>
         <joint armature="0.01" damping="2.0" frictionloss="0.1"/>
@@ -343,14 +336,14 @@ def generate_handcrafted_mjcf() -> str:
         <material name="body_mat" rgba="0.15 0.15 0.15 1"/>
         <material name="leg_mat" rgba="0.25 0.25 0.25 1"/>
         <material name="foot_mat" rgba="0.6 0.6 0.6 1"/>
-        <material name="arm_mat" rgba="0.2 0.2 0.3 1"/>
+        <hfield name="terrain" nrow="80" ncol="400" size="20 2 6.0 0.01"/>
       </asset>
 
       <worldbody>
         <light pos="0 0 3.5" dir="0 0 -1" directional="true"/>
-        <geom name="floor" type="plane" size="50 50 0.1" material="groundplane"/>
+        <geom name="floor" type="hfield" hfield="terrain" material="groundplane"/>
 
-        <!-- CW-1 Robot Body -->
+        <!-- CW-1 Robot Body (no arm/bag — locomotion only) -->
         <body name="body" pos="0 0 0.35">
           <freejoint name="root"/>
           <inertial pos="0 0 0" mass="8.0"
@@ -428,7 +421,7 @@ def generate_handcrafted_mjcf() -> str:
             </body>
           </body>
 
-          <!-- ============ REAR LEFT LEG ============ -->
+          <!-- ============ REAR LEFT LEG (mammalian: knees backward like front) ============ -->
           <body name="RL_hip" pos="-0.20 0.075 0">
             <joint name="RL_hip_yaw" type="hinge" axis="0 0 1"
                    range="-0.4993 0.4993" damping="0.5"/>
@@ -444,7 +437,7 @@ def generate_handcrafted_mjcf() -> str:
 
               <body name="RL_calf" pos="0 0 -0.20">
                 <joint name="RL_knee_pitch" type="hinge" axis="0 1 0"
-                       range="-2.6005 0.0995" damping="0.5"/>
+                       range="-0.0995 2.6005" damping="0.5"/>
                 <inertial pos="0 0 -0.10" mass="0.4" diaginertia="0.001 0.001 0.0003"/>
                 <geom name="RL_calf_geom" type="capsule" fromto="0 0 0 0 0 -0.20"
                       size="0.015" material="leg_mat"/>
@@ -459,7 +452,7 @@ def generate_handcrafted_mjcf() -> str:
             </body>
           </body>
 
-          <!-- ============ REAR RIGHT LEG ============ -->
+          <!-- ============ REAR RIGHT LEG (mammalian: knees backward like front) ============ -->
           <body name="RR_hip" pos="-0.20 -0.075 0">
             <joint name="RR_hip_yaw" type="hinge" axis="0 0 1"
                    range="-0.4993 0.4993" damping="0.5"/>
@@ -475,7 +468,7 @@ def generate_handcrafted_mjcf() -> str:
 
               <body name="RR_calf" pos="0 0 -0.20">
                 <joint name="RR_knee_pitch" type="hinge" axis="0 1 0"
-                       range="-2.6005 0.0995" damping="0.5"/>
+                       range="-0.0995 2.6005" damping="0.5"/>
                 <inertial pos="0 0 -0.10" mass="0.4" diaginertia="0.001 0.001 0.0003"/>
                 <geom name="RR_calf_geom" type="capsule" fromto="0 0 0 0 0 -0.20"
                       size="0.015" material="leg_mat"/>
@@ -490,81 +483,23 @@ def generate_handcrafted_mjcf() -> str:
             </body>
           </body>
 
-          <!-- ============ ARM (5 DOF, heavily damped during locomotion) ============ -->
-          <body name="arm_turret" pos="0.10 0 0.06">
-            <joint name="arm_turret_yaw" type="hinge" axis="0 0 1"
-                   range="-3.1416 3.1416" damping="20.0"/>
-            <inertial pos="0 0 0.03" mass="0.3" diaginertia="0.0003 0.0003 0.0003"/>
-            <geom name="arm_turret_geom" type="cylinder" size="0.04 0.03"
-                  material="arm_mat"/>
-
-            <body name="arm_upper" pos="0 0 0.06">
-              <joint name="arm_shoulder_pitch" type="hinge" axis="0 1 0"
-                     range="-0.7854 3.1416" damping="20.0"/>
-              <inertial pos="0 0 0.09" mass="0.3" diaginertia="0.001 0.001 0.0002"/>
-              <geom name="arm_upper_geom" type="capsule" fromto="0 0 0 0 0 0.18"
-                    size="0.015" material="arm_mat"/>
-
-              <body name="arm_forearm" pos="0 0 0.18">
-                <joint name="arm_elbow_pitch" type="hinge" axis="0 1 0"
-                       range="0 2.618" damping="20.0"/>
-                <inertial pos="0 0 0.09" mass="0.3" diaginertia="0.001 0.001 0.0002"/>
-                <geom name="arm_forearm_geom" type="capsule" fromto="0 0 0 0 0 0.18"
-                      size="0.012" material="arm_mat"/>
-
-                <body name="arm_wrist" pos="0 0 0.18">
-                  <joint name="arm_wrist_pitch" type="hinge" axis="0 1 0"
-                         range="-1.5708 1.5708" damping="20.0"/>
-                  <inertial pos="0 0 0.025" mass="0.15"
-                            diaginertia="0.0001 0.0001 0.0001"/>
-                  <geom name="arm_wrist_geom" type="cylinder" size="0.01 0.025"
-                        material="arm_mat"/>
-
-                  <body name="arm_gripper" pos="0 0 0.05">
-                    <joint name="arm_gripper_joint" type="hinge" axis="0 1 0"
-                           range="0 1.0472" damping="20.0"/>
-                    <inertial pos="0 0 0.02" mass="0.15"
-                              diaginertia="0.0001 0.0001 0.0001"/>
-                    <geom name="arm_gripper_geom" type="box" size="0.04 0.015 0.05"
-                          material="arm_mat"/>
-                  </body>
-                </body>
-              </body>
-            </body>
-          </body>
-
-          <!-- ============ BAG FRAME (1 DOF, heavily damped) ============ -->
-          <body name="bag_mount" pos="-0.15 0 0.06">
-            <inertial pos="0 0 0" mass="0.2" diaginertia="0.0002 0.0002 0.0002"/>
-            <geom name="bag_mount_geom" type="cylinder" size="0.03 0.02"
-                  rgba="0.3 0.3 0.3 1"/>
-
-            <body name="bag_frame" pos="0 0 0.02">
-              <joint name="bag_frame_hinge" type="hinge" axis="0 1 0"
-                     range="0 2.3562" damping="20.0"/>
-              <inertial pos="0 0 0.05" mass="0.3" diaginertia="0.001 0.001 0.0002"/>
-              <geom name="bag_frame_geom" type="box" size="0.11 0.075 0.01"
-                    pos="0 0 0.05" rgba="0.4 0.35 0.3 1"/>
-            </body>
-          </body>
-
         </body> <!-- end body -->
       </worldbody>
 
-      <!-- Leg actuators (position-controlled, matching URDF PD gains) -->
+      <!-- Leg actuators (position-controlled, kp=80 from defaults) -->
       <actuator>
-        <position name="FL_hip_yaw_act" joint="FL_hip_yaw" kp="25"/>
-        <position name="FL_hip_pitch_act" joint="FL_hip_pitch" kp="25"/>
-        <position name="FL_knee_pitch_act" joint="FL_knee_pitch" kp="25"/>
-        <position name="FR_hip_yaw_act" joint="FR_hip_yaw" kp="25"/>
-        <position name="FR_hip_pitch_act" joint="FR_hip_pitch" kp="25"/>
-        <position name="FR_knee_pitch_act" joint="FR_knee_pitch" kp="25"/>
-        <position name="RL_hip_yaw_act" joint="RL_hip_yaw" kp="25"/>
-        <position name="RL_hip_pitch_act" joint="RL_hip_pitch" kp="25"/>
-        <position name="RL_knee_pitch_act" joint="RL_knee_pitch" kp="25"/>
-        <position name="RR_hip_yaw_act" joint="RR_hip_yaw" kp="25"/>
-        <position name="RR_hip_pitch_act" joint="RR_hip_pitch" kp="25"/>
-        <position name="RR_knee_pitch_act" joint="RR_knee_pitch" kp="25"/>
+        <position name="FL_hip_yaw_act" joint="FL_hip_yaw"/>
+        <position name="FL_hip_pitch_act" joint="FL_hip_pitch"/>
+        <position name="FL_knee_pitch_act" joint="FL_knee_pitch"/>
+        <position name="FR_hip_yaw_act" joint="FR_hip_yaw"/>
+        <position name="FR_hip_pitch_act" joint="FR_hip_pitch"/>
+        <position name="FR_knee_pitch_act" joint="FR_knee_pitch"/>
+        <position name="RL_hip_yaw_act" joint="RL_hip_yaw"/>
+        <position name="RL_hip_pitch_act" joint="RL_hip_pitch"/>
+        <position name="RL_knee_pitch_act" joint="RL_knee_pitch"/>
+        <position name="RR_hip_yaw_act" joint="RR_hip_yaw"/>
+        <position name="RR_hip_pitch_act" joint="RR_hip_pitch"/>
+        <position name="RR_knee_pitch_act" joint="RR_knee_pitch"/>
       </actuator>
 
       <!-- Sensors for observation -->
