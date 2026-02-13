@@ -93,8 +93,8 @@ class CW1LocomotionEnv(gym.Env):
         max_episode_steps: int = 1000,  # 20 seconds
         # Action
         action_scale: float = 0.5,
-        # Velocity commands (always some forward component)
-        cmd_vx_range: tuple = (0.2, 0.8),
+        # Velocity commands (wide range for speed modulation)
+        cmd_vx_range: tuple = (0.0, 1.5),
         cmd_vy_range: tuple = (-0.2, 0.2),
         cmd_yaw_range: tuple = (-0.5, 0.5),
         # Termination

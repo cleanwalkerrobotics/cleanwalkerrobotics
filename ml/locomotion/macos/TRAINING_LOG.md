@@ -70,6 +70,43 @@ Train a quadruped robot to walk using PPO + MuJoCo on macOS Apple Silicon.
 | 3b  | 0.017       | 100%     | Standing still (local optimum) |
 | 4   | 0.109       | 100%     | Crawling forward |
 | **5** | **0.382** | **100%** | **Walking! Trot gait** |
+| **6** | **0.774** | **100%** | **Fast walking! Speed modulation** |
+
+### Run 6 — Speed range expansion + 10M steps
+- **Changes**: cmd_vx_range (0.2,0.8)→(0.0,1.5), 10M steps (40 min)
+- **Result**:
+  - Max speed: **0.774 m/s** at cmd=1.2 (+61% vs Run 5)
+  - Speed modulation: 0.064 m/s at cmd=0 → 0.774 m/s at cmd=1.2
+  - Tracking accuracy: 94% at 0.4, 86% at 0.6, 83% at 0.8
+  - 100% survival across all speed commands (0.0–1.5 m/s)
+  - Tilt under 7° at all speeds
+  - Near-zero drift at cmd=0 (learned to stand still)
+
+---
+
+## Key Findings
+
+### Physics That Matter
+1. **Actuator gains**: kp=80, kd=2.0 minimum for 15.6kg robot (kp=25 failed)
+2. **Leg stance splay**: Front legs forward, rear backward — NOT all tucked under body
+3. **Kinematic correctness**: DEFAULT_JOINT_POS must place feet on ground at initial height
+4. **Forward COM bias**: Our arm/head makes robot front-heavy, needs orientation penalty
+
+### Reward Design Lessons
+1. **tracking_sigma**: 0.5 too generous (standing gets 73% reward), 0.25 works well
+2. **alive bonus**: Needed for stability but too high → standing-still optimum
+3. **base_height reward**: Critical for maintaining posture
+4. **collision penalty**: Prevents body-ground contact
+5. **feet_air_time threshold**: 0.2s matches natural step cycle (0.5s too strict)
+6. **orientation penalty**: Required for our asymmetric robot (unlike standard quadrupeds)
+
+### Training Insights (SB3 PPO on macOS CPU)
+- 8 parallel envs, ~4200 steps/s on M4 Max
+- 500k steps: basic behavior (~2 min)
+- 2M steps: good balance (~8 min)
+- 5M steps: walking gait (~20 min)
+- 10M steps: fast walking + speed modulation (~40 min)
+- n_steps=4096 better than 2048 for small env counts
 
 ---
 
