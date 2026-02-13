@@ -1,7 +1,7 @@
 """
 CAD Model: CW-1 Bag System Assembly
 Description: Bag dispensing and collection system with roll dispenser, folding frame, and clip system
-Iteration: 2
+Iteration: 3
 """
 import cadquery as cq
 import math
@@ -215,100 +215,76 @@ hinge_pin = (
 )
 
 # Step 6: Support bars connecting frame to hinge
-# Calculate support bar end position based on frame angle
+# FIX (iteration 3): Sketch at origin to avoid double-offset bug.
+# Build bar at origin (Y=0), extrude along Z, rotate around origin, then translate once.
 frame_angle_rad = math.radians(frame_angle_deg)
 support_bar_end_y = hinge_y + support_bar_length * math.cos(frame_angle_rad - math.pi / 2)
 support_bar_end_z = hinge_bracket_height + support_bar_length * math.sin(frame_angle_rad - math.pi / 2)
 
-# Left support bar
+# Left support bar — sketch at X offset only, Y=0
 left_support_bar = (
     cq.Workplane("XY")
-    .move(-frame_width / 4, hinge_y)
+    .move(-frame_width / 4, 0)
     .circle(support_bar_diameter / 2)
     .extrude(support_bar_length)
     .rotate((0, 0, 0), (1, 0, 0), frame_angle_deg - 90)
     .translate((0, hinge_y, hinge_bracket_height))
 )
 
-# Right support bar
+# Right support bar — sketch at X offset only, Y=0
 right_support_bar = (
     cq.Workplane("XY")
-    .move(frame_width / 4, hinge_y)
+    .move(frame_width / 4, 0)
     .circle(support_bar_diameter / 2)
     .extrude(support_bar_length)
     .rotate((0, 0, 0), (1, 0, 0), frame_angle_deg - 90)
     .translate((0, hinge_y, hinge_bracket_height))
 )
 
-# Step 7: Folding frame rim (FIXED: Issue #1 - continuous rectangular rim using sweep)
-# Build frame as a rectangular wire path and sweep a circular cross-section along it
-# This ensures the frame is a true continuous rectangular rim with no gaps at corners
+# Step 7: Folding frame rim (FIX iteration 3: tube method, NOT sweep)
+# CadQuery sweep() along a closed wire fills the interior — creates a solid slab.
+# Instead: build 4 individual tubes, extend each by tube_radius at ends for corner overlap, union.
 
 frame_attach_y = support_bar_end_y
 frame_attach_z = support_bar_end_z
 
-try:
-    # Create a rectangular wire path in the frame's local XY plane
-    # Extend tubes slightly past corners to ensure clean joins
-    tube_overlap = frame_tube_diameter / 2
+r = frame_tube_diameter / 2  # tube radius for corner overlap
 
-    frame_path = (
-        cq.Workplane("XY")
-        .moveTo(-frame_width / 2 - tube_overlap, -tube_overlap)
-        .lineTo(frame_width / 2 + tube_overlap, -tube_overlap)
-        .lineTo(frame_width / 2 + tube_overlap, frame_depth + tube_overlap)
-        .lineTo(-frame_width / 2 - tube_overlap, frame_depth + tube_overlap)
-        .close()
-    )
+# Front tube (left to right along X) — extends r past each corner
+frame_front = (
+    cq.Workplane("XZ")
+    .move(-frame_width / 2 - r, 0)
+    .circle(r)
+    .extrude(frame_width + 2 * r)
+)
 
-    # Create circular cross-section profile
-    frame_profile = (
-        cq.Workplane("XZ")
-        .center(0, 0)
-        .circle(frame_tube_diameter / 2)
-    )
+# Back tube (left to right along X) — at Y = frame_depth
+frame_back = (
+    cq.Workplane("XZ")
+    .move(-frame_width / 2 - r, 0)
+    .circle(r)
+    .extrude(frame_width + 2 * r)
+    .translate((0, frame_depth, 0))
+)
 
-    # Sweep the circular profile along the rectangular path
-    frame = frame_path.sweep(frame_profile)
+# Left tube (front to back along Y) — at X = -frame_width/2
+frame_left = (
+    cq.Workplane("XY")
+    .move(-frame_width / 2, -r)
+    .circle(r)
+    .extrude(frame_depth + 2 * r)
+)
 
-except Exception as e:
-    print(f"Warning: Frame sweep failed ({e}), using extended tube method")
-    # Fallback: Create four tubes with extended endpoints to ensure corner overlap
-    # Front tube (left to right)
-    frame_front = (
-        cq.Workplane("XZ")
-        .move(-frame_width / 2 - frame_tube_diameter / 2, 0)
-        .circle(frame_tube_diameter / 2)
-        .extrude(frame_width + frame_tube_diameter)
-    )
+# Right tube (front to back along Y) — at X = +frame_width/2
+frame_right = (
+    cq.Workplane("XY")
+    .move(frame_width / 2, -r)
+    .circle(r)
+    .extrude(frame_depth + 2 * r)
+)
 
-    # Back tube (left to right)
-    frame_back = (
-        cq.Workplane("XZ")
-        .move(-frame_width / 2 - frame_tube_diameter / 2, 0)
-        .circle(frame_tube_diameter / 2)
-        .extrude(frame_width + frame_tube_diameter)
-        .translate((0, frame_depth, 0))
-    )
-
-    # Left tube (front to back)
-    frame_left = (
-        cq.Workplane("XY")
-        .move(-frame_width / 2, -frame_tube_diameter / 2)
-        .circle(frame_tube_diameter / 2)
-        .extrude(frame_depth + frame_tube_diameter)
-    )
-
-    # Right tube (front to back)
-    frame_right = (
-        cq.Workplane("XY")
-        .move(frame_width / 2, -frame_tube_diameter / 2)
-        .circle(frame_tube_diameter / 2)
-        .extrude(frame_depth + frame_tube_diameter)
-    )
-
-    # Union all tubes to create continuous frame
-    frame = frame_front.union(frame_back).union(frame_left).union(frame_right)
+# Union all tubes to create continuous rectangular frame
+frame = frame_front.union(frame_back).union(frame_left).union(frame_right)
 
 # Rotate frame to open position and position at end of support bars
 frame = (
@@ -402,10 +378,7 @@ compound = assy.toCompound()
 cq.exporters.export(compound, "models/model.stl")
 
 print("Export complete: models/model.step, models/model.stl")
-print("Iteration 2 — All 6 critical issues addressed:")
-print("  ✓ Issue #1: Frame is now continuous rectangular rim (sweep method)")
-print("  ✓ Issue #2: Roll housing is curved cradle (cylindrical cut)")
-print("  ✓ Issue #3: Hinge brackets are L-shaped (polyline profile)")
-print("  ✓ Issue #4: Servo clearance void implemented (15×15×30mm)")
-print("  ✓ Issue #5: Outer clips use frame_width spacing (not roll_width)")
-print("  ✓ Issue #6: Overall depth optimized (frame positioning corrected)")
+print("Iteration 3 — Critical fixes from eval_2:")
+print("  ✓ Fix #1: Frame uses tube method (4 cylinders + union), NOT sweep")
+print("  ✓ Fix #2: Support bars sketched at origin, single translate (no double-offset)")
+print("  ✓ Fix #3: No tube_overlap inflation — tubes extend exactly r at corners")
