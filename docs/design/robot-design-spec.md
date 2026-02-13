@@ -1,7 +1,7 @@
 # CleanWalker Robot — Definitive Visual Design Specification
 
-**Version:** 2.3
-**Date:** 2026-02-10
+**Version:** 2.4
+**Date:** 2026-02-13
 **Purpose:** Single source of truth for all renders, 3D models, and technical descriptions. Every visual asset MUST conform to this spec.
 
 ---
@@ -13,28 +13,31 @@
 
 ### Dimensions & Ratios
 
+> **V2.4 UPDATE (2026-02-13):** Dimensions scaled up per Maurits directive — robot must be large enough to carry a full trash bag. Body ~1m long, ~30cm wide.
+
 | Measurement | Value | Ratio Reference |
 |---|---|---|
-| **Body length (L)** | ~60cm (nose to tail of body) | 1.0× (base unit) |
-| **Body width (W)** | ~15cm | 0.25× body length (1:4 W:L ratio) |
-| **Body height (H)** | ~12cm (body enclosure only) | 0.20× body length |
-| **Total height (standing)** | ~55-60cm at top of body | ~3.7× body height |
-| **Leg length** | ~40-45cm (hip to foot) | ~1.0× body length |
-| **Upper leg segment** | ~20cm | 0.5× leg length |
-| **Lower leg segment** | ~20cm | 0.5× leg length |
-| **Arm height (extended)** | ~40cm above body top | ~0.9× body length |
-| **Arm reach (forward)** | ~50cm from shoulder to gripper tip | ~1.1× body length |
-| **Frame depth** | ~22cm (front-to-back) | 0.5× body length |
-| **Frame width** | ~15cm (same as body width) | 1.0× body width |
-| **Ground clearance** | ~35cm (bottom of body to ground) | ~0.78× body length |
-| **Overall footprint** | ~60cm L × 20cm W (legs spread slightly wider than body) | — |
+| **Body length (L)** | ~100cm (nose to tail of body) | 1.0× (base unit) |
+| **Body width (W)** | ~30cm | 0.30× body length (~3.3:1 L:W ratio) |
+| **Body height (H)** | ~20cm (body enclosure only) | 0.20× body length |
+| **Total height (standing)** | ~70-80cm at top of body | ~3.5-4× body height |
+| **Leg length** | ~55-60cm (hip to foot) | ~0.55-0.6× body length |
+| **Upper leg segment** | ~28-30cm | 0.5× leg length |
+| **Lower leg segment** | ~28-30cm | 0.5× leg length |
+| **Arm height (extended)** | ~50cm above body top | ~0.5× body length |
+| **Arm reach (forward)** | ~60cm from shoulder to gripper tip | ~0.6× body length |
+| **Frame depth** | ~35cm (front-to-back) | 0.35× body length |
+| **Frame width** | ~30cm (same as body width) | 1.0× body width |
+| **Ground clearance** | ~50-55cm (bottom of body to ground) | ~0.5× body length |
+| **Overall footprint** | ~100cm L × 40cm W (legs spread slightly wider than body) | — |
 
 ### Key Proportions (visual guide)
-- The body is a long, narrow, flat slab — roughly **4:1** width-to-length ratio (L:W:H ≈ 60:15:12cm)
-- Legs are approximately the same length as the body — the robot does NOT look stubby or squatted
-- The arm is the tallest element, rising ~40cm above the body
-- The bag system (frame + bag) extends ~22cm behind the body's rear edge
+- The body is a long, moderately wide slab — roughly **3.3:1** length-to-width ratio (L:W:H ≈ 100:30:20cm)
+- Legs are slightly shorter than the body — the robot stands tall and looks capable
+- The arm is the tallest element, rising ~50cm above the body
+- The bag system (frame + bag) extends ~35cm behind the body's rear edge
 - Standing height at body top is about 3.5-4× the body thickness
+- Robot must be large enough to carry a standard 60L trash bag
 
 ## 2. BODY
 
