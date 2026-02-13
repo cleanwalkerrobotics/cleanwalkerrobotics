@@ -4,7 +4,7 @@
 
 ### CAD Pipeline Analysis (process-analysis) — COMPLETED
 
-| 2026-02-13 | process-analysis | CAD pipeline analysis: root cause analysis of iteration 2 regression, failure taxonomy, CadQuery guardrails added to CLAUDE.md, patterns reference created, validate_mesh.py updated for assembly-aware validation. | TBD |
+| 2026-02-13 | process-analysis | CAD pipeline analysis: root cause analysis of iteration 2 regression, failure taxonomy, CadQuery guardrails added to CLAUDE.md, patterns reference created, validate_mesh.py updated for assembly-aware validation. | 4c10429 |
 
 ### SRTIP SAIA Application Polish (cw-bizdev) — COMPLETED
 

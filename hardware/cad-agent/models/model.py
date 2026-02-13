@@ -1,7 +1,8 @@
 """
-CAD Model: CW-1 Bag System Assembly
-Description: Bag dispensing and collection system with roll dispenser, folding frame, and clip system
-Iteration: 4
+CAD Model: CW-1 Bag System Assembly — COMPLETE REBUILD
+Description: Full bag system with 600mm body plate, arm turret stub,
+             roll dispenser, folding frame at 135deg, and clip system
+Iteration: 5 (full rebuild)
 """
 import cadquery as cq
 import math
@@ -10,79 +11,113 @@ import math
 # PARAMETERS (all dimensions in mm)
 # ============================================================
 
-# Overall system dimensions
-system_width = 150.0  # Overall width (matches robot body)
+# Body plate (full-length robot body reference)
+body_length = 600.0
+body_width = 150.0
+body_plate_thickness = 5.0
+
+# Arm turret stub (front-center mounting context)
+turret_diameter = 80.0
+turret_height = 50.0
+turret_y = 100.0
 
 # Bag roll dispenser
-roll_diameter = 80.0  # Outer diameter of bag roll
-roll_width = 130.0  # Width of bag roll (narrower than body)
-roll_housing_height = 15.0  # Height of cradle above body surface
-roll_housing_wall = 3.0  # Thickness of housing walls
-roll_bracket_thickness = 3.0  # Side bracket thickness
-roll_bracket_height = 25.0  # Height of side brackets
-roll_bracket_width = 20.0  # Width of side brackets
+roll_diameter = 80.0
+roll_width = 130.0
+roll_housing_height = 15.0
+roll_housing_wall = 3.0
+roll_center_y = 450.0  # Centered on rear half (300-600)
 
-# Folding frame
-frame_tube_diameter = 10.0  # Diameter of frame tubing
-frame_width = 150.0  # Frame width (matches body)
-frame_depth = 180.0  # Frame front-to-back depth (reduced from 220 to hit ~370mm target)
-frame_angle_deg = 135.0  # Frame open angle from body surface
-support_bar_diameter = 10.0  # Diameter of support bars
-support_bar_length = 80.0  # Length of support bars
+# Roll side brackets
+roll_bracket_thickness = 3.0
+roll_bracket_height = 25.0
+roll_bracket_width = 20.0
+
+# Folding frame (TUBE METHOD: 4 cylinders + union, NEVER sweep)
+frame_tube_diameter = 10.0
+frame_width = 150.0
+frame_depth = 220.0
+frame_angle_deg = 135.0
+
+# Support bars (hinge to frame)
+support_bar_diameter = 10.0
+support_bar_length = 91.0
 
 # Hinge assembly
-hinge_pin_diameter = 4.0  # Diameter of hinge pin
-hinge_pin_length = 160.0  # Length of hinge pin (spans body width)
-hinge_bracket_thickness = 3.0  # Hinge bracket material thickness
-hinge_bracket_width = 25.0  # Hinge bracket footprint width
-hinge_bracket_depth = 20.0  # Hinge bracket footprint depth
-hinge_bracket_height = 15.0  # Height of vertical tab on L-bracket
-hinge_bracket_foot_height = 3.0  # Height of horizontal foot on L-bracket
-hinge_bracket_spacing = 30.0  # Distance from each side edge
-servo_clearance_width = 15.0  # Servo clearance width
-servo_clearance_depth = 15.0  # Servo clearance depth
-servo_clearance_height = 30.0  # Servo clearance height
+hinge_y = 600.0
+hinge_bracket_height = 15.0
+hinge_bracket_width = 25.0
+hinge_bracket_depth = 20.0
+hinge_bracket_thickness = 3.0
+hinge_bracket_foot_height = 3.0
+hinge_bracket_spacing = 30.0
+hinge_pin_diameter = 4.0
+hinge_pin_length = 160.0
+
+# Servo clearance
+servo_clearance_width = 15.0
+servo_clearance_depth = 15.0
+servo_clearance_height = 30.0
 
 # Clip system
-clip_count = 4  # Number of clips per line
-clip_width = 20.0  # Width of each clip
-clip_height = 8.0  # Height of each clip
-clip_thickness = 2.0  # Thickness of spring steel
-clip_standoff = 3.0  # Height above mounting surface
+clip_count = 4
+clip_width = 20.0
+clip_height = 8.0
+clip_thickness = 2.0
+clip_standoff = 3.0
 
-# Mounting and positioning
-roll_center_y = 0.0  # Roll center Y position (front of system)
-hinge_y = 150.0  # Hinge Y position (rear edge)
+# ============================================================
+# DIMENSION CHECK
+# ============================================================
+# Body plate:  Y=0..600, X=-75..75, Z=-5..0
+# Turret:      Y=100, Z=0..50, diameter 80mm
+# Roll center: Y=450, diameter 80mm -> Y extent ~410..490
+# Hinge:       Y=600, Z=0..15 (bracket height)
+# Rotation:    135deg - 90deg = 45deg tilt
+# Bar end Y:   600 + 91*cos(45deg) = 664
+# Bar end Z:   15 + 91*sin(45deg) = 79
+# Frame back Y: 664 + 220*cos(45deg) = 820 -> 220mm behind rear edge OK
+# Frame back Z: 79 + 220*sin(45deg) = 235 -> ~235mm above body surface
+# Width: 150mm (body/frame), 160mm (hinge pin)
 
 # ============================================================
 # CONSTRUCTION
 # ============================================================
 
-# Step 1: Bag Roll Dispenser Housing (FIXED: Issue #2 - curved cradle)
-# Create a curved cradle that matches the roll cylinder shape, not a rectangular box
+# Step 1: Body plate (600x150mm reference surface)
+body_plate = (
+    cq.Workplane("XY")
+    .move(0, body_length / 2)
+    .rect(body_width, body_length)
+    .extrude(-body_plate_thickness)
+)
+
+# Step 2: Arm turret stub (front-center context)
+turret = (
+    cq.Workplane("XY")
+    .move(0, turret_y)
+    .circle(turret_diameter / 2)
+    .extrude(turret_height)
+)
+
+# Step 3: Roll housing (curved cradle)
 try:
-    # Start with a rectangular base for the cradle
     roll_housing = (
         cq.Workplane("XY")
         .move(0, roll_center_y)
         .rect(roll_width + 2 * roll_housing_wall, roll_diameter / 2 + 2 * roll_housing_wall)
         .extrude(roll_housing_height)
     )
-
-    # Cut a cylindrical channel to create the curved cradle shape
-    # This creates a semicircular recess that matches the roll diameter
     cradle_cutter = (
         cq.Workplane("YZ")
         .move(roll_center_y, roll_housing_height + roll_diameter / 2 - roll_housing_wall)
-        .circle(roll_diameter / 2 + 0.5)  # Slight clearance
+        .circle(roll_diameter / 2 + 0.5)
         .extrude(roll_width)
         .translate((-roll_width / 2, 0, 0))
     )
-
     roll_housing = roll_housing.cut(cradle_cutter)
 except Exception as e:
-    print(f"Warning: Roll housing construction error: {e}")
-    # Fallback to simple box
+    print(f"Warning: Roll housing error: {e}")
     roll_housing = (
         cq.Workplane("XY")
         .move(0, roll_center_y)
@@ -90,7 +125,7 @@ except Exception as e:
         .extrude(roll_housing_height)
     )
 
-# Step 2: Roll cylinder (representing the bag roll itself)
+# Step 4: Roll cylinder (bag roll itself)
 roll_cylinder = (
     cq.Workplane("YZ")
     .move(roll_center_y, roll_housing_height + roll_diameter / 2)
@@ -99,71 +134,53 @@ roll_cylinder = (
     .translate((-roll_width / 2, 0, 0))
 )
 
-# Step 3: Side mounting brackets for roll
-# Left bracket
-left_bracket = (
+# Step 5: Roll side brackets
+left_roll_bracket = (
     cq.Workplane("XY")
     .move(-(roll_width / 2 + roll_housing_wall + roll_bracket_thickness / 2), roll_center_y)
     .rect(roll_bracket_thickness, roll_bracket_width)
     .extrude(roll_bracket_height)
 )
-
-# Right bracket (mirror of left)
-right_bracket = (
+right_roll_bracket = (
     cq.Workplane("XY")
     .move((roll_width / 2 + roll_housing_wall + roll_bracket_thickness / 2), roll_center_y)
     .rect(roll_bracket_thickness, roll_bracket_width)
     .extrude(roll_bracket_height)
 )
 
-# Step 4: Hinge brackets at rear edge (FIXED: Issue #3 - L-shaped brackets)
-# Create L-shaped profile: horizontal foot + vertical tab
-# The horizontal foot bolts to the body surface, vertical tab holds hinge pin
-
-# Left hinge bracket - L-shaped
+# Step 6: Hinge brackets (L-shaped profile)
 try:
     left_hinge_bracket = (
         cq.Workplane("XZ")
-        .move(-(system_width / 2 - hinge_bracket_spacing), 0)
+        .move(-(body_width / 2 - hinge_bracket_spacing), 0)
         .polyline([
-            (0, 0),  # Origin at body surface
-            (hinge_bracket_width, 0),  # Horizontal foot front edge
-            (hinge_bracket_width, hinge_bracket_foot_height),  # Inner corner
-            (hinge_bracket_thickness, hinge_bracket_foot_height),  # Foot/tab junction
-            (hinge_bracket_thickness, hinge_bracket_height),  # Vertical tab top
-            (0, hinge_bracket_height),  # Outer edge
+            (0, 0),
+            (hinge_bracket_width, 0),
+            (hinge_bracket_width, hinge_bracket_foot_height),
+            (hinge_bracket_thickness, hinge_bracket_foot_height),
+            (hinge_bracket_thickness, hinge_bracket_height),
+            (0, hinge_bracket_height),
         ])
         .close()
         .extrude(hinge_bracket_depth)
         .translate((0, hinge_y - hinge_bracket_depth / 2, 0))
     )
-
-    # Drill hole for hinge pin in the vertical tab
-    left_hinge_bracket = (
-        left_hinge_bracket
-        .faces(">Z")
-        .workplane()
-        .move(-(system_width / 2 - hinge_bracket_spacing) + hinge_bracket_thickness / 2, hinge_y)
-        .hole(hinge_pin_diameter + 0.5)  # Slight clearance
-    )
 except Exception as e:
-    print(f"Warning: Left hinge bracket construction error: {e}")
-    # Fallback to simple block
+    print(f"Warning: Left hinge bracket error: {e}")
     left_hinge_bracket = (
         cq.Workplane("XY")
-        .move(-(system_width / 2 - hinge_bracket_spacing), hinge_y)
+        .move(-(body_width / 2 - hinge_bracket_spacing), hinge_y)
         .rect(hinge_bracket_width, hinge_bracket_depth)
         .extrude(hinge_bracket_height)
     )
 
-# Right hinge bracket - L-shaped (mirror of left)
 try:
     right_hinge_bracket = (
         cq.Workplane("XZ")
-        .move((system_width / 2 - hinge_bracket_spacing), 0)
+        .move((body_width / 2 - hinge_bracket_spacing), 0)
         .polyline([
             (0, 0),
-            (-hinge_bracket_width, 0),  # Mirrored: extends left
+            (-hinge_bracket_width, 0),
             (-hinge_bracket_width, hinge_bracket_foot_height),
             (-hinge_bracket_thickness, hinge_bracket_foot_height),
             (-hinge_bracket_thickness, hinge_bracket_height),
@@ -173,39 +190,28 @@ try:
         .extrude(hinge_bracket_depth)
         .translate((0, hinge_y - hinge_bracket_depth / 2, 0))
     )
-
-    # Drill hole for hinge pin
-    right_hinge_bracket = (
-        right_hinge_bracket
-        .faces(">Z")
-        .workplane()
-        .move((system_width / 2 - hinge_bracket_spacing) - hinge_bracket_thickness / 2, hinge_y)
-        .hole(hinge_pin_diameter + 0.5)
-    )
 except Exception as e:
-    print(f"Warning: Right hinge bracket construction error: {e}")
-    # Fallback to simple block
+    print(f"Warning: Right hinge bracket error: {e}")
     right_hinge_bracket = (
         cq.Workplane("XY")
-        .move((system_width / 2 - hinge_bracket_spacing), hinge_y)
+        .move((body_width / 2 - hinge_bracket_spacing), hinge_y)
         .rect(hinge_bracket_width, hinge_bracket_depth)
         .extrude(hinge_bracket_height)
     )
 
-# Step 4b: Servo clearance void (FIXED: Issue #4 - missing clearance)
-# Cut a void from the left side of the hinge area for servo actuator
+# Step 6b: Servo clearance void
 try:
-    servo_void_cutter = (
+    servo_void = (
         cq.Workplane("XY")
-        .move(-(system_width / 2 - hinge_bracket_spacing) + servo_clearance_width / 2, hinge_y)
+        .move(-(body_width / 2 - hinge_bracket_spacing) + servo_clearance_width / 2, hinge_y)
         .rect(servo_clearance_width, servo_clearance_depth)
         .extrude(servo_clearance_height)
     )
-    left_hinge_bracket = left_hinge_bracket.cut(servo_void_cutter)
+    left_hinge_bracket = left_hinge_bracket.cut(servo_void)
 except Exception as e:
-    print(f"Warning: Servo clearance cut failed: {e}")
+    print(f"Warning: Servo void cut failed: {e}")
 
-# Step 5: Hinge pin
+# Step 7: Hinge pin
 hinge_pin = (
     cq.Workplane("YZ")
     .move(hinge_y, hinge_bracket_height)
@@ -214,43 +220,38 @@ hinge_pin = (
     .translate((-hinge_pin_length / 2, 0, 0))
 )
 
-# Step 6: Support bars connecting frame to hinge
-# FIX (iteration 3): Sketch at origin to avoid double-offset bug.
-# Build bar at origin (Y=0), extrude along Z, rotate around origin, then translate once.
+# Step 8: Support bars (build at origin -> rotate -> translate ONCE)
 frame_angle_rad = math.radians(frame_angle_deg)
+rot_angle = frame_angle_deg - 90  # 45 degrees
+
 support_bar_end_y = hinge_y + support_bar_length * math.cos(frame_angle_rad - math.pi / 2)
 support_bar_end_z = hinge_bracket_height + support_bar_length * math.sin(frame_angle_rad - math.pi / 2)
 
-# Left support bar — sketch at X offset only, Y=0
 left_support_bar = (
     cq.Workplane("XY")
     .move(-frame_width / 4, 0)
     .circle(support_bar_diameter / 2)
     .extrude(support_bar_length)
-    .rotate((0, 0, 0), (1, 0, 0), frame_angle_deg - 90)
+    .rotate((0, 0, 0), (1, 0, 0), rot_angle)
     .translate((0, hinge_y, hinge_bracket_height))
 )
 
-# Right support bar — sketch at X offset only, Y=0
 right_support_bar = (
     cq.Workplane("XY")
     .move(frame_width / 4, 0)
     .circle(support_bar_diameter / 2)
     .extrude(support_bar_length)
-    .rotate((0, 0, 0), (1, 0, 0), frame_angle_deg - 90)
+    .rotate((0, 0, 0), (1, 0, 0), rot_angle)
     .translate((0, hinge_y, hinge_bracket_height))
 )
 
-# Step 7: Folding frame rim (FIX iteration 3: tube method, NOT sweep)
-# CadQuery sweep() along a closed wire fills the interior — creates a solid slab.
-# Instead: build 4 individual tubes, extend each by tube_radius at ends for corner overlap, union.
-
+# Step 9: Folding frame rim — TUBE METHOD (4 cylinders + union, NEVER sweep)
 frame_attach_y = support_bar_end_y
 frame_attach_z = support_bar_end_z
 
-r = frame_tube_diameter / 2  # tube radius for corner overlap
+r = frame_tube_diameter / 2
 
-# Front tube (left to right along X) — extends r past each corner
+# Front tube (width-spanning at near edge)
 frame_front = (
     cq.Workplane("XZ")
     .move(-frame_width / 2 - r, 0)
@@ -258,7 +259,7 @@ frame_front = (
     .extrude(frame_width + 2 * r)
 )
 
-# Back tube (left to right along X) — at Y = frame_depth
+# Back tube (width-spanning at far edge)
 frame_back = (
     cq.Workplane("XZ")
     .move(-frame_width / 2 - r, 0)
@@ -267,7 +268,7 @@ frame_back = (
     .translate((0, frame_depth, 0))
 )
 
-# Left tube (front to back along Y) — at X = -frame_width/2
+# Left tube (depth-spanning)
 frame_left = (
     cq.Workplane("XY")
     .move(-frame_width / 2, -r)
@@ -275,7 +276,7 @@ frame_left = (
     .extrude(frame_depth + 2 * r)
 )
 
-# Right tube (front to back along Y) — at X = +frame_width/2
+# Right tube (depth-spanning)
 frame_right = (
     cq.Workplane("XY")
     .move(frame_width / 2, -r)
@@ -283,21 +284,19 @@ frame_right = (
     .extrude(frame_depth + 2 * r)
 )
 
-# Union all tubes to create continuous rectangular frame
+# Union all 4 tubes — solid corner joints from overlap
 frame = frame_front.union(frame_back).union(frame_left).union(frame_right)
 
-# Rotate frame to open position and position at end of support bars
+# Rotate to open position and translate to support bar endpoints
 frame = (
     frame
-    .rotate((0, 0, 0), (1, 0, 0), frame_angle_deg - 90)
+    .rotate((0, 0, 0), (1, 0, 0), rot_angle)
     .translate((0, frame_attach_y, frame_attach_z))
 )
 
-# Step 8: Inner clip line (at roll front edge)
-# Create 4 evenly spaced clips along the front of the roll area
+# Step 10: Inner clip line (at roll front edge)
 inner_clip_spacing = roll_width / (clip_count + 1)
-
-inner_clips = cq.Workplane("XY")
+inner_clips = None
 for i in range(clip_count):
     x_pos = -roll_width / 2 + inner_clip_spacing * (i + 1)
     clip = (
@@ -307,84 +306,65 @@ for i in range(clip_count):
         .extrude(clip_height)
         .translate((0, 0, clip_standoff))
     )
-    if i == 0:
+    if inner_clips is None:
         inner_clips = clip
     else:
         inner_clips = inner_clips.union(clip)
 
-# Step 9: Outer clip line (FIXED: Issue #5 - use frame_width spacing, not roll_width)
-# Calculate position of frame back edge in world coordinates
+# Step 11: Outer clip line (at frame far rim — spacing per frame_width, NOT roll_width)
 frame_back_y = frame_attach_y + frame_depth * math.cos(frame_angle_rad - math.pi / 2)
 frame_back_z = frame_attach_z + frame_depth * math.sin(frame_angle_rad - math.pi / 2)
 
-# Use proper spacing for frame width, not roll width
 outer_clip_spacing = frame_width / (clip_count + 1)
-
-outer_clips = cq.Workplane("XY")
+outer_clips = None
 for i in range(clip_count):
-    x_pos = -frame_width / 2 + outer_clip_spacing * (i + 1)  # Now spans full frame width
+    x_pos = -frame_width / 2 + outer_clip_spacing * (i + 1)
     clip = (
         cq.Workplane("XY")
         .move(x_pos, 0)
         .rect(clip_width, clip_thickness)
         .extrude(clip_height)
-        # Rotate to match frame angle
-        .rotate((0, 0, 0), (1, 0, 0), frame_angle_deg - 90)
-        # Position at frame back edge
+        .rotate((0, 0, 0), (1, 0, 0), rot_angle)
         .translate((0, frame_back_y, frame_back_z))
     )
-    if i == 0:
+    if outer_clips is None:
         outer_clips = clip
     else:
         outer_clips = outer_clips.union(clip)
-
-# DIMENSION CHECK (Iteration 4 fix - frame_depth reduced 220→180mm)
-# Roll front: Y ≈ roll_center_y - roll_diameter/2 - roll_housing_wall = -43mm
-# Support bar end Y ≈ 150 + 80*cos(45°) ≈ 207mm
-# Frame back Y ≈ 207 + 180*cos(45°) ≈ 334mm (+ tube radius ~4mm)
-# Total depth ≈ 338 - (-43) ≈ 381mm → closer to 370mm target than previous 410mm
 
 # ============================================================
 # ASSEMBLY
 # ============================================================
 
-# Body plate — represents the robot's back surface as mounting context
-body_length = hinge_y + 20  # Extends slightly past hinge
-body_plate = (
-    cq.Workplane("XY")
-    .move(0, body_length / 2 - 20)
-    .rect(system_width, body_length)
-    .extrude(-5)  # 5mm thick plate below Z=0
-)
-
-# Create assembly and add all components
 assy = cq.Assembly()
-assy.add(body_plate, name="body_plate", color=cq.Color(0.15, 0.15, 0.15))
-assy.add(roll_housing, name="roll_housing", color=cq.Color(0.2, 0.2, 0.2))
-assy.add(roll_cylinder, name="roll_cylinder", color=cq.Color(0.8, 0.8, 0.8))
-assy.add(left_bracket, name="left_bracket", color=cq.Color(0.2, 0.2, 0.2))
-assy.add(right_bracket, name="right_bracket", color=cq.Color(0.2, 0.2, 0.2))
+assy.add(body_plate, name="body_plate", color=cq.Color(0.23, 0.29, 0.25))
+assy.add(turret, name="arm_turret", color=cq.Color(0.2, 0.2, 0.2))
+assy.add(roll_housing, name="roll_housing", color=cq.Color(0.15, 0.15, 0.15))
+assy.add(roll_cylinder, name="roll_cylinder", color=cq.Color(0.4, 0.4, 0.4))
+assy.add(left_roll_bracket, name="left_roll_bracket", color=cq.Color(0.2, 0.2, 0.2))
+assy.add(right_roll_bracket, name="right_roll_bracket", color=cq.Color(0.2, 0.2, 0.2))
 assy.add(left_hinge_bracket, name="left_hinge_bracket", color=cq.Color(0.2, 0.2, 0.2))
 assy.add(right_hinge_bracket, name="right_hinge_bracket", color=cq.Color(0.2, 0.2, 0.2))
-assy.add(hinge_pin, name="hinge_pin", color=cq.Color(0.7, 0.7, 0.7))
-assy.add(left_support_bar, name="left_support_bar", color=cq.Color(0.3, 0.3, 0.3))
-assy.add(right_support_bar, name="right_support_bar", color=cq.Color(0.3, 0.3, 0.3))
-assy.add(frame, name="frame", color=cq.Color(0.3, 0.3, 0.3))
-assy.add(inner_clips, name="inner_clips", color=cq.Color(0.7, 0.7, 0.7))
-assy.add(outer_clips, name="outer_clips", color=cq.Color(0.7, 0.7, 0.7))
+assy.add(hinge_pin, name="hinge_pin", color=cq.Color(0.6, 0.6, 0.6))
+assy.add(left_support_bar, name="left_support_bar", color=cq.Color(0.25, 0.25, 0.25))
+assy.add(right_support_bar, name="right_support_bar", color=cq.Color(0.25, 0.25, 0.25))
+assy.add(frame, name="frame", color=cq.Color(0.25, 0.25, 0.25))
+assy.add(inner_clips, name="inner_clips", color=cq.Color(0.6, 0.6, 0.6))
+assy.add(outer_clips, name="outer_clips", color=cq.Color(0.6, 0.6, 0.6))
 
 # ============================================================
 # EXPORT
 # ============================================================
 
-# Export assembly to STEP
 assy.save("models/model.step")
-
-# Convert to compound for STL export
 compound = assy.toCompound()
 cq.exporters.export(compound, "models/model.stl")
 
 print("Export complete: models/model.step, models/model.stl")
-print("Iteration 4 — Fixes from eval_3:")
-print("  ✓ Fix #1: frame_depth reduced from 220mm to 180mm (bounding box depth ~370mm target)")
-print("  ✓ Fix #2: Servo void repositioned to overlap left hinge bracket body")
+print("COMPLETE REBUILD — Full bag system with 600mm body plate")
+print(f"  Body plate: {body_length}x{body_width}mm")
+print(f"  Arm turret: dia {turret_diameter}mm at Y={turret_y}")
+print(f"  Roll: dia {roll_diameter}mm centered at Y={roll_center_y}")
+print(f"  Frame: {frame_depth}mm deep, dia {frame_tube_diameter}mm tube (4-cyl union)")
+print(f"  Frame tip: ~{frame_back_y - hinge_y:.0f}mm behind, ~{frame_back_z:.0f}mm above rear edge")
+print(f"  Angle: {frame_angle_deg} deg from body surface")
