@@ -74,6 +74,11 @@ Train a quadruped robot to walk using PPO + MuJoCo on macOS Apple Silicon.
 | 7a-7e | 0.02-0.11 | 50-100% | v2 model: standing/shuffling, no walking |
 | **7f** | **0.34** | **100%** | **v2 Walking! Gait clock breakthrough** |
 | **8** | **0.21** | **100%** | **v2 Walking with foot lift! Two-phase training** |
+| 9a-9c | 0.33-0.43 | 5-94% | Velocity cmd bug fix, reward balancing |
+| **10** | **0.375** | **100%** | **Zero entropy, stable training** |
+| HPO v2 | 0.506 | 98% | 190 trials — vibrating gait (wrong objective) |
+| HPO v3 | 0.685 | 100% | 62 trials — gait quality objective, stability-aware |
+| **15** | **0.364** | **100%** | **Genuine walking! 6cm foot lift, smooth** |
 
 ### Run 6 — Speed range expansion + 10M steps
 - **Changes**: cmd_vx_range (0.2,0.8)→(0.0,1.5), 10M steps (40 min)
@@ -386,3 +391,186 @@ Minimal tracking — policy walks at ~0.37 regardless. Tracking improvement defe
 4. **Fall penalty**: -5.0 is effective but can make policy overly conservative
 5. **Adaptive LR with KL target 0.02**: essential for stable training with SB3 PPO
 6. **Training sweet spot**: ~1M steps with ent_coef=0. Policy over-converges beyond this.
+
+---
+
+### HPO Study — Optuna Reward Weight Optimization
+
+**Protocol**: 800K steps per trial, eval@200K/400K/600K/800K, triage at 500K (surv<90% or tilt>6° → prune)
+**Sampler**: TPE (10 startup, multivariate), MedianPruner (5 startup, 1 warmup)
+**Parameters**: 6 reward weights (track_lin_vel, alive, orientation, tracking_sigma, fall_penalty, gait_clock)
+
+Results: 25 trials (9 completed, 15 pruned, 1 failed)
+
+Top 5 trials:
+| Trial | Score | track | alive | orient | sigma | fall | gait |
+|-------|-------|-------|-------|--------|-------|------|------|
+| #10 | 0.341 | 5.43 | 0.26 | -1.30 | 0.175 | 5.86 | 0.21 |
+| #5 | 0.336 | 5.66 | 0.28 | -1.27 | 0.248 | 4.77 | 0.13 |
+| #24 | 0.325 | 5.03 | 0.29 | -0.61 | 0.179 | 1.84 | 0.36 |
+| #13 | 0.309 | 2.79 | 0.45 | -0.81 | 0.052 | 1.50 | 0.94 |
+| #4 | 0.282 | 3.98 | 0.78 | -0.66 | 0.067 | 8.60 | 0.82 |
+
+**Clear convergence pattern**: High track_lin_vel (~5.5) + low alive (~0.25) optimizes for 800K-step score.
+
+**Key finding**: HPO params optimized for 800K eval window. When trained to 1M+ steps, they underperform Run 10.
+
+---
+
+### Run 12 — Pure HPO Trial #10 Params (2M steps)
+
+- Config: track=5.43, alive=0.26, orient=-1.30, sigma=0.175, fall=5.86, gait=0.21
+- Training: 2M steps, 15m 44s
+
+| Checkpoint | Speed | Survival |
+|-----------|-------|----------|
+| 500K | 0.195 | 100% |
+| 750K | 0.260 | 100% |
+| 950K | 0.338 | 99% |
+| 1M | 0.316 | 94% |
+| 1.5M | 0.136 | 100% |
+
+**Peak: 950K at 0.338 m/s — BELOW Run 10's 0.375**
+HPO's 800K eval window found params that learn faster early but peak lower at full training.
+
+---
+
+### Run 13 — Tempered HPO Params (1.5M steps)
+
+- Config: track=4.0, alive=0.35, orient=-1.15, sigma=0.15, fall=5.0, gait=0.35
+- Intermediate between Run 10 defaults and HPO Trial #10
+
+| Checkpoint | Speed | Survival |
+|-----------|-------|----------|
+| 500K | 0.225 | 100% |
+| 750K | 0.282 | 100% |
+| 1M | 0.338 | 100% |
+| 1.25M | 0.338 | 100% |
+| 1.5M | 0.278 | 100% |
+
+**Peak: 1M at 0.338 m/s — still below Run 10.** Reverted to Run 10 defaults.
+
+---
+
+### Full Assessment (after Run 13)
+
+**SOTA Research** (legged_gym, WTW, Rapid Locomotion, MuJoCo Playground):
+1. Primary bottleneck: 8 envs (vs 4096 industry standard)
+2. Missing foot contact signals in observation (all production systems include these)
+3. ent_coef=0.0 prevents collapse but causes over-convergence (std too low)
+4. action_scale=0.5 too conservative (35% of joint range, should be 75%)
+5. 8 of 21 reward terms disabled
+6. Recommended: ent_coef=0.005 with kl_target=0.01
+
+**MJCF Analysis**:
+1. Generator has wrong kp/kv (25/0.5 vs active 80/2.0) — critical bug in convert_urdf_to_mjcf.py
+2. action_scale=0.5 limits to ±29° (too conservative)
+3. Missing foot contacts and body height in observation
+
+---
+
+### Run 14 — SOTA-Aligned Architecture (5M steps, IN PROGRESS)
+
+**Changes from Run 10 baseline:**
+
+| Parameter | Run 10 | Run 14 | Rationale |
+|-----------|--------|--------|-----------|
+| n_envs | 8 | 32 | 4x more samples/rollout |
+| n_steps | 2048 | 1024 | Keep buffer size reasonable (32K) |
+| ent_coef | 0.0 | 0.005 | Prevent over-convergence, maintain exploration |
+| kl_target | 0.02 | 0.01 | Tighter policy updates (SOTA standard) |
+| action_scale | 0.5 | 0.75 | 50% more joint authority |
+| fall_penalty | 5.0 | 2.0 | Less conservative (SOTA uses 0-2) |
+| rew_clearance_target | 0.0 | -5.0 | Enable foot clearance reward |
+| rew_action_smooth_1 | 0.0 | -0.05 | Mild action smoothness |
+| only_positive_rewards | N/A | true | legged_gym standard: clip reward >= 0 |
+| **obs space** | **52 dims** | **56 dims** | **+4 foot contact binary signals** |
+
+Observation space: body_state(9) + cmds(3) + joints(24) + prev_actions(12) + gait_clock(4) + **foot_contacts(4)** = 56
+
+Training: `python train.py --timesteps 5000000 --n-envs 32 --n-steps 1024 --ent-coef 0.005`
+Speed: ~5,500 steps/s (2.5x faster than old 8-env setup), ETA ~15 min
+
+---
+
+### HPO v2 — Full Reward Weight Optimization (190 trials)
+
+Extended HPO with 15 parameters including gait-shaped rewards. 800K steps per trial, objective: `speed * min(1, survival/95)^2`.
+
+**Best Trial #21**: score 0.506, speed 0.506 m/s, 98% survival.
+- track=4.49, alive=0.14, orient=-1.71, sigma=0.145, fall=9.08, gait=0.67
+- smooth1=-0.085, clearance=-1.69, ent=0.0017, action_scale=0.574
+
+**Problem**: Speed-only objective produced vibrating/shuffling gaits. The "0.506 m/s" was achieved by rapid small oscillations, not actual walking with foot clearance.
+
+---
+
+### HPO v3 — Gait Quality Optimization (62 trials)
+
+**Root cause of vibrating gait**: HPO v2 optimized `speed * survival` which rewards any forward velocity regardless of gait quality. L1 smoothness weight -0.085 was 30x too weak (equivalent to L2 -0.007). Air time threshold 0.5s was physically impossible (> half gait period).
+
+**New composite objective**: `speed^0.3 * survival^0.2 * step_quality^0.3 * smoothness^0.1 * energy^0.1`
+- Evaluates action_smoothness, avg_foot_clearance, contact_regularity, cost_of_transport
+- 20 search parameters with corrected ranges
+- 12 parallel envs (up from 8)
+
+**Critical discovery: 8 of 13 completed trials COLLAPSE during training.** The "best" Trial #30 (score 0.75) peaked at 500K then crashed to 0.018 by 1.5M. Caused by using `max(intermediate_scores)` as trial score.
+
+**Fix**: Stability-aware scoring: `best_score * sqrt(final_score / best_score)`. Penalizes collapse, rewards sustained quality.
+
+**Re-ranked top 3 by stability**:
+| Trial | Max Score | Final Score | Stable Score |
+|-------|-----------|-------------|--------------|
+| **#35** | **0.685** | **0.658** | **0.672** |
+| #50 | 0.578 | 0.469 | 0.521 |
+| #21 | 0.500 | 0.400 | 0.447 |
+
+**Trial #35 key params** (the "anti-vibration" config):
+- `action_scale=0.33` — small actions prevent jerky movement
+- `smooth1=-0.454` — 5x stronger than v2 (prevents vibration)
+- `smooth2=-0.083` — 2nd order smoothness
+- `gait_force=2.84, gait_vel=1.00` — strong gait shaping
+- `clearance=-24.8` — strong foot lift incentive
+- `tracking_sigma=0.271` — forgiving velocity tracking
+- `ent_coef=0.00258, kl_target=0.021`
+
+---
+
+### Run 15 — Production Training with HPO v3 Trial #35 (5M steps)
+
+**Config**: All defaults updated to Trial #35's stable params. 12 envs, n_steps=2048, batch_size=64.
+
+**Training**: 5M steps, **20 minutes**, 4,108 steps/sec on M4 Max.
+
+**Final metrics**:
+- std: 0.617 (converged)
+- explained_variance: 0.807
+- No collapse observed
+
+**Evaluation** (10 episodes, 500 steps, cmd_vx=0.4):
+
+| Metric | Value |
+|--------|-------|
+| Speed | **0.364 m/s** |
+| Survival | **100%** |
+| Body tilt | **1.7°** |
+| Body height | 0.375m |
+| Consistency | 0.361–0.367 m/s |
+| Foot clearance | **6.1cm** |
+| Action smoothness | 0.312 |
+| Step count | 25.1 steps/10s |
+| Composite score | **0.747** |
+
+**Comparison with previous runs**:
+| Metric | Run 6 (v1 best) | Run 10 (v2 best) | **Run 15** |
+|--------|------------------|-------------------|------------|
+| Speed | 0.77 (vibrating) | 0.375 | **0.364** |
+| Survival | 100% | 100% | **100%** |
+| Tilt | ~7° | 2.4° | **1.7°** |
+| Foot clearance | N/A | N/A | **6.1cm** |
+| Smoothness | Poor | OK | **Good** |
+| Consistency | Variable | Good | **Excellent** |
+
+This is the first policy that demonstrably walks (lifts feet 6cm, 2.5 Hz stepping, smooth actions) rather than vibrating or shuffling. Speed is "slower" than Run 6 but that was fake speed from oscillation.
+
+**Remaining**: Max speed limited to ~0.37 m/s by action_scale=0.33. Next step: terrain training and gradual speed increase.

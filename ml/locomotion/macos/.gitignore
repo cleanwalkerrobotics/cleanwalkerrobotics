@@ -1,0 +1,10 @@
+# Training artifacts (regenerable)
+checkpoints/
+logs/
+*.db
+MUJOCO_LOG.TXT
+train_*.log
+__pycache__/
+.venv/
+
+# Keep renders and final policy (committed explicitly)

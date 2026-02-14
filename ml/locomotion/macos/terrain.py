@@ -101,6 +101,14 @@ class TerrainGenerator:
 
         return float(self._current_heights[row, col])
 
+    def get_heights_at(self, xy: np.ndarray) -> np.ndarray:
+        """Batch terrain height query. xy shape: (N, 2). Returns (N,) heights."""
+        cols = ((xy[:, 0] + HFIELD_SIZE_X) / (2 * HFIELD_SIZE_X) * HFIELD_NCOL).astype(int)
+        rows = ((xy[:, 1] + HFIELD_SIZE_Y) / (2 * HFIELD_SIZE_Y) * HFIELD_NROW).astype(int)
+        np.clip(cols, 0, HFIELD_NCOL - 1, out=cols)
+        np.clip(rows, 0, HFIELD_NROW - 1, out=rows)
+        return self._current_heights[rows, cols].astype(np.float32)
+
     def _gen_flat(self) -> np.ndarray:
         """Flat terrain — all zeros."""
         return np.zeros((HFIELD_NROW, HFIELD_NCOL), dtype=np.float32)

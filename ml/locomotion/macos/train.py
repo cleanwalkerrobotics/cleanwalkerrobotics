@@ -152,8 +152,8 @@ def main():
         help="Enable Phase 2 shaped rewards (clearance target, smoothness, slip)"
     )
     parser.add_argument(
-        "--ent-coef", type=float, default=0.01,
-        help="Entropy coefficient (default: 0.01, higher = more exploration)"
+        "--ent-coef", type=float, default=0.00258,
+        help="Entropy coefficient (default: 0.00258 from HPO v3 Trial #35)"
     )
     args = parser.parse_args()
 
@@ -359,10 +359,10 @@ def main():
 
     if args.adaptive_lr:
         adaptive_lr_callback = AdaptiveLRCallback(
-            kl_target=0.02, lr_min=1e-5, lr_max=1e-2
+            kl_target=0.021, lr_min=1e-5, lr_max=1e-2
         )
         callbacks.append(adaptive_lr_callback)
-        print("Adaptive LR: ON (KL target=0.02, range=[1e-5, 1e-2])")
+        print("Adaptive LR: ON (KL target=0.021, range=[1e-5, 1e-2])")
 
     # Train
     print(f"\nStarting training for {args.timesteps:,} timesteps...")

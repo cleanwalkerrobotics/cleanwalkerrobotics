@@ -1,13 +1,12 @@
-"""CW-1 Locomotion Gymnasium Environment for MuJoCo (v3 / Run 10).
+"""CW-1 Locomotion Gymnasium Environment for MuJoCo (v5).
 
 Custom Gymnasium environment with:
-- 52-dim observation space (body state + joint state + commands + prev actions + gait clock)
+- 52 or 56-dim observation space (56 when use_foot_contacts=True)
 - 12-dim action space (leg joints only)
 - Mammalian knee configuration (all knees backward)
 - Heightfield terrain support (flat, rough, obstacles, stairs, slopes)
-- Stability-focused reward balance: alive=0.5, orientation=-1.0, fall_penalty=-5.0
-- WTW-inspired shaped rewards: gait clock, air time, contact force/velocity
-- Best trained with ent_coef=0.0 + adaptive LR (KL target 0.02)
+- WTW-inspired shaped rewards: gait clock, air time, clearance, smoothness
+- Configurable: action_scale, only_positive_rewards, foot contacts in obs
 - 200Hz simulation, 50Hz control (decimation=4)
 - Episode: 1000 steps (20s), terminates on fall
 
@@ -69,9 +68,9 @@ JOINT_UPPER = np.array([
 
 
 class CW1LocomotionEnv(gym.Env):
-    """CW-1 quadruped locomotion environment (v2: mammalian knees + terrain + gait clock).
+    """CW-1 quadruped locomotion environment (v5: configurable obs + rewards).
 
-    Observation space (52 dims):
+    Observation space (52 or 56 dims):
         [0:3]   Base linear velocity (body frame)
         [3:6]   Base angular velocity (body frame)
         [6:9]   Projected gravity (body frame)
@@ -80,6 +79,7 @@ class CW1LocomotionEnv(gym.Env):
         [24:36] Leg joint velocities (12)
         [36:48] Previous leg actions (12)
         [48:52] Gait clock [sin(FL/RR), cos(FL/RR), sin(FR/RL), cos(FR/RL)]
+        [52:56] Foot contacts [FL, FR, RL, RR] (optional, binary: 1=contact, 0=air)
 
     Action space (12 dims):
         Position targets for 12 leg joints, scaled by action_scale.
@@ -97,7 +97,7 @@ class CW1LocomotionEnv(gym.Env):
         control_dt: float = 0.02,     # 50 Hz control (decimation=4)
         max_episode_steps: int = 1000,  # 20 seconds
         # Action
-        action_scale: float = 0.5,
+        action_scale: float = 0.330,
         # Velocity commands (always forward — no standing command)
         cmd_vx_range: tuple = (0.0, 0.7),
         cmd_vy_range: tuple = (-0.1, 0.1),
@@ -105,38 +105,41 @@ class CW1LocomotionEnv(gym.Env):
         # Termination
         min_body_height: float = 0.15,
         max_body_tilt: float = 0.7,   # radians (~40 degrees)
-        # Reward weights — Run 8: two-phase training
-        # Phase 1 defaults (same as Run 7f — proven walking config)
-        # Phase 2 adds shaped rewards via --refine flag
-        rew_track_lin_vel: float = 3.0,
+        # Reward weights — HPO v3 Trial #35 (stable 0.66 score, no collapse)
+        rew_track_lin_vel: float = 5.587,
         rew_track_ang_vel: float = 0.5,
-        rew_alive: float = 0.5,
+        rew_alive: float = 0.366,
         rew_lin_vel_z: float = -2.0,
         rew_ang_vel_xy: float = -0.05,
         rew_torques: float = -1e-5,
         rew_joint_accel: float = -2.5e-7,
         rew_action_rate: float = -0.01,
-        rew_orientation: float = -1.0,
+        rew_orientation: float = -0.208,
         rew_joint_limits: float = -5.0,
         rew_feet_air_time: float = 1.0,
         rew_base_height: float = 0.5,
         rew_collision: float = -1.0,
-        fall_penalty: float = 5.0,           # One-time penalty on termination
-        rew_gait_clock: float = 0.5,        # Binary gait clock (Run 7f breakthrough)
-        # Shaped gait rewards — zeroed by default, enabled in Phase 2
-        rew_gait_force: float = 0.0,
-        rew_gait_vel: float = 0.0,
-        rew_clearance_target: float = 0.0,
-        rew_action_smooth_1: float = 0.0,
-        rew_action_smooth_2: float = 0.0,
-        rew_foot_slip: float = 0.0,
-        rew_air_time_var: float = 0.0,
+        fall_penalty: float = 3.502,
+        rew_gait_clock: float = 1.018,
+        # Shaped gait rewards — HPO v3 Trial #35 values
+        rew_gait_force: float = 2.835,
+        rew_gait_vel: float = 1.004,
+        rew_clearance_target: float = -24.765,
+        rew_action_smooth_1: float = -0.454,
+        rew_action_smooth_2: float = -0.083,
+        rew_foot_slip: float = -0.096,
+        rew_air_time_var: float = -0.836,
         rew_hip_vel: float = 0.0,
+        # Reward clipping
+        only_positive_rewards: bool = False,
+        # Observation options
+        use_foot_contacts: bool = True,
         # Tracking
-        tracking_sigma: float = 0.15,
+        tracking_sigma: float = 0.271,
         # Gait clock (trot pattern)
-        gait_period: float = 0.5,           # 0.5s per full stride (2 Hz)
-        swing_height_target: float = 0.06,  # target foot clearance during swing (6cm)
+        gait_period: float = 0.458,
+        swing_height_target: float = 0.111,
+        feet_air_time_threshold: float = 0.186,  # 0.813 * 0.458 / 2
         target_base_height: float = 0.35,
         # Domain randomization
         randomize_friction: bool = True,
@@ -171,9 +174,12 @@ class CW1LocomotionEnv(gym.Env):
 
         # Tracking + penalties
         self.fall_penalty = fall_penalty
+        self.only_positive_rewards = only_positive_rewards
+        self.use_foot_contacts = use_foot_contacts
         self.tracking_sigma = tracking_sigma
         self.target_base_height = target_base_height
         self.swing_height_target = swing_height_target
+        self.feet_air_time_threshold = feet_air_time_threshold
 
         # Reward weights
         self.reward_weights = {
@@ -234,8 +240,8 @@ class CW1LocomotionEnv(gym.Env):
         # Initialize terrain generator
         self._init_terrain()
 
-        # Observation and action spaces (48 base + 4 gait clock = 52)
-        self.n_obs = 52
+        # Observation and action spaces
+        self.n_obs = 56 if use_foot_contacts else 52
         self.n_act = 12
 
         obs_high = np.full(self.n_obs, 100.0, dtype=np.float32)
@@ -253,6 +259,7 @@ class CW1LocomotionEnv(gym.Env):
         self._last_contacts = np.zeros(4, dtype=bool)
         self._first_contact = np.zeros(4, dtype=bool)
         self._gait_phase = 0.0  # current gait clock phase [0, 2π)
+        self._cached_contacts = np.zeros(4, dtype=bool)  # per-step cache
 
         # Original values for domain randomization
         self._default_body_mass = self.model.body_mass.copy()
@@ -440,15 +447,20 @@ class CW1LocomotionEnv(gym.Env):
         robot_y = self.data.xpos[self.body_id][1]
         self._terrain_height_at_robot = self._terrain_gen.get_height_at(robot_x, robot_y)
 
+        # Detect foot contacts ONCE per step (reused by obs, reward, update)
+        self._detect_foot_contacts()
+
         # Update foot contact tracking
         self._update_foot_contacts()
 
-        # Compute observation (clip to prevent extreme values)
+        # Compute observation
         obs = self._get_obs()
-        obs = np.clip(obs, -100.0, 100.0)
+        np.clip(obs, -100.0, 100.0, out=obs)
 
         # Compute reward (clip to prevent value function explosion)
         reward, reward_info = self._compute_reward(action)
+        if self.only_positive_rewards:
+            reward = max(0.0, reward)
         reward = float(np.clip(reward, -10.0, 10.0))
 
         # Check termination
@@ -474,7 +486,7 @@ class CW1LocomotionEnv(gym.Env):
         return obs, reward, terminated, truncated, info
 
     def _get_obs(self) -> np.ndarray:
-        """Construct 52-dim observation vector (48 base + 4 gait clock)."""
+        """Construct observation vector (52 or 56 dims depending on use_foot_contacts)."""
         # Body orientation quaternion [w, x, y, z]
         body_quat = self.data.xquat[self.body_id].copy()
 
@@ -511,7 +523,7 @@ class CW1LocomotionEnv(gym.Env):
             math.sin(phase_fr_rl), math.cos(phase_fr_rl),
         ], dtype=np.float32)
 
-        obs = np.concatenate([
+        parts = [
             body_linvel.astype(np.float32),       # [0:3]
             body_angvel.astype(np.float32),       # [3:6]
             proj_gravity.astype(np.float32),      # [6:9]
@@ -519,8 +531,13 @@ class CW1LocomotionEnv(gym.Env):
             joint_pos_rel,                         # [12:24]
             joint_vel,                             # [24:36]
             self._prev_action,                     # [36:48]
-            gait_clock,                            # [48:52] NEW
-        ])
+            gait_clock,                            # [48:52]
+        ]
+
+        if self.use_foot_contacts:
+            parts.append(self._cached_contacts.astype(np.float32))  # [52:56]
+
+        obs = np.concatenate(parts)
 
         return obs.astype(np.float32)
 
@@ -555,17 +572,10 @@ class CW1LocomotionEnv(gym.Env):
         joint_pos = self.data.qpos[self.leg_qpos_ids]
         torques = self.data.actuator_force[self.leg_actuator_ids]
 
-        # Foot contact detection
-        in_contact = np.zeros(4, dtype=bool)
-        for i in range(self.data.ncon):
-            contact = self.data.contact[i]
-            geom1, geom2 = contact.geom1, contact.geom2
-            for j, foot_id in enumerate(self.foot_geom_ids):
-                if (geom1 == foot_id and geom2 == self.floor_geom_id) or \
-                   (geom2 == foot_id and geom1 == self.floor_geom_id):
-                    in_contact[j] = True
+        # Foot contact (already detected, use cache)
+        in_contact = self._cached_contacts
 
-        cmd_speed = np.linalg.norm(self._velocity_cmd[:2])
+        cmd_speed = np.sqrt(self._velocity_cmd[0]**2 + self._velocity_cmd[1]**2)
 
         total_reward = 0.0
 
@@ -664,100 +674,88 @@ class CW1LocomotionEnv(gym.Env):
         r_feet_air = 0.0
         if cmd_speed > 0.1:
             r_feet_air = np.sum(
-                (self._foot_air_time - 0.2) * self._first_contact
+                (self._foot_air_time - self.feet_air_time_threshold) * self._first_contact
             ) * w["feet_air_time"]
         total_reward += r_feet_air
         info["r_feet_air_time"] = r_feet_air
 
+        # === VECTORIZED GAIT REWARDS (all 4 feet at once) ===
+        # Precompute phases for all 4 feet
+        foot_phases = self._gait_phase + self._gait_phase_offsets  # shape (4,)
+        sin_phases = np.sin(foot_phases)  # >0 = stance, <0 = swing
+        desired_stance = sin_phases > 0  # shape (4,) bool
+        swing_signal = np.maximum(-sin_phases, 0.0)  # >0 during swing
+
+        # Precompute foot positions and velocities (all 4 at once)
+        foot_xpos = self.data.xpos[self.foot_body_ids]  # shape (4, 3)
+        foot_cvel = self.data.cvel[self.foot_body_ids]  # shape (4, 6)
+        foot_linvel = foot_cvel[:, 3:6]  # shape (4, 3)
+
         # 16. Shaped gait force reward — stance feet should have ground reaction force
-        # Uses exponential kernel on contact normal force (σ=100N)
         r_gait_force = 0.0
-        if cmd_speed > 0.1:
-            for j in range(4):
-                foot_phase = self._gait_phase + self._gait_phase_offsets[j]
-                desired_stance = math.sin(foot_phase) > 0
-                if desired_stance:
-                    # Find contact force for this foot
-                    foot_force = 0.0
-                    for ci in range(self.data.ncon):
-                        contact = self.data.contact[ci]
-                        g1, g2 = contact.geom1, contact.geom2
-                        if (g1 == self.foot_geom_ids[j] and g2 == self.floor_geom_id) or \
-                           (g2 == self.foot_geom_ids[j] and g1 == self.floor_geom_id):
-                            # Get contact force magnitude
-                            c_force = np.zeros(6)
-                            mujoco.mj_contactForce(self.model, self.data, ci, c_force)
-                            foot_force = np.linalg.norm(c_force[:3])
-                            break
-                    # Reward: 1 - exp(-force/σ) → 0 for no force, ~1 for large force
-                    r_gait_force += 1.0 - np.exp(-foot_force / 100.0)
-            r_gait_force *= w["gait_force"] / 4.0  # normalize by 4 feet
+        if cmd_speed > 0.1 and w["gait_force"] != 0.0:
+            # Use contact force: for stance feet that are in contact
+            stance_contact = desired_stance & in_contact
+            foot_forces = np.zeros(4)
+            ncon = self.data.ncon
+            if ncon > 0 and np.any(stance_contact):
+                g1 = self.data.contact.geom1[:ncon]
+                g2 = self.data.contact.geom2[:ncon]
+                c_force = np.zeros(6)
+                for j in np.where(stance_contact)[0]:
+                    fid = self.foot_geom_ids[j]
+                    mask = ((g1 == fid) & (g2 == self.floor_geom_id)) | \
+                           ((g2 == fid) & (g1 == self.floor_geom_id))
+                    ci = np.argmax(mask)
+                    if mask[ci]:
+                        mujoco.mj_contactForce(self.model, self.data, int(ci), c_force)
+                        foot_forces[j] = np.sqrt(c_force[0]**2 + c_force[1]**2 + c_force[2]**2)
+            r_gait_force = np.sum(1.0 - np.exp(-foot_forces[desired_stance] / 100.0))
+            r_gait_force *= w["gait_force"] / 4.0
         total_reward += r_gait_force
         info["r_gait_force"] = r_gait_force
 
         # 17. Shaped gait velocity reward — swing feet should be moving
-        # Uses exponential kernel on foot velocity magnitude (σ=10)
         r_gait_vel = 0.0
-        if cmd_speed > 0.1:
-            for j in range(4):
-                foot_phase = self._gait_phase + self._gait_phase_offsets[j]
-                desired_swing = math.sin(foot_phase) < 0
-                if desired_swing:
-                    # Get foot body velocity (world frame)
-                    foot_vel = self.data.cvel[self.foot_body_ids[j]][3:6]
-                    foot_speed = np.linalg.norm(foot_vel)
-                    # Reward: 1 - exp(-speed/σ) → 0 for stationary, ~1 for moving
-                    r_gait_vel += 1.0 - np.exp(-foot_speed / 10.0)
+        if cmd_speed > 0.1 and w["gait_vel"] != 0.0:
+            desired_swing = ~desired_stance
+            foot_speeds = np.sqrt(np.sum(foot_linvel[desired_swing] ** 2, axis=1))
+            r_gait_vel = np.sum(1.0 - np.exp(-foot_speeds / 10.0))
             r_gait_vel *= w["gait_vel"] / 4.0
         total_reward += r_gait_vel
         info["r_gait_vel"] = r_gait_vel
 
-        # 18. Binary gait clock reward (Run 7f breakthrough — breaks standing optimum)
+        # 18. Binary gait clock reward
         r_gait_clock = 0.0
         if cmd_speed > 0.1:
-            for j in range(4):
-                foot_phase = self._gait_phase + self._gait_phase_offsets[j]
-                desired_stance = math.sin(foot_phase) > 0
-                actual_stance = in_contact[j]
-                if desired_stance == actual_stance:
-                    r_gait_clock += 0.25
-            r_gait_clock *= w["gait_clock"]
+            matches = (desired_stance == in_contact)
+            r_gait_clock = np.sum(matches) * 0.25 * w["gait_clock"]
         total_reward += r_gait_clock
         info["r_gait_clock"] = r_gait_clock
 
-        # 19. Phase-based foot clearance TARGET (KEY anti-stiff reward)
-        # During swing phase, foot should reach swing_height_target above ground.
-        # Uses L1 (absolute) error for stronger gradient than L2.
+        # 19. Phase-based foot clearance TARGET
         r_clearance = 0.0
-        if cmd_speed > 0.1:
-            for j in range(4):
-                foot_phase = self._gait_phase + self._gait_phase_offsets[j]
-                swing_signal = -math.sin(foot_phase)  # >0 during swing
-                if swing_signal > 0:
-                    foot_z = self.data.xpos[self.foot_body_ids[j]][2]
-                    foot_x = self.data.xpos[self.foot_body_ids[j]][0]
-                    foot_y = self.data.xpos[self.foot_body_ids[j]][1]
-                    terrain_z = self._terrain_gen.get_height_at(foot_x, foot_y)
-                    clearance = foot_z - terrain_z
-
-                    # Target clearance follows swing arc: peak at mid-swing
-                    target = self.swing_height_target * swing_signal
-                    clearance_error = abs(clearance - target)  # L1 for stronger signal
-                    r_clearance += clearance_error * swing_signal  # weight by phase
-
-            r_clearance *= w["clearance_target"] / 4.0
+        if cmd_speed > 0.1 and w["clearance_target"] != 0.0:
+            swing_mask = swing_signal > 0
+            if np.any(swing_mask):
+                swing_feet_xy = foot_xpos[swing_mask, :2]
+                swing_feet_z = foot_xpos[swing_mask, 2]
+                terrain_z = self._terrain_gen.get_heights_at(swing_feet_xy)
+                clearance = swing_feet_z - terrain_z
+                targets = self.swing_height_target * swing_signal[swing_mask]
+                clearance_errors = np.abs(clearance - targets)
+                r_clearance = np.sum(clearance_errors * swing_signal[swing_mask])
+                r_clearance *= w["clearance_target"] / 4.0
         total_reward += r_clearance
         info["r_clearance_target"] = r_clearance
 
         # 20. Foot slip penalty — penalize foot XY velocity during stance contact
         r_slip = 0.0
-        if cmd_speed > 0.1:
-            for j in range(4):
-                if in_contact[j]:
-                    foot_vel = self.data.cvel[self.foot_body_ids[j]][3:6]
-                    xy_speed_sq = foot_vel[0] ** 2 + foot_vel[1] ** 2
-                    r_slip += xy_speed_sq
-            r_slip *= w["foot_slip"]
+        if cmd_speed > 0.1 and w["foot_slip"] != 0.0:
+            contact_mask = in_contact
+            if np.any(contact_mask):
+                xy_speed_sq = np.sum(foot_linvel[contact_mask, :2] ** 2, axis=1)
+                r_slip = np.sum(xy_speed_sq) * w["foot_slip"]
         total_reward += r_slip
         info["r_foot_slip"] = r_slip
 
@@ -771,17 +769,17 @@ class CW1LocomotionEnv(gym.Env):
         total_reward += r_air_var
         info["r_air_time_var"] = r_air_var
 
-        # 21. Collision penalty (proportional: count non-foot ground contacts, cap at 4)
+        # 21. Collision penalty (vectorized: count non-foot ground contacts, cap at 4)
         collision_count = 0
-        for i in range(self.data.ncon):
-            contact = self.data.contact[i]
-            geom1, geom2 = contact.geom1, contact.geom2
-            if geom1 != self.floor_geom_id and geom2 != self.floor_geom_id:
-                continue
-            other_geom = geom2 if geom1 == self.floor_geom_id else geom1
-            if other_geom not in self.foot_geom_ids:
-                collision_count += 1
-        collision_count = min(collision_count, 4)
+        ncon = self.data.ncon
+        if ncon > 0:
+            g1 = self.data.contact.geom1[:ncon]
+            g2 = self.data.contact.geom2[:ncon]
+            floor_id = self.floor_geom_id
+            has_floor = (g1 == floor_id) | (g2 == floor_id)
+            other = np.where(g1 == floor_id, g2, g1)
+            is_foot = np.isin(other, self.foot_geom_ids)
+            collision_count = min(int(np.sum(has_floor & ~is_foot)), 4)
         r_collision = collision_count * w["collision"]
         total_reward += r_collision
         info["r_collision"] = r_collision
@@ -792,20 +790,30 @@ class CW1LocomotionEnv(gym.Env):
         info["total_reward"] = total_reward
         return float(total_reward), info
 
+    def _detect_foot_contacts(self) -> np.ndarray:
+        """Vectorized foot contact detection. Returns bool array of shape (4,)."""
+        ncon = self.data.ncon
+        if ncon == 0:
+            self._cached_contacts[:] = False
+            return self._cached_contacts
+
+        g1 = self.data.contact.geom1[:ncon]
+        g2 = self.data.contact.geom2[:ncon]
+        floor_id = self.floor_geom_id
+
+        # Broadcasting: (4, ncon) matches for each foot
+        foot_ids = self.foot_geom_ids  # shape (4,)
+        match = ((g1[None, :] == foot_ids[:, None]) & (g2[None, :] == floor_id)) | \
+                ((g2[None, :] == foot_ids[:, None]) & (g1[None, :] == floor_id))
+        self._cached_contacts = np.any(match, axis=1)
+        return self._cached_contacts
+
     def _update_foot_contacts(self):
         """Track foot contact and air time (legged_gym style)."""
-        in_contact = np.zeros(4, dtype=bool)
-
-        for i in range(self.data.ncon):
-            contact = self.data.contact[i]
-            geom1, geom2 = contact.geom1, contact.geom2
-            for j, foot_id in enumerate(self.foot_geom_ids):
-                if (geom1 == foot_id and geom2 == self.floor_geom_id) or \
-                   (geom2 == foot_id and geom1 == self.floor_geom_id):
-                    in_contact[j] = True
+        in_contact = self._cached_contacts  # already computed in step()
 
         # Filtered contact (current or last step)
-        contact_filt = np.logical_or(in_contact, self._last_contacts)
+        contact_filt = in_contact | self._last_contacts
         self._last_contacts = in_contact.copy()
 
         # First contact: foot was airborne and now touching
@@ -815,12 +823,10 @@ class CW1LocomotionEnv(gym.Env):
         self._foot_air_time += self.control_dt
         self._foot_air_time *= ~contact_filt  # reset to 0 on contact
 
-        # Track contact time
-        for j in range(4):
-            if in_contact[j]:
-                self._foot_contact_time[j] += self.control_dt
-            else:
-                self._foot_contact_time[j] = 0.0
+        # Track contact time (vectorized)
+        self._foot_contact_time = np.where(
+            in_contact, self._foot_contact_time + self.control_dt, 0.0
+        )
 
     def _check_termination(self) -> bool:
         """Check if episode should terminate (terrain-relative)."""
