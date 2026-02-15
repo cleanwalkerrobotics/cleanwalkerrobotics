@@ -107,7 +107,7 @@ class CW1LocomotionEnv(gym.Env):
         max_body_tilt: float = 0.7,   # radians (~40 degrees)
         # Reward weights — HPO v3 Trial #35 (stable 0.66 score, no collapse)
         rew_track_lin_vel: float = 5.587,
-        rew_track_ang_vel: float = 0.5,
+        rew_track_ang_vel: float = 2.0,
         rew_alive: float = 0.366,
         rew_lin_vel_z: float = -2.0,
         rew_ang_vel_xy: float = -0.05,
@@ -129,7 +129,8 @@ class CW1LocomotionEnv(gym.Env):
         rew_action_smooth_2: float = -0.083,
         rew_foot_slip: float = -0.096,
         rew_air_time_var: float = -0.836,
-        rew_hip_vel: float = 0.0,
+        rew_hip_vel: float = -0.001,
+        rew_lat_vel: float = -5.0,
         # Reward clipping
         only_positive_rewards: bool = False,
         # Observation options
@@ -160,8 +161,16 @@ class CW1LocomotionEnv(gym.Env):
         self.decimation = int(control_dt / sim_dt)
         self.max_episode_steps = max_episode_steps
 
-        # Action scaling
+        # Action scaling — per-joint vector.
+        # Hip yaw gets 50% of main scale (enough for balance, prevents wasteful oscillation).
+        hip_yaw_ratio = 0.5
         self.action_scale = action_scale
+        self.action_scales = np.array([
+            hip_yaw_ratio, 1.0, 1.0,  # FL: yaw, hip_pitch, knee
+            hip_yaw_ratio, 1.0, 1.0,  # FR
+            hip_yaw_ratio, 1.0, 1.0,  # RL
+            hip_yaw_ratio, 1.0, 1.0,  # RR
+        ], dtype=np.float32) * action_scale
 
         # Command ranges
         self.cmd_vx_range = cmd_vx_range
@@ -205,6 +214,7 @@ class CW1LocomotionEnv(gym.Env):
             "foot_slip": rew_foot_slip,
             "air_time_var": rew_air_time_var,
             "hip_vel": rew_hip_vel,
+            "lat_vel": rew_lat_vel,
         }
 
         # Gait clock params
@@ -421,8 +431,8 @@ class CW1LocomotionEnv(gym.Env):
     def step(self, action: np.ndarray):
         action = np.clip(action, -1.0, 1.0).astype(np.float32)
 
-        # Compute target joint positions: default + action * scale
-        target_pos = DEFAULT_JOINT_POS + action * self.action_scale
+        # Compute target joint positions: default + action * per-joint scale
+        target_pos = DEFAULT_JOINT_POS + action * self.action_scales
 
         # Apply control for decimation steps (4 physics steps per control step)
         for _ in range(self.decimation):
@@ -659,6 +669,11 @@ class CW1LocomotionEnv(gym.Env):
         r_hip_vel = np.sum(hip_yaw_vel ** 2) * w["hip_vel"]
         total_reward += r_hip_vel
         info["r_hip_vel"] = r_hip_vel
+
+        # 13b. Lateral body velocity penalty (walk straight)
+        r_lat_vel = body_linvel[1] ** 2 * w["lat_vel"]
+        total_reward += r_lat_vel
+        info["r_lat_vel"] = r_lat_vel
 
         # 14. Joint limit penalty
         margin = 0.1  # radians from limit
