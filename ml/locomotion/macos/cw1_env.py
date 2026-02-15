@@ -337,13 +337,20 @@ class CW1LocomotionEnv(gym.Env):
             self.model, mujoco.mjtObj.mjOBJ_GEOM, "floor"
         )
 
+        # Collision geom IDs — only torso/head contacts with floor count as
+        # collisions (legs naturally brush terrain on rough/stair surfaces).
+        self.collision_geom_ids = np.array([
+            mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_GEOM, name)
+            for name in ["body_geom", "head_geom"]
+        ])
+
     def _init_terrain(self):
         """Initialize terrain generator and set initial flat terrain."""
         from terrain import TerrainGenerator
         self._terrain_gen = TerrainGenerator()
         # Start with flat terrain so the model loads cleanly
         hfield_data = self._terrain_gen.generate("flat")
-        self.model.hfield_data[:] = (hfield_data * 65535).astype(np.uint16)
+        self.model.hfield_data[:] = hfield_data
 
     def _setup_viewer(self):
         """Setup MuJoCo viewer for human rendering."""
@@ -362,7 +369,7 @@ class CW1LocomotionEnv(gym.Env):
         rng = np.random.default_rng(self.np_random.integers(0, 2**31))
         self._terrain_gen.rng = rng
         hfield_data = self._terrain_gen.generate(terrain_type)
-        self.model.hfield_data[:] = (hfield_data * 65535).astype(np.uint16)
+        self.model.hfield_data[:] = hfield_data
 
         # Reset simulation
         mujoco.mj_resetData(self.model, self.data)
@@ -784,7 +791,7 @@ class CW1LocomotionEnv(gym.Env):
         total_reward += r_air_var
         info["r_air_time_var"] = r_air_var
 
-        # 21. Collision penalty (vectorized: count non-foot ground contacts, cap at 4)
+        # 21. Collision penalty (only torso/head touching floor = actual fall)
         collision_count = 0
         ncon = self.data.ncon
         if ncon > 0:
@@ -793,8 +800,8 @@ class CW1LocomotionEnv(gym.Env):
             floor_id = self.floor_geom_id
             has_floor = (g1 == floor_id) | (g2 == floor_id)
             other = np.where(g1 == floor_id, g2, g1)
-            is_foot = np.isin(other, self.foot_geom_ids)
-            collision_count = min(int(np.sum(has_floor & ~is_foot)), 4)
+            is_collision_body = np.isin(other, self.collision_geom_ids)
+            collision_count = min(int(np.sum(has_floor & is_collision_body)), 4)
         r_collision = collision_count * w["collision"]
         total_reward += r_collision
         info["r_collision"] = r_collision

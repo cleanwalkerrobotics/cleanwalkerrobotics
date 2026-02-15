@@ -574,3 +574,127 @@ Extended HPO with 15 parameters including gait-shaped rewards. 800K steps per tr
 This is the first policy that demonstrably walks (lifts feet 6cm, 2.5 Hz stepping, smooth actions) rather than vibrating or shuffling. Speed is "slower" than Run 6 but that was fake speed from oscillation.
 
 **Remaining**: Max speed limited to ~0.37 m/s by action_scale=0.33. Next step: terrain training and gradual speed increase.
+
+---
+
+### Run 16 — Fix Hip Yaw + Lateral Drift (fine-tune from Run 15)
+
+**Visual problems observed**: (1) robot drifts sideways, (2) hip yaw joints oscillate wastefully on every step.
+
+#### Run 16a — From scratch with penalties (FAILED)
+- Added `rew_hip_vel=-0.005`, new `rew_lat_vel=-2.0` (lateral body velocity penalty)
+- Trained from scratch, 5M steps
+- **Result**: Speed 0.263 (-28%), tilt 3.9°, drift DOUBLED (0.089 ratio). Local optimum.
+
+#### Run 16b — Fine-tune with penalties (PARTIALLY FAILED)
+- Fine-tuned from Run 15 (restored via `git show ff9858b`)
+- 2M steps with hip_vel=-0.005, lat_vel=-2.0
+- **Result**: Hip yaw -45%, but lateral drift got MUCH WORSE (-1.112m consistent LEFT)
+
+#### Run 16c — Per-joint action scaling (BETTER)
+- **Key innovation**: limit hip yaw AUTHORITY instead of penalizing velocity
+- Per-joint `action_scales` vector: hip_yaw gets 50% of main scale (0.165 vs 0.33)
+- Softer penalties: hip_vel=-0.001, lat_vel=-0.5
+- Fine-tuned 2M from Run 15
+- **Result**: Hip yaw -81%, speed 0.334 (-8%), tilt 1.9°
+- BUT: -0.876m left drift (consistent across all 10 seeds)
+- **Discovery**: Run 15 also had consistent 0.398m RIGHT drift (policy weight asymmetry)
+
+#### Run 16d — Stronger heading correction (SUCCESS) ★
+- Boosted `rew_track_ang_vel`: 0.5 → 2.0
+- Boosted `rew_lat_vel`: -0.5 → -5.0
+- Fine-tuned 2M from Run 16c
+- **Result**:
+
+| Metric | Run 15 | Run 16d | Change |
+|--------|--------|---------|--------|
+| Speed | 0.364 | **0.323 m/s** | -11% |
+| Survival | 100% | **100%** | — |
+| Tilt | 1.7° | **1.7°** | — |
+| Hip yaw | 2.58 rad/s | **0.90 rad/s** | **-65%** |
+| Lat drift | ±0.40m | **+0.013m** | **-97%** |
+
+**Committed: 6026d1e**
+
+---
+
+### Terrain Training — Bug Fixes + Curriculum
+
+#### Bug 1: Collision detection on rough terrain
+Original code penalized ALL non-foot floor contacts. On rough terrain, heightfield bumps caused `body_geom↔floor` (149 contacts/step) and `calf_geom↔floor` contacts, triggering -4.0 collision penalty per step. Robot stood still (0.002 m/s).
+
+**Fix**: Only count `body_geom` and `head_geom` floor contacts as collisions (actual fall indicators). Leg/calf contacts with terrain are normal.
+
+```python
+# Before: penalize all non-foot contacts
+is_foot = np.isin(other, self.foot_geom_ids)
+collision_count = np.sum(has_floor & ~is_foot)
+
+# After: only torso/head contacts = real collisions
+is_collision_body = np.isin(other, self.collision_geom_ids)
+collision_count = np.sum(has_floor & is_collision_body)
+```
+
+#### Bug 2: Heightfield data scaling (the real killer)
+`model.hfield_data` in MuJoCo Python bindings is a float array expecting [0, 1] values. Code was applying uint16 scaling: `(data * 65535).astype(np.uint16)`. This wrote values like 546.0 to the float array, which MuJoCo interpreted as terrain at 546 × 6.0 = 3276m height — massive walls enclosing the robot.
+
+**Fix**: Write normalized float data directly: `model.hfield_data[:] = hfield_data`
+
+#### Terrain baselines (Run 16d policy, pre-training)
+
+| Terrain | Speed | Survival | Tilt |
+|---------|-------|----------|------|
+| flat | 0.288 | 100% | 2.1° |
+| rough | 0.285 | 100% | 3.2° |
+| obstacles | 0.282 | 100% | 2.4° |
+| stairs_up | 0.200 | 60% | 28.4° |
+| slope_30 | 0.244 | 40% | 26.1° |
+
+#### Stage 1 — flat + rough (5M steps, fine-tune from Run 16d)
+
+| Terrain | Speed | Survival | Tilt |
+|---------|-------|----------|------|
+| flat | 0.307 | 100% | 1.3° |
+| rough | 0.301 | 100% | 2.1° |
+| obstacles | 0.303 | 90% | 5.4° |
+| stairs_up | 0.205 | 70% | 19.9° |
+| slope_30 | 0.223 | 60% | 21.0° |
+
+#### Stage 2 — flat + rough + obstacles (5M steps, fine-tune from Stage 1)
+
+| Terrain | Speed | Survival | Tilt |
+|---------|-------|----------|------|
+| flat | 0.306 | 100% | 1.4° |
+| rough | 0.304 | 100% | 2.8° |
+| obstacles | 0.294 | **100%** | 1.7° |
+| stairs_up | 0.184 | **80%** | 13.6° |
+| slope_30 | 0.195 | 60% | 22.7° |
+
+#### Stage 3 — full mix including stairs + slopes (10M steps)
+
+| Terrain | Speed | Survival | Tilt | vs. Stage 2 |
+|---------|-------|----------|------|-------------|
+| flat | 0.236 | 100% | 2.3° | -0.07 speed |
+| rough | 0.222 | 100% | 3.5° | ≈same |
+| obstacles | 0.230 | **100%** | 4.2° | ≈same |
+| stairs_up | 0.170 | **90%** | 8.1° | +10% surv |
+| slope_30 | 0.161 | **100%** | 4.1° | **+40% surv!** |
+| slope_debris | 0.168 | **90%** | 7.4° | new terrain |
+
+**Key finding**: Terrain training significantly improved terrain robustness (slopes 60→100%!) but caused speed regression on flat (0.30→0.24) and drift regression (0.01→0.5m). The reward weights (optimized for flat only) aren't optimal for multi-terrain training.
+
+---
+
+### HPO v4 — Multi-Terrain Reward Optimization (100 trials, overnight)
+
+**Goal**: Find reward weights that maintain speed while improving terrain robustness.
+
+**Design**:
+- Base policy: Stage 2 checkpoint (best flat/rough/obstacles walker)
+- Fine-tune 2M steps on ALL 5 terrain types per trial
+- Evaluate across all 5 terrains
+- 12 search parameters (terrain-relevant rewards)
+- Weighted objective: stairs 25%, flat 20%, obstacles 20%, slopes 20%, rough 15%
+- ~10 min/trial, 100 trials ≈ 16 hours
+
+**Status**: Running in tmux window 'hpo-v4'
